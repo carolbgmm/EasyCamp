@@ -1,8 +1,10 @@
-package com.example.easycamp;
+package com.example.easycamp.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.example.easycamp.R;
 
 public class MainActivity extends AppCompatActivity {
 

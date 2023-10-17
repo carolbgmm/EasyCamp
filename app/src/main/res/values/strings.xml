@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">EasyCamp</string>
+    <string name="nombreCampamento">Nombre campamento</string>
+    <string name="descripcion">Descripción del campamento</string>
 </resources>
