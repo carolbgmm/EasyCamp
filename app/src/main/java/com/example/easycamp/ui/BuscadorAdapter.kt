@@ -6,7 +6,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.easycamp.R
-import com.example.easycamp.domain.Models
 
 class BuscadorAdapter : RecyclerView.Adapter<BuscadorAdapter.CampamentoViewHolder>() {
 
