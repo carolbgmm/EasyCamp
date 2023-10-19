@@ -4,13 +4,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.easycamp.R
 
-class BuscadorActivity : AppCompatActivity() {
-
-
+class DetalleCampamentoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_buscador)
+        setContentView(R.layout.activity_detalle_campamento)
     }
-
-
 }
