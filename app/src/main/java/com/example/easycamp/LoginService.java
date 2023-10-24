@@ -24,11 +24,9 @@ public class LoginService {
             if(username.equals(aux.username) & password.equals(aux.password)){
                 return true;
             }
-
         }
         return false;
     }
-
 
 
     public UserDTO getUser(String username) {
@@ -37,20 +35,13 @@ public class LoginService {
             if(username.equals(aux.username)){
                 return aux;
             }
-
         }
         return null;
     }
 
-
     public List<UserDTO> getAllUserData(){
         List<UserDTO> userDTOList = new ArrayList<>();
-
-
-
             try {
-
-
                 InputStream raw = loginActivity.getResources().openRawResource(R.raw.usuarios);
                 BufferedReader  b = new BufferedReader(new InputStreamReader(raw, "UTF8"));
                 String line;
@@ -66,9 +57,6 @@ public class LoginService {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-
-
-
         return userDTOList;
     }
     }

@@ -3,9 +3,11 @@ package com.example.easycamp.domain
 import android.os.Parcel
 import android.os.Parcelable
 
-class Campamento(  val nombre: String?,
-                   val descripcion: String?,
-                   val image: String?) : Parcelable {
+class CampamentoDto(val nombre: String?,
+                    val descripcion: String?,
+                    val image: String?,
+                    val favourite: Boolean = false) : Parcelable {
+
 
     constructor(parcel: Parcel) : this(
         parcel.readString(),
@@ -24,12 +26,12 @@ class Campamento(  val nombre: String?,
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<Campamento> {
-        override fun createFromParcel(parcel: Parcel): Campamento {
-            return Campamento(parcel)
+    companion object CREATOR : Parcelable.Creator<CampamentoDto> {
+        override fun createFromParcel(parcel: Parcel): CampamentoDto {
+            return CampamentoDto(parcel)
         }
 
-        override fun newArray(size: Int): Array<Campamento?> {
+        override fun newArray(size: Int): Array<CampamentoDto?> {
             return arrayOfNulls(size)
         }
     }

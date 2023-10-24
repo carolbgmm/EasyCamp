@@ -52,28 +52,20 @@
 
             </LinearLayout>
 
-            <ImageView
-                android:id="@+id/imagen"
-                android:layout_width="50dp"
-                android:layout_height="72dp"
-                android:contentDescription="@string/app_name"
-                app:srcCompat="@mipmap/ic_launcher"
-                android:layout_marginEnd="10dp"/>
-
         </LinearLayout>
 
 
     </androidx.cardview.widget.CardView>
 
 
-    <ImageView
+    <ImageButton
         android:id="@+id/imgFavoritos"
         android:layout_width="200dp"
         android:layout_height="match_parent"
         android:contentDescription="@string/app_name"
         app:srcCompat="@drawable/favoritos_vacio"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndtOf="@+id/cardViewCampamento"
+        app:layout_constraintStart_toEndOf="@+id/cardViewCampamento"
         app:layout_constraintHorizontal_bias="0.421"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_weight="4"/>

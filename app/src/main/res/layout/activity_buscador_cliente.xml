@@ -7,6 +7,7 @@
     tools:context=".ui.buscadorCliente.BuscadorClienteActivity">
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerCampamentos"
         android:layout_width="356dp"
         android:layout_height="714dp"
         app:layout_constraintBottom_toBottomOf="parent"

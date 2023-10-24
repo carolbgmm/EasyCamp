@@ -1,5 +1,6 @@
 package com.example.easycamp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -7,6 +8,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.easycamp.ui.buscadorCliente.BuscadorClienteActivity;
 
 public class Login_Activity extends AppCompatActivity {
 
@@ -49,15 +52,13 @@ public class Login_Activity extends AppCompatActivity {
         return service.checkCredentials(username,password);
     }
 
-
-
     private void redirigir(String username) {
         this.user=service.getUser(username);
         String tipoUsuario=this.user.userType;
         //hay que enviar user(es un dto) al resto de las pantallas , de esta menera es mas comodo usar sus datos
         switch (tipoUsuario) {
             case "CLIENTE":
-                // Redirige a la página principal CLIENTE
+                startActivity(new Intent(this, BuscadorClienteActivity.class));
                 break;
             case "TRABAJADOR":
                 // Redirige a la página principal TRABAJADOR

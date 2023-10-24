@@ -2,13 +2,12 @@ package com.example.easycamp.ui
 
 import android.os.Build
 import android.os.Bundle
-import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.example.easycamp.R
-import com.example.easycamp.domain.Campamento
+import com.example.easycamp.domain.CampamentoDto
 import com.example.easycamp.ui.buscadorCliente.BuscadorClienteActivity
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.squareup.picasso.Picasso
@@ -17,7 +16,7 @@ class DetalleCampamentoActivity : AppCompatActivity() {
     var toolBarLayout: CollapsingToolbarLayout? = null
     var imagen: ImageView? = null
     var description: TextView? = null
-    var campamento: Campamento? = null
+    var campamento: CampamentoDto? = null
     var toolbar: androidx.appcompat.widget.Toolbar? = null
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -27,7 +26,7 @@ class DetalleCampamentoActivity : AppCompatActivity() {
 
         val intentCampamento = intent
         campamento =
-            intentCampamento.getParcelableExtra(BuscadorClienteActivity.CAMPAMENTO_SELECCIONADO, Campamento::class.java)!!
+            intentCampamento.getParcelableExtra<CampamentoDto>(BuscadorClienteActivity.CAMPAMENTO_SELECCIONADO)
 
         if(campamento != null){
             getComponentes()
