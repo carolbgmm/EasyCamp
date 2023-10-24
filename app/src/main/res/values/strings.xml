@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">EasyCamp</string>
+
+    <string name="username_hint">Nombre de usuario</string>
+    <string name="password_hint">Contraseña</string>
+    <string name="login_button">Iniciar sesión</string>
+    <string name="user_not_found">Usuario no encontrado</string>
+    <string name="incorrect_password">Contraseña incorrecta</string>
+    <string name="client_user">CLIENTE</string>
+    <string name="worker_user">TRABAJADOR</string>
+
 </resources>
