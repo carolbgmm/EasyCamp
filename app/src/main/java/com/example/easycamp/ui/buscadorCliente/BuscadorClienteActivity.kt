@@ -9,8 +9,6 @@ import com.example.easycamp.ui.DetalleCampamentoActivity
 
 class BuscadorClienteActivity : AppCompatActivity() {
 
-    val CAMPAMENTO_SELECCIONADO = "pelicula_seleccionada"
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_buscador_cliente)
@@ -27,6 +25,10 @@ class BuscadorClienteActivity : AppCompatActivity() {
         val intent = Intent(this@BuscadorClienteActivity, DetalleCampamentoActivity::class.java)
         intent.putExtra(CAMPAMENTO_SELECCIONADO, campamento)
         startActivity(intent)
+    }
+
+    companion object {
+        val CAMPAMENTO_SELECCIONADO = "campamento_seleccionado"
     }
 
 

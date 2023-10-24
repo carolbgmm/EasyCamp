@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.easycamp.R
 import com.example.easycamp.domain.Campamento
-import org.w3c.dom.Text
 
 class BuscadorClienteAdapter( val listaCampamento: List<Campamento>, val listener: OnItemClickListener) :
     RecyclerView.Adapter<BuscadorClienteAdapter.CampamentoViewHolder>() {
@@ -24,11 +23,11 @@ class BuscadorClienteAdapter( val listaCampamento: List<Campamento>, val listene
     }
 
     override fun onBindViewHolder(holder: CampamentoViewHolder, position: Int) {
-        val campamento = listaCampamento.get(position)
+        val campamento = listaCampamento[position]
         holder.bind(campamento, listener)
     }
 
-    interface OnItemClickListener {
+    fun interface OnItemClickListener {
         fun onItemClick(item: Campamento?)
     }
 

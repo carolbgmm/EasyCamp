@@ -6,4 +6,13 @@
     </style>
 
     <style name="Theme.EasyCamp" parent="Base.Theme.EasyCamp" />
+
+    <style name="Theme.EasyCamp.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.EasyCamp.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.EasyCamp.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

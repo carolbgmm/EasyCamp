@@ -68,7 +68,7 @@
 
     <ImageView
         android:id="@+id/imgFavoritos"
-        android:layout_width="match_parent"
+        android:layout_width="200dp"
         android:layout_height="match_parent"
         android:contentDescription="@string/app_name"
         app:srcCompat="@drawable/favoritos_vacio"
