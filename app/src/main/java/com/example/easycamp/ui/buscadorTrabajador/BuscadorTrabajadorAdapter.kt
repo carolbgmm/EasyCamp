@@ -44,16 +44,20 @@ class BuscadorTrabajadorAdapter (val listaCampamento: List<CampamentoDto>, val l
             txtNombre.setText(item.nombre)
             txtDescripcion.setText(item.descripcion)
 
-            if (item.favourite) {
-                imgFavoritos.setImageDrawable(R.drawable.favoritos_relleno.toDrawable())
+            if(item.favourite){
+                imgFavoritos.setImageResource(R.drawable.favoritos_relleno)
             } else {
-                imgFavoritos.setImageDrawable(R.drawable.favoritos_vacio.toDrawable())
+                imgFavoritos.setImageResource(R.drawable.favoritos_vacio)
             }
 
             imgFavoritos?.setOnClickListener {
-                if (item.favourite) {
-                    imgFavoritos.setImageDrawable(R.drawable.favoritos_vacio.toDrawable())
-                } else imgFavoritos.setImageDrawable(R.drawable.favoritos_relleno.toDrawable())
+                if(item.favourite){
+                    imgFavoritos.setImageResource(R.drawable.favoritos_vacio)
+                    item.favourite = false
+                } else {
+                    imgFavoritos.setImageResource(R.drawable.favoritos_relleno)
+                    item.favourite = true
+                }
             }
             // cargar imagen
             itemView.setOnClickListener { listener.onItemClick(item) }
