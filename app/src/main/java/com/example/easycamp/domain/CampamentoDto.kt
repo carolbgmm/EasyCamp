@@ -6,7 +6,7 @@ import android.os.Parcelable
 class CampamentoDto(val nombre: String?,
                     val descripcion: String?,
                     val image: String?,
-                    val favourite: Boolean = false) : Parcelable {
+                    var favourite: Boolean = false) : Parcelable {
 
 
     constructor(parcel: Parcel) : this(
