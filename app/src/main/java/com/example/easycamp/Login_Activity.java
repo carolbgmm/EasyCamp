@@ -10,6 +10,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.easycamp.ui.buscadorCliente.BuscadorClienteActivity;
+import com.example.easycamp.ui.buscadorTrabajador.BuscadorTrabajadorActivity;
 
 public class Login_Activity extends AppCompatActivity {
 
@@ -62,6 +63,7 @@ public class Login_Activity extends AppCompatActivity {
                 break;
             case "TRABAJADOR":
                 // Redirige a la página principal TRABAJADOR
+                startActivity(new Intent(this, BuscadorTrabajadorActivity.class));
                 break;
             default:
                 showToast("A ocurrido un error, no se encuentra su tipo de ususario");
