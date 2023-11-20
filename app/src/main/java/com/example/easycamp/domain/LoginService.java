@@ -1,4 +1,8 @@
-package com.example.easycamp;
+package com.example.easycamp.domain;
+
+import com.example.easycamp.R;
+import com.example.easycamp.domain.UserDTO;
+import com.example.easycamp.ui.inicioSesion.Login_Activity;
 
 import java.io.BufferedReader;
 import java.io.IOException;

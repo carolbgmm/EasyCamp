@@ -1,4 +1,4 @@
-package com.example.easycamp;
+package com.example.easycamp.domain;
 
 public class UserDTO {
     public String username;
