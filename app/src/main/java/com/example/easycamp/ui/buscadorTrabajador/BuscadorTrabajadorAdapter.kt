@@ -44,19 +44,19 @@ class BuscadorTrabajadorAdapter (val listaCampamento: List<CampamentoDto>, val l
             txtNombre.setText(item.nombre)
             txtDescripcion.setText(item.descripcion)
 
-            if(item.favourite){
+            if(item.favorito){
                 imgFavoritos.setImageResource(R.drawable.favoritos_relleno)
             } else {
                 imgFavoritos.setImageResource(R.drawable.favoritos_vacio)
             }
 
             imgFavoritos?.setOnClickListener {
-                if(item.favourite){
+                if(item.favorito){
                     imgFavoritos.setImageResource(R.drawable.favoritos_vacio)
-                    item.favourite = false
+                    item.favorito = false
                 } else {
                     imgFavoritos.setImageResource(R.drawable.favoritos_relleno)
-                    item.favourite = true
+                    item.favorito = true
                 }
             }
             // cargar imagen

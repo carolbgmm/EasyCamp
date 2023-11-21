@@ -7,8 +7,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.easycamp.R
 import com.example.easycamp.domain.CampamentoDto
+import com.example.easycamp.domain.LoggedUser
 import com.example.easycamp.ui.DetalleCampamentoActivity
 import com.example.easycamp.ui.buscadorCliente.BuscadorClienteAdapter
+import com.example.easycamp.util.DBHelper
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStream
@@ -16,10 +18,11 @@ import java.io.InputStreamReader
 
 class BuscadorTrabajadorActivity : AppCompatActivity() {
     var recyclerCamp: RecyclerView? = null
+    lateinit var persistencia: DBHelper
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_buscador_trabajador)
-
+        persistencia= DBHelper(this)
         recyclerCamp = findViewById(R.id.recyclerCampamentos)
         recyclerCamp?.setHasFixedSize(true)
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(applicationContext)
@@ -37,22 +40,8 @@ class BuscadorTrabajadorActivity : AppCompatActivity() {
     }
 
     fun getAllCampamentos(): List<CampamentoDto> {
-        var listaCampamentos = arrayListOf<CampamentoDto>()
-        try {
-            val raw: InputStream = resources.openRawResource(R.raw.campamentos)
-            val b = BufferedReader(InputStreamReader(raw, "UTF8"))
-            var line = b.readLine()
-            while (line != null) {
-                val valores = line.split(";".toRegex()).dropLastWhile { it.isEmpty() }
-                    .toTypedArray()
-                val campamentoDto = CampamentoDto(valores[0], valores[1], valores[2])
-                listaCampamentos.add(campamentoDto)
-                line = b.readLine()
-            }
-            b.close()
-        } catch (e: IOException) {
-            throw RuntimeException(e)
-        }
+        var listaCampamentos = persistencia.obtenerCampamentosConFavoritos(LoggedUser.getInstance(null).user.id)
+
         return listaCampamentos
     }
 
