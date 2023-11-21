@@ -6,6 +6,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.example.easycamp.domain.CampamentoDto;
 import com.example.easycamp.domain.UserDTO;
@@ -65,11 +66,15 @@ public class DBHelper extends SQLiteOpenHelper {
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
+        Log.d("MiApp", "Se crea la base de datos");
+
+
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
         // Crear la tabla de campamentos
+        Log.d("MiApp", "Se crean la tablas");
         String createTableCampamentos = "CREATE TABLE " + TABLE_CAMPAMENTOS + " (" +
                 CAMPAMENTO_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 CAMPAMENTO_NOMBRE + " TEXT, " +
@@ -109,12 +114,13 @@ public class DBHelper extends SQLiteOpenHelper {
         insertarDatosDesdeJSON(context, db, TABLE_CAMPAMENTOS, "campamentos", "datos_iniciales.json");
 
         //se crean 3 usuarios de clientes y 3 de trabajadores
-        insertarDatosDesdeJSON(context, db, TABLE_USUARIOS, "usuarios", "datos_iniciales.json");
+        insertarDatosUsuariosDesdeJSON(context, db, TABLE_USUARIOS, "usuarios", "datos_iniciales.json");
 
 
 
     }
     private void insertarDatosDesdeJSON(Context context, SQLiteDatabase db, String tableName, String jsonArrayName, String fileName) {
+        Log.d("MiApp", "Se intenta poner los campamentos");
         try {
             InputStream inputStream = context.getAssets().open(fileName);
             int size = inputStream.available();
@@ -131,9 +137,20 @@ public class DBHelper extends SQLiteOpenHelper {
                 JSONObject item = jsonArray.getJSONObject(i);
 
                 // Agregar cada columna y valor al ContentValues
-                values.put("nombre", item.getString("nombre"));
-                values.put("descripcion", item.getString("descripcion"));
-                // ... (agregar las demás columnas según sea necesario)
+                values.put(CAMPAMENTO_NOMBRE, item.getString("nombre"));
+                values.put(CAMPAMENTO_DESCRIPCION, item.getString("descripcion"));
+                values.put(CAMPAMENTO_FECHA_INICIO, item.getString("fecha_inicio"));
+                values.put(CAMPAMENTO_FECHA_FINAL, item.getString("fecha_final"));
+                values.put(CAMPAMENTO_NUMERO_MAX_PARTICIPANTES, item.getInt("numero_max_participantes"));
+                values.put(CAMPAMENTO_NUMERO_APUNTADOS, item.getInt("numero_apuntados"));
+                values.put(CAMPAMENTO_UBICACION, item.getString("ubicacion"));
+                values.put(CAMPAMENTO_IMAGEN, item.getString("imagen"));
+                values.put(CAMPAMENTO_EDAD_MINIMA, item.getInt("edad_minima"));
+                values.put(CAMPAMENTO_EDAD_MAXIMA, item.getInt("edad_maxima"));
+                values.put(CAMPAMENTO_NUM_MONITORES, item.getInt("num_monitores"));
+                values.put(CAMPAMENTO_PRECIO, item.getDouble("precio"));
+                values.put(CAMPAMENTO_CATEGORIA, item.getString("categoria"));
+                Log.d("MiApp", "Nuevo Campamento "+item.getString("nombre")+" "+item.getString("descripcion"));
 
                 // Insertar los valores en la base de datos
                 db.insert(tableName, null, values);
@@ -142,6 +159,40 @@ public class DBHelper extends SQLiteOpenHelper {
             e.printStackTrace();
         }
     }
+
+    private void insertarDatosUsuariosDesdeJSON(Context context, SQLiteDatabase db, String tableName, String jsonArrayName, String fileName) {
+        Log.d("MiApp", "Se intenta poner los usuarios");
+        try {
+            InputStream inputStream = context.getAssets().open(fileName);
+            int size = inputStream.available();
+            byte[] buffer = new byte[size];
+            inputStream.read(buffer);
+            inputStream.close();
+
+            String jsonString = new String(buffer, "UTF-8");
+            JSONObject jsonObject = new JSONObject(jsonString);
+            JSONArray jsonArray = jsonObject.getJSONArray(jsonArrayName);
+
+            for (int i = 0; i < jsonArray.length(); i++) {
+                ContentValues values = new ContentValues();
+                JSONObject item = jsonArray.getJSONObject(i);
+
+                // Agregar cada columna y valor al ContentValues
+                values.put(USUARIO_NOMBRE_USUARIO, item.getString("nombre_usuario"));
+                values.put(USUARIO_CONTRASENA, item.getString("contrasena"));
+                values.put(USUARIO_TIPO, item.getString("tipo_usuario"));
+                values.put(USUARIO_NOMBRE, item.getString("nombre"));
+                values.put(USUARIO_APELLIDOS, item.getString("apellidos"));
+                values.put(USUARIO_EDAD, item.getInt("edad"));
+                Log.d("MiApp", "Nuevo Usuario  "+item.getString("nombre_usuario")+" "+item.getString("contrasena"));
+                // Insertar los valores en la base de datos
+                db.insert(tableName, null, values);
+            }
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void agregarFavorito(long usuarioId, long campamentoId) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -216,7 +267,7 @@ public class DBHelper extends SQLiteOpenHelper {
         // Define la cláusula WHERE para la consulta
         String whereClause = USUARIO_NOMBRE_USUARIO + " = ? AND " + USUARIO_CONTRASENA + " = ?";
         String[] whereArgs = {nombreUsuario, contrasena};
-
+        Log.d("MiApp", "Intento inicio de sesion "+nombreUsuario+" "+contrasena);
         // Realiza la consulta en la base de datos
         Cursor cursor = db.query(TABLE_USUARIOS, columnas, whereClause, whereArgs, null, null, null);
 

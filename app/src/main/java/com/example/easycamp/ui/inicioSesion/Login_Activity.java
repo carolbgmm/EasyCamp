@@ -54,13 +54,16 @@ public class Login_Activity extends AppCompatActivity {
     }
 
     private boolean checkCredentials(String username, String password) {
-        return service.checkCredentials(username,password);
+       Boolean aux= service.checkCredentials(username,password);
+        Log.d("MiApp", "Credenciales  "+aux);
+        return aux;
     }
 
     private void redirigir(UserDTO usuario) {
 
         LoggedUser.getInstance(usuario);
         String tipoUsuario=usuario.getTipoUsuario();
+        Log.d("MiApp", "tipo usuario "+tipoUsuario);
         //hay que enviar user(es un dto) al resto de las pantallas , de esta menera es mas comodo usar sus datos
         switch (tipoUsuario) {
             case "CLIENTE":
