@@ -43,7 +43,7 @@ public class Login_Activity extends AppCompatActivity {
 
                 if (checkCredentials(username, password)) {
 
-                    redirigir(username);
+                    redirigir(service.getUser());
                 } else {
                     showToast(getString(R.string.user_not_found));
                 }
@@ -57,10 +57,10 @@ public class Login_Activity extends AppCompatActivity {
         return service.checkCredentials(username,password);
     }
 
-    private void redirigir(String username) {
-        this.user=service.getUser(username);
-        LoggedUser.getInstance(user);
-        String tipoUsuario=this.user.userType;
+    private void redirigir(UserDTO usuario) {
+
+        LoggedUser.getInstance(usuario);
+        String tipoUsuario=usuario.getTipoUsuario();
         //hay que enviar user(es un dto) al resto de las pantallas , de esta menera es mas comodo usar sus datos
         switch (tipoUsuario) {
             case "CLIENTE":

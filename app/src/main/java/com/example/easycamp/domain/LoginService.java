@@ -1,8 +1,8 @@
 package com.example.easycamp.domain;
 
 import com.example.easycamp.R;
-import com.example.easycamp.domain.UserDTO;
 import com.example.easycamp.ui.inicioSesion.Login_Activity;
+import com.example.easycamp.util.DBHelper;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,52 +16,27 @@ public class LoginService {
     private final Login_Activity loginActivity;
     //por ahora el documento simula la base de datos
 
-    private List<UserDTO> users;
+    private UserDTO user;
+
+    private DBHelper persistencia;
     public LoginService(Login_Activity loginActivity) {
        this.loginActivity=loginActivity;
-        this.users= getAllUserData();
+        this.persistencia=new DBHelper(loginActivity);
 
     }
     public boolean checkCredentials(String username, String password) {
-        for (UserDTO aux:this.users
-             ) {
-            if(username.equals(aux.username) & password.equals(aux.password)){
-                return true;
-            }
+        user=persistencia.obtenerUsuarioPorCredenciales(username,password);
+        if(user!=null){
+            return true;
         }
         return false;
     }
 
 
-    public UserDTO getUser(String username) {
-        for (UserDTO aux:this.users
-        ) {
-            if(username.equals(aux.username)){
-                return aux;
-            }
-        }
-        return null;
+    public UserDTO getUser() {
+       return user;
     }
 
-    public List<UserDTO> getAllUserData(){
-        List<UserDTO> userDTOList = new ArrayList<>();
-            try {
-                InputStream raw = loginActivity.getResources().openRawResource(R.raw.usuarios);
-                BufferedReader  b = new BufferedReader(new InputStreamReader(raw, "UTF8"));
-                String line;
-                while((line = b.readLine())!=null) {
-                    String[] valores = line.split(";");
-                    UserDTO userDTO = new UserDTO();
-                    userDTO.username = valores[0];
-                    userDTO.password = valores[1];
-                    userDTO.userType = valores[2];
-                    userDTOList.add(userDTO);
-                }
-                b.close();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        return userDTOList;
-    }
+
     }
 

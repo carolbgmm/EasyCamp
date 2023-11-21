@@ -44,7 +44,7 @@ class DetalleCampamentoActivity : AppCompatActivity() {
     private fun mostrarDatos() {
         setSupportActionBar(toolbar)
         toolBarLayout?.title = campamento?.nombre
-        campamento?.let { Picasso.get().load(it.image).into(imagen) }
+        campamento?.let { Picasso.get().load(it.imagen).into(imagen) }
         description?.text = campamento?.descripcion
     }
 

@@ -1,5 +1,4 @@
 {
-  
   "campamentos": [
     {
       "nombre": "Aventura Extrema",
@@ -13,7 +12,8 @@
       "edad_maxima": 18,
       "num_monitores": 6,
       "precio": 299.99,
-      "categoria": "Aventura"
+      "categoria": "Aventura",
+      "imagen": "https://picsum.photos/id/17/367/267"
     },
     {
       "nombre": "Naturaleza Serena",
@@ -27,7 +27,8 @@
       "edad_maxima": 14,
       "num_monitores": 4,
       "precio": 199.99,
-      "categoria": "Naturaleza"
+      "categoria": "Naturaleza",
+      "imagen": "https://picsum.photos/id/18/367/267"
     },
     {
       "nombre": "Deportes en Acción",
@@ -41,7 +42,8 @@
       "edad_maxima": 16,
       "num_monitores": 5,
       "precio": 249.99,
-      "categoria": "Deportes"
+      "categoria": "Deportes",
+      "imagen": "https://picsum.photos/id/19/367/267"
     },
     {
       "nombre": "Arte y Creatividad",
@@ -55,7 +57,8 @@
       "edad_maxima": 16,
       "num_monitores": 4,
       "precio": 219.99,
-      "categoria": "Arte"
+      "categoria": "Arte",
+      "imagen": "https://picsum.photos/id/20/367/267"
     },
     {
       "nombre": "Ciencia y Tecnología",
@@ -69,7 +72,8 @@
       "edad_maxima": 18,
       "num_monitores": 6,
       "precio": 269.99,
-      "categoria": "Ciencia"
+      "categoria": "Ciencia",
+      "imagen": "https://picsum.photos/id/21/367/267"
     },
     {
       "nombre": "Aventura Acuática",
@@ -83,7 +87,8 @@
       "edad_maxima": 16,
       "num_monitores": 5,
       "precio": 239.99,
-      "categoria": "Aventura"
+      "categoria": "Aventura",
+      "imagen": "https://picsum.photos/id/22/367/267"
     },
     {
       "nombre": "Exploradores del Espacio",
@@ -97,7 +102,8 @@
       "edad_maxima": 18,
       "num_monitores": 4,
       "precio": 279.99,
-      "categoria": "Ciencia"
+      "categoria": "Ciencia",
+      "imagen": "https://picsum.photos/id/23/367/267"
     },
     {
       "nombre": "Aventura en la Granja",
@@ -111,7 +117,8 @@
       "edad_maxima": 14,
       "num_monitores": 3,
       "precio": 189.99,
-      "categoria": "Naturaleza"
+      "categoria": "Naturaleza",
+      "imagen": "https://picsum.photos/id/24/367/267"
     },
     {
       "nombre": "Cine y Entretenimiento",
@@ -125,7 +132,8 @@
       "edad_maxima": 16,
       "num_monitores": 5,
       "precio": 229.99,
-      "categoria": "Arte"
+      "categoria": "Arte",
+      "imagen": "https://picsum.photos/id/25/367/267"
     },
     {
       "nombre": "Aventura en el Desierto",
@@ -139,7 +147,8 @@
       "edad_maxima": 18,
       "num_monitores": 4,
       "precio": 259.99,
-      "categoria": "Aventura"
+      "categoria": "Aventura",
+      "imagen": "https://picsum.photos/id/26/367/267"
     },
     {
       "nombre": "Deportes Extremos",
@@ -153,7 +162,8 @@
       "edad_maxima": 20,
       "num_monitores": 6,
       "precio": 309.99,
-      "categoria": "Deportes"
+      "categoria": "Deportes",
+      "imagen": "https://picsum.photos/id/27/367/267"
     },
     {
       "nombre": "Aventura en el Bosque",
@@ -167,10 +177,12 @@
       "edad_maxima": 14,
       "num_monitores": 4,
       "precio": 219.99,
-      "categoria": "Naturaleza"
+      "categoria": "Naturaleza",
+      "imagen": "https://picsum.photos/id/28/367/267"
     }
   ],
-  "usuarios": [
+
+"usuarios": [
     {
       "nombre_usuario": "cliente1",
       "contrasena": "cliente123",
