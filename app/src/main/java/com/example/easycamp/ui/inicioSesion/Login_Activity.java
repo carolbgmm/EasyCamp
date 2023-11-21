@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.easycamp.domain.LoggedUser;
 import com.example.easycamp.domain.LoginService;
 import com.example.easycamp.R;
 import com.example.easycamp.domain.UserDTO;
@@ -58,6 +59,7 @@ public class Login_Activity extends AppCompatActivity {
 
     private void redirigir(String username) {
         this.user=service.getUser(username);
+        LoggedUser.getInstance(user);
         String tipoUsuario=this.user.userType;
         //hay que enviar user(es un dto) al resto de las pantallas , de esta menera es mas comodo usar sus datos
         switch (tipoUsuario) {
@@ -72,7 +74,6 @@ public class Login_Activity extends AppCompatActivity {
                 showToast("A ocurrido un error, no se encuentra su tipo de ususario");
                 break;
         }
-
     }
 
     private void showToast(String message) {

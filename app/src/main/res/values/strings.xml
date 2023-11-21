@@ -22,4 +22,7 @@
     <string name="text_cuenta">Usuario</string>
     <string name="text_tareas">Tareas</string>
     <string name="text_herramientas">Herramientas</string>
+    <string name="campamentos">Campamentos</string>
+    <string name="inscritos">Inscipciones</string>
+    <string name="cuenta">Cuenta</string>
 </resources>
