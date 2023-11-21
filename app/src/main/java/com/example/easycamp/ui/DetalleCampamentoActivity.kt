@@ -8,7 +8,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.example.easycamp.R
 import com.example.easycamp.domain.CampamentoDto
-import com.example.easycamp.ui.buscadorCliente.BuscadorClienteActivity
+import com.example.easycamp.ui.buscadorCliente.RecyclerClienteFragment
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.squareup.picasso.Picasso
 
@@ -26,10 +26,11 @@ class DetalleCampamentoActivity : AppCompatActivity() {
 
         val intentCampamento = intent
         campamento =
-            intentCampamento.getParcelableExtra<CampamentoDto>(BuscadorClienteActivity.CAMPAMENTO_SELECCIONADO)
+            intentCampamento.getParcelableExtra(RecyclerClienteFragment.CAMPAMENTO_SELECCIONADO)
 
         if(campamento != null){
             getComponentes()
+
             mostrarDatos()
         }
     }

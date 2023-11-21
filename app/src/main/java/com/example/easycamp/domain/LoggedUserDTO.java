@@ -1,18 +1,18 @@
 package com.example.easycamp.domain;
 
-public class LoggedUser {
+public class LoggedUserDTO {
 
     private UserDTO user;
-    private static LoggedUser loggedUser;
+    private static LoggedUserDTO loggedUser;
 
-    public static LoggedUser getInstance(UserDTO user){
+    public static LoggedUserDTO getInstance(UserDTO user){
         if(loggedUser == null){
-            loggedUser = new LoggedUser(user);
+            loggedUser = new LoggedUserDTO(user);
         }
         return  loggedUser;
     }
 
-    private LoggedUser(UserDTO user){
+    private LoggedUserDTO(UserDTO user){
         this.user = user;
     }
 
