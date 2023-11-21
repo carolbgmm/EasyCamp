@@ -58,7 +58,6 @@ public class Login_Activity extends AppCompatActivity {
     }
 
     private void redirigir(UserDTO usuario) {
-
         LoggedUserDTO.getInstance(usuario);
         String tipoUsuario=usuario.getTipoUsuario();
         Log.d("MiApp", "tipo usuario "+tipoUsuario);

@@ -6,7 +6,7 @@ public class LoggedUserDTO {
     private static LoggedUserDTO loggedUser;
 
     public static LoggedUserDTO getInstance(UserDTO user){
-        if(loggedUser == null){
+        if(loggedUser == null && user != null){
             loggedUser = new LoggedUserDTO(user);
         }
         return  loggedUser;

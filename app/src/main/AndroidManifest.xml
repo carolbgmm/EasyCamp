@@ -28,7 +28,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.DetalleCampamentoActivity"
+            android:name=".ui.detalle.DetalleCampamentoActivity"
             android:exported="false"
             android:label="@string/title_activity_detalle_campamento"
             android:theme="@style/Theme.EasyCamp.NoActionBar" />

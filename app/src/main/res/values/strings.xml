@@ -27,4 +27,6 @@
     <string name="navigation_cuenta">Cuenta</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="navigation_resumen">Resumen</string>
+    <string name="navigation_descripcion">Descripción</string>
 </resources>

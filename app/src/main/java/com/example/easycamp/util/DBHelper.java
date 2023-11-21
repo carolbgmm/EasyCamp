@@ -62,13 +62,21 @@ public class DBHelper extends SQLiteOpenHelper {
 
     //otros atributos
     private Context context;
+
+    private static DBHelper db;
     // Constructor
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
         Log.d("MiApp", "Se crea la base de datos");
+        this.db = this;
+    }
 
-
+    public static DBHelper getInstance(Context context){
+        if(db == null){
+            db = new DBHelper(context);
+        }
+        return db;
     }
 
     @Override

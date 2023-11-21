@@ -7,14 +7,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.easycamp.R
 import com.example.easycamp.domain.CampamentoDto
-import com.example.easycamp.domain.LoggedUser
-import com.example.easycamp.ui.DetalleCampamentoActivity
-import com.example.easycamp.ui.buscadorCliente.BuscadorClienteAdapter
+import com.example.easycamp.domain.LoggedUserDTO
+import com.example.easycamp.ui.detalle.DetalleCampamentoActivity
 import com.example.easycamp.util.DBHelper
-import java.io.BufferedReader
-import java.io.IOException
-import java.io.InputStream
-import java.io.InputStreamReader
+
 
 class BuscadorTrabajadorActivity : AppCompatActivity() {
     var recyclerCamp: RecyclerView? = null
@@ -40,7 +36,7 @@ class BuscadorTrabajadorActivity : AppCompatActivity() {
     }
 
     fun getAllCampamentos(): List<CampamentoDto> {
-        var listaCampamentos = persistencia.obtenerCampamentosConFavoritos(LoggedUser.getInstance(null).user.id)
+        var listaCampamentos = persistencia.obtenerCampamentosConFavoritos(LoggedUserDTO.getInstance(null).user.id)
 
         return listaCampamentos
     }
