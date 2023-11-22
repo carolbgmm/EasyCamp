@@ -9,9 +9,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.example.easycamp.domain.CampamentoDto;
+import com.example.easycamp.domain.HijoDTO;
 import com.example.easycamp.domain.TareaDTO;
 import com.example.easycamp.domain.UserDTO;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -60,6 +62,13 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String FAVORITO_USUARIO_ID = "usuario_id";
     private static final String FAVORITO_CAMPAMENTO_ID = "campamento_id";
 
+    public static final String TABLE_HIJOS = "hijos";
+    public static final String HIJO_ID = "id";
+    public static final String HIJO_NOMBRE = "nombre";
+    public static final String HIJO_APELLIDOS = "apellidos";
+    public static final String HIJO_EDAD = "edad";
+    public static final String HIJO_OBSERVACIONES = "observaciones";
+    public static final String HIJO_USUARIO_ID = "usuario_id";
     private static final String TABLE_INSCRITOS = "inscritos";
     private static final String INSCRITOS_ID = "id";
     private static final String INSCRITOS_USUARIO_ID = "usuario_id";
@@ -138,6 +147,16 @@ public class DBHelper extends SQLiteOpenHelper {
                 "FOREIGN KEY(" + FAVORITO_CAMPAMENTO_ID + ") REFERENCES " + TABLE_CAMPAMENTOS + "(" + CAMPAMENTO_ID + "))";
         db.execSQL(createTableFavoritos);
 
+        String createTableHijos = "CREATE TABLE " + TABLE_HIJOS + " (" +
+                HIJO_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                HIJO_NOMBRE + " TEXT, " +
+                HIJO_APELLIDOS + " TEXT, " +
+                HIJO_EDAD + " INTEGER, " +
+                HIJO_OBSERVACIONES + " TEXT, " +
+                HIJO_USUARIO_ID + " INTEGER, " +
+                "FOREIGN KEY(" + HIJO_USUARIO_ID + ") REFERENCES " + TABLE_USUARIOS + "(" + USUARIO_ID + "))";
+        db.execSQL(createTableHijos);
+
         String createTableInscritos = "CREATE TABLE " + TABLE_INSCRITOS + " (" +
                 INSCRITOS_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 INSCRITOS_USUARIO_ID + " INTEGER, " +
@@ -169,9 +188,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
         //se crean 3 usuarios de clientes y 3 de trabajadores
         insertarDatosUsuariosDesdeJSON(context, db, TABLE_USUARIOS, "usuarios", "datos_iniciales.json");
-
-
-        insertarDatosTareasDesdeJSON(context, db, TABLE_TAREAS, "tareas", "datos_iniciales.json");
 
 
 
@@ -249,6 +265,50 @@ public class DBHelper extends SQLiteOpenHelper {
             e.printStackTrace();
         }
     }
+    public long crearHijo(HijoDTO hijo,int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(HIJO_NOMBRE, hijo.getNombre());
+        values.put(HIJO_APELLIDOS, hijo.getApellidos());
+        values.put(HIJO_EDAD, hijo.getEdad());
+        values.put(HIJO_OBSERVACIONES, hijo.getObservaciones());
+        values.put(HIJO_USUARIO_ID, id); // Asumiendo que tienes un método getIdUsuario en HijoDTO
+
+        long resultado = db.insert(TABLE_HIJOS, null, values);
+        db.close();
+        return resultado;
+    }
+
+    // Método para obtener la lista de hijos dado el ID de un usuario
+    @SuppressLint("Range")
+    public List<HijoDTO> obtenerHijosPorUsuario(long idUsuario) {
+        List<HijoDTO> listaHijos = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String query = "SELECT * FROM " + TABLE_HIJOS +
+                " WHERE " + HIJO_USUARIO_ID + " = " + idUsuario;
+
+        Cursor cursor = db.rawQuery(query, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                HijoDTO hijo = new HijoDTO(
+                        cursor.getLong(cursor.getColumnIndex(HIJO_ID)),
+                        cursor.getString(cursor.getColumnIndex(HIJO_NOMBRE)),
+                        cursor.getString(cursor.getColumnIndex(HIJO_APELLIDOS)),
+                        cursor.getInt(cursor.getColumnIndex(HIJO_EDAD)),
+                        cursor.getString(cursor.getColumnIndex(HIJO_OBSERVACIONES))
+                );
+
+                listaHijos.add(hijo);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+        return listaHijos;
+    }
 
     private void insertarDatosTareasDesdeJSON(Context context, SQLiteDatabase db, String tableName, String jsonArrayName, String fileName) {
         Log.d("MiApp", "Se intenta poner las tareas");
@@ -302,26 +362,6 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void agregarTick(long usuarioId, long campamentoId) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(TICK_USUARIO_ID, usuarioId);
-        values.put(TICK_CAMPAMENTO_ID, campamentoId);
-        db.insert(TABLE_TICK, null, values);
-        db.close();
-    }
-
-    public void quitarDeTick(long usuarioId, long campamentoId) {
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        String whereClause = TICK_USUARIO_ID + " = ? AND " + TICK_CAMPAMENTO_ID + " = ?";
-        String[] whereArgs = {String.valueOf(usuarioId), String.valueOf(campamentoId)};
-
-        db.delete(TABLE_TICK, whereClause, whereArgs);
-
-        db.close();
-    }
-
     public List<CampamentoDto> obtenerFavoritosDeUsuario(long usuarioId) {
         List<CampamentoDto> campamentosFavoritos = new ArrayList<>();
 
@@ -360,36 +400,6 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
 
         return campamentosFavoritos;
-    }
-
-    public List<TareaDTO> obtenerTicksDeUsuario(long usuarioId) {
-        List<TareaDTO> tareasTick = new ArrayList<>();
-
-        String selectQuery = "SELECT * FROM " + TABLE_TICK +
-                " INNER JOIN " + TABLE_CAMPAMENTOS +
-                " ON " + TABLE_TICK + "." + TICK_CAMPAMENTO_ID + " = " + TABLE_CAMPAMENTOS + "." + CAMPAMENTO_ID +
-                " WHERE " + TABLE_TICK + "." + TICK_USUARIO_ID + " = " + usuarioId;
-
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery, null);
-
-        if (cursor.moveToFirst()) {
-            do {
-                @SuppressLint("Range") TareaDTO tarea = new TareaDTO(
-                        cursor.getLong(cursor.getColumnIndex(TAREA_ID)),
-                        cursor.getString(cursor.getColumnIndex(TAREA_TITULO)),
-                        cursor.getString(cursor.getColumnIndex(TAREA_DESCRIPCION)),
-                        cursor.getString(cursor.getColumnIndex(TAREA_FECHA)),
-                        true
-                );
-                tareasTick.add(tarea);
-            } while (cursor.moveToNext());
-        }
-
-        cursor.close();
-        db.close();
-
-        return tareasTick;
     }
 
     public List<CampamentoDto> obtenerInscritosDeUsuario(long usuarioId) {
@@ -526,20 +536,6 @@ public class DBHelper extends SQLiteOpenHelper {
         cursorFavoritos.close();
 
         return esFavorito;
-    }
-
-    private boolean esTareaTick(long usuarioId, long campamentoId, SQLiteDatabase db) {
-        String selectQuery = "SELECT * FROM " + TABLE_TICK +
-                " WHERE " + TICK_USUARIO_ID + " = " + usuarioId +
-                " AND " + TICK_CAMPAMENTO_ID + " = " + campamentoId;
-
-        Cursor cursorTick = db.rawQuery(selectQuery, null);
-
-        boolean esTick = cursorTick.getCount() > 0;
-
-        cursorTick.close();
-
-        return esTick;
     }
     // Método para crear un nuevo usuario
     public boolean crearUsuario(UserDTO usuario, String contrasena) {

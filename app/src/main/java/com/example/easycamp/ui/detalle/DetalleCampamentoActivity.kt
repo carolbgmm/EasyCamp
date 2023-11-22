@@ -9,14 +9,16 @@ import com.example.easycamp.domain.CampamentoDto
 import com.example.easycamp.ui.buscadorCliente.RecyclerClienteFragment
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationBarView
 import com.squareup.picasso.Picasso
 
 class DetalleCampamentoActivity : AppCompatActivity() {
-    var toolBarLayout: CollapsingToolbarLayout? = null
-    var imagen: ImageView? = null
+    lateinit var toolBarLayout: CollapsingToolbarLayout
+    lateinit var imagen: ImageView
     var campamento: CampamentoDto? = null
-    var toolbar: androidx.appcompat.widget.Toolbar? = null
+    lateinit var toolbar: androidx.appcompat.widget.Toolbar
+    lateinit var fab: FloatingActionButton
 
     private var navView: BottomNavigationView? = null
     private val mOnNavigationItemSelectedListener =
@@ -76,6 +78,7 @@ class DetalleCampamentoActivity : AppCompatActivity() {
         toolBarLayout = findViewById(R.id.toolbar_layout)
         imagen = findViewById(R.id.imgFondo)
         navView = findViewById(R.id.bottom_navigation_detalle)
+        fab = findViewById(R.id.fab)
     }
 
     private fun mostrarDatos() {
@@ -92,6 +95,10 @@ class DetalleCampamentoActivity : AppCompatActivity() {
                 campamento?.categoria!!
             ))
             .commit()
+
+        fab.setOnClickListener {
+            fab.setImageResource(R.drawable.campamento_solicitado)
+        }
     }
 
 }
