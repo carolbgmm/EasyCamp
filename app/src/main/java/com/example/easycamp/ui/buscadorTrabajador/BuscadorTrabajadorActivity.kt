@@ -34,7 +34,7 @@ class BuscadorTrabajadorActivity : AppCompatActivity() {
                 return@OnItemSelectedListener true
             }
             if (itemId == R.id.perfil_trabajador) {
-                val cuentaTrabajadorTFragment = CuentaTrabajadorFragment.newInstance("", "")
+                val cuentaTrabajadorTFragment = CuentaTrabajadorFragment.newInstance()
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container_trabajador, cuentaTrabajadorTFragment).commit()
                 return@OnItemSelectedListener true

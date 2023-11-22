@@ -407,6 +407,62 @@ public class DBHelper extends SQLiteOpenHelper {
 
         return esFavorito;
     }
+    // Método para crear un nuevo usuario
+    public boolean crearUsuario(UserDTO usuario, String contrasena) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        long resultado = -1;
+
+        try {
+            values.put(USUARIO_NOMBRE_USUARIO, usuario.getNombreUsuario());
+            values.put(USUARIO_CONTRASENA, contrasena);
+            values.put(USUARIO_TIPO, usuario.getTipoUsuario());
+            values.put(USUARIO_NOMBRE, usuario.getNombre());
+            values.put(USUARIO_APELLIDOS, usuario.getApellidos());
+            values.put(USUARIO_EDAD, usuario.getEdad());
+
+            db.beginTransaction();
+            resultado = db.insert(TABLE_USUARIOS, null, values);
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            // Manejar la excepción según tus necesidades
+            e.printStackTrace();
+        } finally {
+            if (db != null) {
+                db.endTransaction();
+                db.close();
+            }
+        }
+
+        if (resultado != -1) {
+            Log.d("MiApp", "Se creó un nuevo usuario con " + usuario.getNombreUsuario() + " " + contrasena);
+        }
+
+        return resultado != -1;
+    }
+
+
+    // Método para actualizar un usuario
+    public boolean actualizarUsuario(UserDTO usuario,String contrasena) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(USUARIO_NOMBRE_USUARIO, usuario.getNombreUsuario());
+        values.put(USUARIO_CONTRASENA, contrasena); // Asegúrate de tener el campo de contraseña en tu UserDTO
+        values.put(USUARIO_TIPO, usuario.getTipoUsuario());
+        values.put(USUARIO_NOMBRE, usuario.getNombre());
+        values.put(USUARIO_APELLIDOS, usuario.getApellidos());
+        values.put(USUARIO_EDAD, usuario.getEdad());
+
+        // Define la cláusula WHERE para la actualización
+        String whereClause = USUARIO_ID + " = ?";
+        String[] whereArgs = {String.valueOf(usuario.getId())};
+
+        int filasActualizadas = db.update(TABLE_USUARIOS, values, whereClause, whereArgs);
+        db.close();
+
+        return filasActualizadas > 0; // Si se actualizó al menos una fila, retorna true.
+    }
 
 
 
@@ -415,4 +471,27 @@ public class DBHelper extends SQLiteOpenHelper {
         // Manejar actualizaciones de la base de datos si es necesario
 
     }
+
+    public boolean existeNombreUsuario(String nombreUsuario) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // Define las columnas que deseas recuperar
+        String[] columnas = {USUARIO_ID};
+
+        // Define la cláusula WHERE para la consulta
+        String whereClause = USUARIO_NOMBRE_USUARIO + " = ?";
+        String[] whereArgs = {nombreUsuario};
+
+        // Realiza la consulta en la base de datos
+        Cursor cursor = db.query(TABLE_USUARIOS, columnas, whereClause, whereArgs, null, null, null);
+
+        boolean existeUsuario = cursor.getCount() > 0;
+
+        // Cierra el cursor y la conexión a la base de datos
+        cursor.close();
+        db.close();
+
+        return existeUsuario;
+    }
+
 }
