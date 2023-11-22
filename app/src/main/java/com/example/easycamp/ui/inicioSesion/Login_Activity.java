@@ -9,7 +9,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.easycamp.domain.LoggedUser;
+import com.example.easycamp.domain.LoggedUserDTO;
 import com.example.easycamp.domain.LoginService;
 import com.example.easycamp.R;
 import com.example.easycamp.domain.UserDTO;
@@ -62,14 +62,11 @@ public class Login_Activity extends AppCompatActivity {
     }
 
     private boolean checkCredentials(String username, String password) {
-       Boolean aux= service.checkCredentials(username,password);
-        Log.d("MiApp", "Credenciales  "+aux);
-        return aux;
+        return service.checkCredentials(username,password);
     }
 
     private void redirigir(UserDTO usuario) {
-
-        LoggedUser.getInstance(usuario);
+        LoggedUserDTO.getInstance(usuario);
         String tipoUsuario=usuario.getTipoUsuario();
         Log.d("MiApp", "tipo usuario "+tipoUsuario);
         //hay que enviar user(es un dto) al resto de las pantallas , de esta menera es mas comodo usar sus datos
