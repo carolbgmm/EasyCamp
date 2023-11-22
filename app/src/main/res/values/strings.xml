@@ -29,4 +29,14 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="navigation_resumen">Resumen</string>
     <string name="navigation_descripcion">Descripción</string>
+
+    <string name="registro_title">Registro</string>
+    <string name="nombre_usuario_hint">Nombre de Usuario</string>
+    <string name="contrasena_hint">Contraseña</string>
+    <string name="nombre_hint">Nombre</string>
+    <string name="apellidos_hint">Apellidos</string>
+    <string name="edad_hint">Edad</string>
+    <string name="seleccionar_tipo">Seleccionar Tipo</string>
+    <string name="confirmar_button">Confirmar</string>
+    <string name="text_registrarse">Registrarse</string>
 </resources>
