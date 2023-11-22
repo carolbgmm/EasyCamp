@@ -16,36 +16,42 @@
             android:id="@+id/txt_precio"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
             android:textSize="16dp"/>
 
         <TextView
             android:id="@+id/txt_numero_participantes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
             android:textSize="16dp"/>
 
         <TextView
             android:id="@+id/txt_numero_apuntados"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
             android:textSize="16dp"/>
 
         <TextView
             android:id="@+id/txt_edad_minima"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
             android:textSize="16dp"/>
 
         <TextView
             android:id="@+id/txt_edad_maxima"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
             android:textSize="16dp"/>
 
         <TextView
             android:id="@+id/txt_numero_monitores"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
             android:textSize="16dp"/>
 
     </LinearLayout>

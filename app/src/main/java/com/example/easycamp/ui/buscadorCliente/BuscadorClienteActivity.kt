@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.example.easycamp.R
 import com.example.easycamp.domain.CampamentoDto
+import com.example.easycamp.ui.PerfilFragment
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
@@ -24,13 +25,13 @@ class BuscadorClienteActivity : AppCompatActivity() {
                 return@OnItemSelectedListener true
             }
             if (itemId == R.id.navigation_cuenta) {
-                val cuentaClienteFragment = CuentaClienteFragment.newInstance()
+                val perfilFragment = PerfilFragment.newInstance()
                 supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container_cliente, cuentaClienteFragment).commit()
+                    .replace(R.id.fragment_container_cliente, perfilFragment).commit()
                 return@OnItemSelectedListener true
             }
             if (itemId == R.id.navigation_inscritos) {
-                val inscritosFragment = InscritosFragment.newInstance("", "")
+                val inscritosFragment = InscritosFragment.newInstance()
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container_cliente, inscritosFragment).commit()
                 return@OnItemSelectedListener true

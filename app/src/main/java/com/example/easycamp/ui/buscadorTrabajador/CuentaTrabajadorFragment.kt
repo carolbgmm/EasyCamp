@@ -12,7 +12,6 @@ import com.example.easycamp.R
 import com.example.easycamp.domain.LoggedUserDTO
 import com.example.easycamp.domain.UserDTO
 import com.example.easycamp.ui.PerfilFragment
-import com.example.easycamp.ui.buscadorCliente.CuentaClienteFragment
 import com.example.easycamp.ui.inicioSesion.Login_Activity
 
 

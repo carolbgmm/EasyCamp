@@ -1,5 +1,7 @@
 package com.example.easycamp.ui.buscadorCliente
 
+import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,8 +12,13 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.easycamp.R
 import com.example.easycamp.domain.CampamentoDto
+import com.example.easycamp.domain.LoggedUserDTO
+import com.example.easycamp.util.DBHelper
+import kotlin.coroutines.coroutineContext
 
-class BuscadorClienteAdapter(val listaCampamento: List<CampamentoDto>, val listener: OnItemClickListener) :
+
+
+class BuscadorClienteAdapter( val listaCampamento: List<CampamentoDto>, val listener: OnItemClickListener) :
     RecyclerView.Adapter<BuscadorClienteAdapter.CampamentoViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CampamentoViewHolder {
@@ -34,6 +41,8 @@ class BuscadorClienteAdapter(val listaCampamento: List<CampamentoDto>, val liste
     }
 
     class CampamentoViewHolder(view: View): ViewHolder(view){
+        val bdHelper =  DBHelper.getInstance(null)
+        val userId = LoggedUserDTO.getInstance(null).user.id
 
         var txtNombre = view.findViewById<TextView>(R.id.txtNombre)
         var txtDescripcion = view.findViewById<TextView>(R.id.txtDescripcion)
@@ -49,12 +58,15 @@ class BuscadorClienteAdapter(val listaCampamento: List<CampamentoDto>, val liste
                 imgFavoritos.setImageResource(R.drawable.favoritos_vacio)
             }
 
+
             imgFavoritos?.setOnClickListener {
                 if(item.favorito){
                     imgFavoritos.setImageResource(R.drawable.favoritos_vacio)
+                    bdHelper.quitarDeFavoritos(userId, item.id)
                     item.favorito = false
                 } else {
                     imgFavoritos.setImageResource(R.drawable.favoritos_relleno)
+                    bdHelper.agregarFavorito(userId, item.id)
                     item.favorito = true
                 }
             }

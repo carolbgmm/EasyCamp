@@ -7,6 +7,7 @@ import android.os.Parcelable
 
 
 class CampamentoDto(
+    val id: Long,
     val nombre: String?,
     val descripcion: String?,
     val fechaInicio: String?,
@@ -24,6 +25,7 @@ class CampamentoDto(
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
+        parcel.readLong(),
         parcel.readString(),
         parcel.readString(),
         parcel.readString(),
@@ -41,6 +43,7 @@ class CampamentoDto(
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeLong(id)
         parcel.writeString(nombre)
         parcel.writeString(descripcion)
         parcel.writeString(fechaInicio)

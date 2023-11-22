@@ -3,7 +3,6 @@ package com.example.easycamp.ui.buscadorTrabajador
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.easycamp.R
-import com.example.easycamp.ui.buscadorCliente.CuentaClienteFragment
 import com.example.easycamp.ui.buscadorCliente.RecyclerClienteFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
