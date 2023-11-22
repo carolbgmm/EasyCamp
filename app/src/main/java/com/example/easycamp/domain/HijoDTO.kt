@@ -49,4 +49,22 @@ class HijoDTO(
             return arrayOfNulls(size)
         }
     }
+
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        val otherHijo = other as HijoDTO
+
+        // Comparación de campos relevantes para la igualdad
+        return id == otherHijo.id && nombre == otherHijo.nombre && apellidos == otherHijo.apellidos
+    }
+
+    override fun hashCode(): Int {
+        var result = id.hashCode()
+        result = 31 * result + nombre.hashCode()
+        result = 31 * result + apellidos.hashCode()
+        return result
+    }
 }

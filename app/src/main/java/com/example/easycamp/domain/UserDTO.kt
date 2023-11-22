@@ -52,4 +52,6 @@ class UserDTO(
             return arrayOfNulls(size)
         }
     }
+
+
 }

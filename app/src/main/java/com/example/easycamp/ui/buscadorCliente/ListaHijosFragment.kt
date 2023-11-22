@@ -46,6 +46,9 @@ class ListaHijosFragment : Fragment() {
         adapter.submitList(listaDeHijos)
 
         btnAgregarHijo.setOnClickListener {
+
+            Log.d("MiApp", "Tamaño de listaDeHijos antes de agregar: ${listaDeHijos.size}")
+
             // Aquí puedes abrir un cuadro de diálogo o navegar a una pantalla para agregar un nuevo hijo
             // Ejemplo de cómo podrías agregar un hijo (puedes personalizar según tus necesidades)
             val nuevoHijo = HijoDTO(0, "Nuevo Hijo", "Apellidos", 5, "Sin observaciones")
@@ -53,6 +56,9 @@ class ListaHijosFragment : Fragment() {
             nuevoHijo.id = nuevoHijoId
             listaDeHijos.add(nuevoHijo)
             adapter.submitList(listaDeHijos)
+            Log.d("MiApp", "Tamaño de listaDeHijos después de agregar: ${listaDeHijos.size}")
+
+            adapter.notifyDataSetChanged()
         }
 
         return view
