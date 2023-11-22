@@ -231,5 +231,14 @@
       "apellidos": "Fernandez",
       "edad": 26
     }
+  ],
+  "tareas": [
+    {
+      "titulo_tarea": "Despertar niños",
+      "descripcion_tarea": "Levantar a los niños por las mañanas",
+      "fecha_tarea": "8:00 am",
+      "id_usuario_tarea" : "trabajador1"
+    }
+
   ]
 }

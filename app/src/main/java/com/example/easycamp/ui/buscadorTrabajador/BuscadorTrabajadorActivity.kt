@@ -21,7 +21,7 @@ class BuscadorTrabajadorActivity : AppCompatActivity() {
                 return@OnItemSelectedListener true
             }
             if (itemId == R.id.tareas_trabajador) {
-                val tareasTrabajadorFragment = TareasTrabajadorFragment.newInstance("", "")
+                val tareasTrabajadorFragment = TareasTrabajadorFragment.newInstance()
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container_trabajador, tareasTrabajadorFragment).commit()
                 return@OnItemSelectedListener true

@@ -43,4 +43,6 @@
     <string name="boton_vehiculos">Vehiculos</string>
     <string name="boton_ubicaciones">Ubicaciones</string>
     <string name="boton_documentos">Documentos</string>
+    <string name="tituloTarea">Titulo tarea</string>
+    <string name="descripcionTarea">Descripcion de la tarea</string>
 </resources>
