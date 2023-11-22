@@ -25,4 +25,17 @@
     <string name="campamentos">Campamentos</string>
     <string name="inscritos">Inscipciones</string>
     <string name="cuenta">Cuenta</string>
+    <string name="text_registrarse">Registrarse</string>
+
+    <string name="seleccionar_tipo">Seleccionar Tipo</string>
+    <string name="confirmar_button">Confirmar</string>
+
+    <string name="registro_title">Registro</string>
+    <string name="nombre_usuario_hint">Nombre de Usuario</string>
+    <string name="contrasena_hint">Contraseña</string>
+    <string name="nombre_hint">Nombre</string>
+    <string name="apellidos_hint">Apellidos</string>
+    <string name="edad_hint">Edad</string>
+
+
 </resources>
