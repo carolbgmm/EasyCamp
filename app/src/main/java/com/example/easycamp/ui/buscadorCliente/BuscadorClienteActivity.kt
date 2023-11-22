@@ -24,7 +24,7 @@ class BuscadorClienteActivity : AppCompatActivity() {
                 return@OnItemSelectedListener true
             }
             if (itemId == R.id.navigation_cuenta) {
-                val cuentaClienteFragment = CuentaClienteFragment.newInstance("", "")
+                val cuentaClienteFragment = CuentaClienteFragment.newInstance()
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container_cliente, cuentaClienteFragment).commit()
                 return@OnItemSelectedListener true
