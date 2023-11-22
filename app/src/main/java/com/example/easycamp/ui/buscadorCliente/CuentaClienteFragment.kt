@@ -36,7 +36,7 @@ class CuentaClienteFragment : Fragment() {
 
         btnHijos.setOnClickListener {
             // Acción para el botón Hijos
-            mostrarListaDeHijos(usuarioActual)
+            mostrarListaDeHijos()
         }
 
         btnCerrarSesion.setOnClickListener {
@@ -60,9 +60,14 @@ class CuentaClienteFragment : Fragment() {
             ?.commit()
     }
 
-    private fun mostrarListaDeHijos(usuario: UserDTO) {
-        // Aquí implementa la lógica para mostrar la lista de hijos
-        // Puede ser a través de un nuevo fragmento, actividad o algún otro método
+    private fun mostrarListaDeHijos() {
+        val listaHijosFragment = ListaHijosFragment.newInstance()
+
+        // Usa el FragmentManager para mostrar el fragmento
+        fragmentManager?.beginTransaction()
+            ?.replace(R.id.fragment_container_cliente, listaHijosFragment)
+            ?.addToBackStack(null)
+            ?.commit()
     }
 
     private fun cerrarSesion() {

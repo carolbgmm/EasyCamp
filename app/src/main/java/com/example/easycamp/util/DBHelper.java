@@ -9,8 +9,10 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.example.easycamp.domain.CampamentoDto;
+import com.example.easycamp.domain.HijoDTO;
 import com.example.easycamp.domain.UserDTO;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -60,6 +62,13 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String FAVORITO_USUARIO_ID = "usuario_id";
     private static final String FAVORITO_CAMPAMENTO_ID = "campamento_id";
 
+    public static final String TABLE_HIJOS = "hijos";
+    public static final String HIJO_ID = "id";
+    public static final String HIJO_NOMBRE = "nombre";
+    public static final String HIJO_APELLIDOS = "apellidos";
+    public static final String HIJO_EDAD = "edad";
+    public static final String HIJO_OBSERVACIONES = "observaciones";
+    public static final String HIJO_USUARIO_ID = "usuario_id";
     //otros atributos
     private Context context;
 
@@ -117,6 +126,16 @@ public class DBHelper extends SQLiteOpenHelper {
                 "FOREIGN KEY(" + FAVORITO_USUARIO_ID + ") REFERENCES " + TABLE_USUARIOS + "(" + USUARIO_ID + "), " +
                 "FOREIGN KEY(" + FAVORITO_CAMPAMENTO_ID + ") REFERENCES " + TABLE_CAMPAMENTOS + "(" + CAMPAMENTO_ID + "))";
         db.execSQL(createTableFavoritos);
+
+        String createTableHijos = "CREATE TABLE " + TABLE_HIJOS + " (" +
+                HIJO_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                HIJO_NOMBRE + " TEXT, " +
+                HIJO_APELLIDOS + " TEXT, " +
+                HIJO_EDAD + " INTEGER, " +
+                HIJO_OBSERVACIONES + " TEXT, " +
+                HIJO_USUARIO_ID + " INTEGER, " +
+                "FOREIGN KEY(" + HIJO_USUARIO_ID + ") REFERENCES " + TABLE_USUARIOS + "(" + USUARIO_ID + "))";
+        db.execSQL(createTableHijos);
 
         // se cargan 3 de aventuras , 3 de naturaleza , 2 de deportes , 1 de arte y dos de ciencias
         insertarDatosDesdeJSON(context, db, TABLE_CAMPAMENTOS, "campamentos", "datos_iniciales.json");
@@ -199,6 +218,50 @@ public class DBHelper extends SQLiteOpenHelper {
         } catch (IOException | JSONException e) {
             e.printStackTrace();
         }
+    }
+    public long crearHijo(HijoDTO hijo,int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(HIJO_NOMBRE, hijo.getNombre());
+        values.put(HIJO_APELLIDOS, hijo.getApellidos());
+        values.put(HIJO_EDAD, hijo.getEdad());
+        values.put(HIJO_OBSERVACIONES, hijo.getObservaciones());
+        values.put(HIJO_USUARIO_ID, id); // Asumiendo que tienes un método getIdUsuario en HijoDTO
+
+        long resultado = db.insert(TABLE_HIJOS, null, values);
+        db.close();
+        return resultado;
+    }
+
+    // Método para obtener la lista de hijos dado el ID de un usuario
+    @SuppressLint("Range")
+    public List<HijoDTO> obtenerHijosPorUsuario(long idUsuario) {
+        List<HijoDTO> listaHijos = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String query = "SELECT * FROM " + TABLE_HIJOS +
+                " WHERE " + HIJO_USUARIO_ID + " = " + idUsuario;
+
+        Cursor cursor = db.rawQuery(query, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                HijoDTO hijo = new HijoDTO(
+                        cursor.getLong(cursor.getColumnIndex(HIJO_ID)),
+                        cursor.getString(cursor.getColumnIndex(HIJO_NOMBRE)),
+                        cursor.getString(cursor.getColumnIndex(HIJO_APELLIDOS)),
+                        cursor.getInt(cursor.getColumnIndex(HIJO_EDAD)),
+                        cursor.getString(cursor.getColumnIndex(HIJO_OBSERVACIONES))
+                );
+
+                listaHijos.add(hijo);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+        return listaHijos;
     }
 
     public void agregarFavorito(long usuarioId, long campamentoId) {
@@ -440,4 +503,8 @@ public class DBHelper extends SQLiteOpenHelper {
         return existeUsuario;
     }
 
+    @NotNull
+    public List<HijoDTO> getListaHijos(@NotNull UserDTO usuarioActual) {
+        return null;
+    }
 }
