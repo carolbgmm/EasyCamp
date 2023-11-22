@@ -402,6 +402,37 @@ public class DBHelper extends SQLiteOpenHelper {
         return campamentosFavoritos;
     }
 
+    public List<TareaDTO> obtenerTicksDeUsuario(long usuarioId) {
+        List<TareaDTO> tareasTick = new ArrayList<>();
+
+//        String selectQuery = "SELECT * FROM " + TABLE_TICK +
+//                " INNER JOIN " + TABLE_CAMPAMENTOS +
+//                " ON " + TABLE_TAREAS + "." + TICK_CAMPAMENTO_ID + " = " + TABLE_CAMPAMENTOS + "." + CAMPAMENTO_ID +
+//                " WHERE " + TABLE_TAREAS + "." + TICK_USUARIO_ID + " = " + usuarioId;
+//
+//        SQLiteDatabase db = this.getWritableDatabase();
+//        Cursor cursor = db.rawQuery(selectQuery, null);
+//
+//        if (cursor.moveToFirst()) {
+//            do {
+//                @SuppressLint("Range") TareaDTO tarea = new TareaDTO(
+//                        cursor.getLong(cursor.getColumnIndex(TAREA_ID)),
+//                        cursor.getString(cursor.getColumnIndex(USUARIO_TAREA_ID)),
+//                        cursor.getString(cursor.getColumnIndex(TAREA_TITULO)),
+//                        cursor.getString(cursor.getColumnIndex(TAREA_DESCRIPCION)),
+//                        cursor.getString(cursor.getColumnIndex(TAREA_FECHA)),
+//                        true
+//                );
+//                tareasTick.add(tarea);
+//            } while (cursor.moveToNext());
+//        }
+//
+//        cursor.close();
+        //db.close();
+
+        return tareasTick;
+    }
+
     public List<CampamentoDto> obtenerInscritosDeUsuario(long usuarioId) {
         List<CampamentoDto> campamentosFavoritos = new ArrayList<>();
 

@@ -5,6 +5,7 @@ import android.os.Parcelable
 
 class TareaDTO(
     val id: Long,
+    val usuarioID: String?,
     val titulo: String?,
     val descripcion: String?,
     val fechaLimite: String?,
@@ -17,11 +18,13 @@ class TareaDTO(
         parcel.readString(),
         parcel.readString(),
         parcel.readString(),
+        parcel.readString(),
         parcel.readByte() != 0.toByte()
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeLong(id)
+        parcel.writeString(usuarioID)
         parcel.writeString(titulo)
         parcel.writeString(descripcion)
         parcel.writeString(fechaLimite)
