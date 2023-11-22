@@ -36,7 +36,6 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String CAMPAMENTO_NUMERO_MAX_PARTICIPANTES = "numero_max_participantes";
     private static final String CAMPAMENTO_NUMERO_APUNTADOS = "numero_apuntados";
     private static final String CAMPAMENTO_UBICACION = "ubicacion";
-
     private static final String CAMPAMENTO_IMAGEN = "imagen";
     private static final String CAMPAMENTO_EDAD_MINIMA = "edad_minima";
     private static final String CAMPAMENTO_EDAD_MAXIMA = "edad_maxima";
@@ -59,6 +58,11 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String FAVORITO_ID = "id";
     private static final String FAVORITO_USUARIO_ID = "usuario_id";
     private static final String FAVORITO_CAMPAMENTO_ID = "campamento_id";
+
+    private static final String TABLE_INSCRITOS = "inscritos";
+    private static final String INSCRITOS_ID = "id";
+    private static final String INSCRITOS_USUARIO_ID = "usuario_id";
+    private static final String INSCRITOS_CAMPAMENTO_ID = "campamento_id";
 
     //otros atributos
     private Context context;
@@ -117,6 +121,14 @@ public class DBHelper extends SQLiteOpenHelper {
                 "FOREIGN KEY(" + FAVORITO_USUARIO_ID + ") REFERENCES " + TABLE_USUARIOS + "(" + USUARIO_ID + "), " +
                 "FOREIGN KEY(" + FAVORITO_CAMPAMENTO_ID + ") REFERENCES " + TABLE_CAMPAMENTOS + "(" + CAMPAMENTO_ID + "))";
         db.execSQL(createTableFavoritos);
+
+        String createTableInscritos = "CREATE TABLE " + TABLE_INSCRITOS + " (" +
+                INSCRITOS_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                INSCRITOS_USUARIO_ID + " INTEGER, " +
+                INSCRITOS_CAMPAMENTO_ID + " INTEGER, " +
+                "FOREIGN KEY(" + INSCRITOS_USUARIO_ID + ") REFERENCES " + TABLE_USUARIOS + "(" + USUARIO_ID + "), " +
+                "FOREIGN KEY(" + INSCRITOS_CAMPAMENTO_ID + ") REFERENCES " + TABLE_CAMPAMENTOS + "(" + CAMPAMENTO_ID + "))";
+        db.execSQL(createTableInscritos);
 
         // se cargan 3 de aventuras , 3 de naturaleza , 2 de deportes , 1 de arte y dos de ciencias
         insertarDatosDesdeJSON(context, db, TABLE_CAMPAMENTOS, "campamentos", "datos_iniciales.json");
@@ -234,6 +246,47 @@ public class DBHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 @SuppressLint("Range") CampamentoDto campamento = new CampamentoDto(
+                        cursor.getLong(cursor.getColumnIndex(CAMPAMENTO_ID)),
+                        cursor.getString(cursor.getColumnIndex(CAMPAMENTO_NOMBRE)),
+                        cursor.getString(cursor.getColumnIndex(CAMPAMENTO_DESCRIPCION)),
+                        cursor.getString(cursor.getColumnIndex(CAMPAMENTO_FECHA_INICIO)),
+                        cursor.getString(cursor.getColumnIndex(CAMPAMENTO_FECHA_FINAL)),
+                        cursor.getInt(cursor.getColumnIndex(CAMPAMENTO_NUMERO_MAX_PARTICIPANTES)),
+                        cursor.getInt(cursor.getColumnIndex(CAMPAMENTO_NUMERO_APUNTADOS)),
+                        cursor.getString(cursor.getColumnIndex(CAMPAMENTO_UBICACION)),
+                        cursor.getInt(cursor.getColumnIndex(CAMPAMENTO_EDAD_MINIMA)),
+                        cursor.getInt(cursor.getColumnIndex(CAMPAMENTO_EDAD_MAXIMA)),
+                        cursor.getInt(cursor.getColumnIndex(CAMPAMENTO_NUM_MONITORES)),
+                        cursor.getDouble(cursor.getColumnIndex(CAMPAMENTO_PRECIO)),
+                        cursor.getString(cursor.getColumnIndex(CAMPAMENTO_CATEGORIA)),
+                        cursor.getString(cursor.getColumnIndex(CAMPAMENTO_IMAGEN)),
+                        true
+                );
+                campamentosFavoritos.add(campamento);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return campamentosFavoritos;
+    }
+
+    public List<CampamentoDto> obtenerInscritosDeUsuario(long usuarioId) {
+        List<CampamentoDto> campamentosFavoritos = new ArrayList<>();
+
+        String selectQuery = "SELECT * FROM " + TABLE_INSCRITOS +
+                " INNER JOIN " + TABLE_CAMPAMENTOS +
+                " ON " + TABLE_INSCRITOS + "." + INSCRITOS_CAMPAMENTO_ID + " = " + TABLE_CAMPAMENTOS + "." + CAMPAMENTO_ID +
+                " WHERE " + TABLE_INSCRITOS + "." + INSCRITOS_USUARIO_ID + " = " + usuarioId;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                @SuppressLint("Range") CampamentoDto campamento = new CampamentoDto(
+                        cursor.getLong(cursor.getColumnIndex(CAMPAMENTO_ID)),
                         cursor.getString(cursor.getColumnIndex(CAMPAMENTO_NOMBRE)),
                         cursor.getString(cursor.getColumnIndex(CAMPAMENTO_DESCRIPCION)),
                         cursor.getString(cursor.getColumnIndex(CAMPAMENTO_FECHA_INICIO)),
@@ -315,6 +368,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 boolean esFavorito = esCampamentoFavorito(usuarioId, campamentoId, db);
 
                 @SuppressLint("Range") CampamentoDto campamento = new CampamentoDto(
+                        cursorCampamentos.getLong(cursorCampamentos.getColumnIndex(CAMPAMENTO_ID)),
                         cursorCampamentos.getString(cursorCampamentos.getColumnIndex(CAMPAMENTO_NOMBRE)),
                         cursorCampamentos.getString(cursorCampamentos.getColumnIndex(CAMPAMENTO_DESCRIPCION)),
                         cursorCampamentos.getString(cursorCampamentos.getColumnIndex(CAMPAMENTO_FECHA_INICIO)),

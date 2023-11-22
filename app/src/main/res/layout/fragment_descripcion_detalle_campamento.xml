@@ -16,6 +16,7 @@
             android:id="@+id/txt_precio"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="6dp"
             android:textSize="16dp"/>
 
         <TextView

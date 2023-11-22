@@ -30,7 +30,7 @@ class BuscadorClienteActivity : AppCompatActivity() {
                 return@OnItemSelectedListener true
             }
             if (itemId == R.id.navigation_inscritos) {
-                val inscritosFragment = InscritosFragment.newInstance("", "")
+                val inscritosFragment = InscritosFragment.newInstance()
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container_cliente, inscritosFragment).commit()
                 return@OnItemSelectedListener true
