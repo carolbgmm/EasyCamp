@@ -81,7 +81,7 @@ class DetalleCampamentoActivity : AppCompatActivity() {
     private fun mostrarDatos() {
         setSupportActionBar(toolbar)
         toolBarLayout?.title = campamento?.nombre!!
-       // campamento?.let { Picasso.get().load(it.imagen).into(imagen) }
+        campamento?.let { Picasso.get().load(it.imagen).into(imagen) }
         navView?.setOnItemSelectedListener(mOnNavigationItemSelectedListener)
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container_detalle, ResumenDetalleCampamentoFragment.newInstance(

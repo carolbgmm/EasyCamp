@@ -39,4 +39,8 @@
     <string name="seleccionar_tipo">Seleccionar Tipo</string>
     <string name="confirmar_button">Confirmar</string>
     <string name="text_registrarse">Registrarse</string>
+    <string name="boton_lista_asistentes">Lista asistentes</string>
+    <string name="boton_vehiculos">Vehiculos</string>
+    <string name="boton_ubicaciones">Ubicaciones</string>
+    <string name="boton_documentos">Documentos</string>
 </resources>
