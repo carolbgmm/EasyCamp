@@ -19,7 +19,7 @@
     <string name="title_activity_detalle_campamento">DetalleCampamentoActivity</string>
     <string name="action_settings">Settings</string>
     <string name="text_lupa">Buscar campamento</string>
-    <string name="text_cuenta">Usuario</string>
+    <string name="text_cuenta">Cuenta</string>
     <string name="text_tareas">Tareas</string>
     <string name="text_herramientas">Herramientas</string>
     <string name="navigation_campamentos">Campamentos</string>
@@ -29,4 +29,8 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="navigation_resumen">Resumen</string>
     <string name="navigation_descripcion">Descripción</string>
+    <string name="boton_lista_asistentes">Lista asistentes</string>
+    <string name="boton_vehiculos">Vehiculos</string>
+    <string name="boton_ubicaciones">Ubicaciones</string>
+    <string name="boton_documentos">Documentos</string>
 </resources>

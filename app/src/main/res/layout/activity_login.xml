@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/passwordEditText"
         android:layout_marginTop="16dp"
-        android:backgroundTint="#8BC34A"
+        android:backgroundTint="#4CAF50"
         android:text="@string/login_button" />
 
     <EditText

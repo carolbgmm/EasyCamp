@@ -22,9 +22,9 @@ class BuscadorTrabajadorActivity : AppCompatActivity() {
                 return@OnItemSelectedListener true
             }
             if (itemId == R.id.tareas_trabajador) {
-                val cuentaTrabajadorFragment = CuentaClienteFragment.newInstance("", "")
+                val tareasTrabajadorFragment = TareasTrabajadorFragment.newInstance("", "")
                 supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container_trabajador, cuentaTrabajadorFragment).commit()
+                    .replace(R.id.fragment_container_trabajador, tareasTrabajadorFragment).commit()
                 return@OnItemSelectedListener true
             }
             if (itemId == R.id.herramientas_trabajador) {

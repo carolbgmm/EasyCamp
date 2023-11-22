@@ -1,13 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<AbsoluteLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFFFF"
     tools:context=".ui.buscadorTrabajador.HerramientasFragment">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+    <Button
+        android:id="@+id/button_lista_asistentes"
+        android:layout_width="322dp"
+        android:layout_height="103dp"
+        android:layout_x="35dp"
+        android:layout_y="46dp"
+        android:backgroundTint="#99D69B"
+        android:text="@string/boton_lista_asistentes"
+        android:textColor="#000000" />
 
-</FrameLayout>
+    <Button
+        android:id="@+id/button_vehiculos"
+        android:layout_width="322dp"
+        android:layout_height="103dp"
+        android:layout_x="35dp"
+        android:layout_y="193dp"
+        android:backgroundTint="#99D69B"
+        android:text="@string/boton_vehiculos"
+        android:textColor="#000000" />
+
+    <Button
+        android:id="@+id/button_ubicaciones"
+        android:layout_width="322dp"
+        android:layout_height="103dp"
+        android:layout_x="35dp"
+        android:layout_y="345dp"
+        android:backgroundTint="#99D69B"
+        android:textColor="#000000"
+        android:text="@string/boton_ubicaciones" />
+
+    <Button
+        android:id="@+id/button_documentos"
+        android:layout_width="322dp"
+        android:layout_height="103dp"
+        android:layout_x="35dp"
+        android:layout_y="495dp"
+        android:backgroundTint="#99D69B"
+        android:textColor="#000000"
+        android:text="@string/boton_documentos" />
+
+
+</AbsoluteLayout>
