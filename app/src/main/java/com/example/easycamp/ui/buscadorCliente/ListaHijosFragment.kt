@@ -49,9 +49,12 @@ class ListaHijosFragment : Fragment() {
 
             Log.d("MiApp", "Tamaño de listaDeHijos antes de agregar: ${listaDeHijos.size}")
 
-            // Aquí puedes abrir un cuadro de diálogo o navegar a una pantalla para agregar un nuevo hijo
-            // Ejemplo de cómo podrías agregar un hijo (puedes personalizar según tus necesidades)
-            val nuevoHijo = HijoDTO(0, "Nuevo Hijo", "Apellidos", 5, "Sin observaciones")
+            val agregarHijoFragment = AgregarHijoFragment()
+            agregarHijoFragment.show(requireFragmentManager(), "AgregarHijoFragment")
+
+
+
+            val nuevoHijo =  agregarHijoFragment.getHijoDTO()
             val nuevoHijoId = service.crearHijo(nuevoHijo, usuarioActual.id.toInt())
             nuevoHijo.id = nuevoHijoId
             listaDeHijos.add(nuevoHijo)

@@ -27,6 +27,7 @@ class AgregarHijoFragment : DialogFragment() {
     private lateinit var etApellidosNuevoHijo : EditText
     private lateinit var etEdadNuevoHijo :  EditText
     private lateinit var etObservacionesNuevoHijo : EditText
+    private lateinit var nuevoHijo:HijoDTO
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -87,13 +88,16 @@ class AgregarHijoFragment : DialogFragment() {
         }
 
         // Crear un nuevo objeto HijoDTO con los valores proporcionados
-        val nuevoHijo = HijoDTO(0, nombre, apellidos, edad, observaciones)
+         nuevoHijo = HijoDTO(0, nombre, apellidos, edad, observaciones)
 
-        // Obtener el ID del nuevo hijo después de guardarlo en la base de datos
-        val nuevoHijoId = service.crearHijo(nuevoHijo, usuarioActual.id.toInt())
+
 
         // Aquí puedes actualizar la lista de hijos en el fragmento principal o hacer lo que sea necesario
         dismiss()  // Cerrar el diálogo después de guardar
+    }
+
+    fun getHijoDTO(): HijoDTO {
+        return nuevoHijo
     }
 
 }
