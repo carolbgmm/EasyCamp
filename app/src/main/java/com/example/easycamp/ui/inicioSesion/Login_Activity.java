@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.easycamp.domain.LoggedUserDTO;
@@ -15,6 +17,12 @@ import com.example.easycamp.R;
 import com.example.easycamp.domain.UserDTO;
 import com.example.easycamp.ui.buscadorCliente.BuscadorClienteActivity;
 import com.example.easycamp.ui.buscadorTrabajador.BuscadorTrabajadorActivity;
+import com.example.easycamp.util.DBHelper;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class Login_Activity extends AppCompatActivity {
 
@@ -23,19 +31,23 @@ public class Login_Activity extends AppCompatActivity {
     private Button loginButton;
 
     private LoginService service;
+    private DBHelper persistencia;
+
+    private FirebaseAuth mAuth;
     private UserDTO user;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
+        FirebaseApp.initializeApp(this);
         this.service=new LoginService(this);
 
         usernameEditText = findViewById(R.id.usernameEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
         loginButton = findViewById(R.id.loginButton);
-
-
+        persistencia=new DBHelper(this);
+        persistencia.sincronizarUsuarios();
+        mAuth=FirebaseAuth.getInstance();
         Button registerButton = findViewById(R.id.registerButton);
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,8 +62,13 @@ public class Login_Activity extends AppCompatActivity {
                 String password = passwordEditText.getText().toString();
 
                 if (checkCredentials(username, password)) {
+                    mAuth.signInWithEmailAndPassword(username,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            redirigir(service.getUser());
+                        }
+                    });
 
-                    redirigir(service.getUser());
                 } else {
                     showToast(getString(R.string.user_not_found));
                 }

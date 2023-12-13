@@ -1,5 +1,6 @@
 package com.example.easycamp.ui.inicioSesion;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -15,6 +16,13 @@ import android.widget.Toast;
 import com.example.easycamp.R;
 import com.example.easycamp.domain.UserDTO;
 import com.example.easycamp.util.DBHelper;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 
 public class RegistroActivity extends AppCompatActivity {
 
@@ -23,11 +31,17 @@ public class RegistroActivity extends AppCompatActivity {
     private Button btnConfirmar;
 
     private DBHelper persistencia;
+    private UserDTO nuevoUsuario;
+    private FirebaseAuth mAuth;
+
+    private DatabaseReference mDataBase;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registro);
         persistencia=new DBHelper(this);
+        mAuth = FirebaseAuth.getInstance();
+        mDataBase= FirebaseDatabase.getInstance().getReference();
         // Inicializar vistas
         etNombreUsuario = findViewById(R.id.etNombreUsuario);
         etContrasena = findViewById(R.id.etContrasena);
@@ -49,28 +63,60 @@ public class RegistroActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if(validarCampos()) {
                     UserDTO usuario = new UserDTO(
-                            0,
+                            "",
                             etNombreUsuario.getText().toString(),
                             spTipoUsuario.getSelectedItem().toString().toUpperCase(),
                             etNombre.getText().toString(),
                             etApellidos.getText().toString(),
-                            Integer.parseInt(etEdad.getText().toString())
+                            Integer.parseInt(etEdad.getText().toString()),
+                                    etContrasena.getText().toString()
                     );
 
-                    String contrasena = etContrasena.getText().toString();
-                    Log.d("MiApp", "Se intenta crear usuario  "+etNombreUsuario.getText().toString()+"  "+contrasena);
+                    nuevoUsuario=usuario;
+                    Log.d("MiApp", "Se intenta crear usuario  "+etNombreUsuario.getText().toString()+"  "+etContrasena.getText().toString());
 
-                    boolean aux=persistencia.crearUsuario(usuario, contrasena);
-                    if (aux) {
-                        Toast.makeText(RegistroActivity.this, "Usuario registrado exitosamente", Toast.LENGTH_LONG).show();
-                        Intent intent = new Intent(RegistroActivity.this, Login_Activity.class);
-                       startActivity(intent);
-                       finish();
-                    } else {
-                        Toast.makeText(RegistroActivity.this, "Error al registrar usuario", Toast.LENGTH_SHORT).show();
-                    }
+                    registerUser();
+
             }
         }});
+    }
+
+    private void registerUser() {
+
+
+        mAuth.createUserWithEmailAndPassword(nuevoUsuario.getNombreUsuario(), nuevoUsuario.getContrasena()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    Toast.makeText(RegistroActivity.this, "Usuario registrado exitosamente", Toast.LENGTH_LONG).show();
+                    String id = mAuth.getCurrentUser().getUid();
+                    nuevoUsuario.setId(id);
+                    mDataBase.child("usuarios").child(id).setValue(nuevoUsuario).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task2) {
+                            if(task2.isSuccessful()){
+
+                                persistencia.sincronizarUsuarios();
+                                Toast.makeText(RegistroActivity.this, "Usuario guardado exitosamente", Toast.LENGTH_LONG).show();
+
+                                Intent intent = new Intent(RegistroActivity.this, Login_Activity.class);
+                                startActivity(intent);
+                                finish();
+                            }else{
+                                Toast.makeText(RegistroActivity.this, "Hubo un problema guardando los datos", Toast.LENGTH_LONG).show();
+
+                            }
+                        }
+                    });
+
+
+                } else {
+                    Toast.makeText(RegistroActivity.this, "Error al registrar usuario", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+
     }
 
     private boolean validarCampos() {
@@ -82,20 +128,27 @@ public class RegistroActivity extends AppCompatActivity {
 
 
         if (etNombreUsuario.getText().toString().isEmpty()) {
-            etNombreUsuario.setError("Nombre de usuario vacío");
+            etNombreUsuario.setError("Correo vacío");
             etNombreUsuario.requestFocus();
             return false;
         }
 
 
         if (persistencia.existeNombreUsuario(etNombreUsuario.getText().toString())) {
-            etNombreUsuario.setError("Nombre de usuario ya en uso");
+            etNombreUsuario.setError("Correo ya en uso");
             etNombreUsuario.requestFocus();
             return false;
         }
 
         if (etContrasena.getText().toString().isEmpty()) {
             etContrasena.setError("Contraseña vacía");
+            etContrasena.requestFocus();
+            return false;
+        }
+
+
+        if (etContrasena.length()<6) {
+            etContrasena.setError("Contraseña corta , más de 5 caracteres");
             etContrasena.requestFocus();
             return false;
         }
