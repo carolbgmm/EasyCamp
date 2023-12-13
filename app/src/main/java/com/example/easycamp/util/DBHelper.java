@@ -166,8 +166,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
         String createTableInscritos = "CREATE TABLE " + TABLE_INSCRITOS + " (" +
                 INSCRITOS_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                INSCRITOS_USUARIO_NOMBRE + " INTEGER, " +
-                INSCRITOS_CAMPAMENTO_NOMBRE + " INTEGER, " +
+                INSCRITOS_USUARIO_NOMBRE + " TEXT, " +  // Cambiado a TEXT
+                INSCRITOS_CAMPAMENTO_NOMBRE + " TEXT, " +  // Cambiado a TEXT
                 "FOREIGN KEY(" + INSCRITOS_USUARIO_NOMBRE + ") REFERENCES " + TABLE_USUARIOS + "(" + USUARIO_NOMBRE_USUARIO + "), " +
                 "FOREIGN KEY(" + INSCRITOS_CAMPAMENTO_NOMBRE + ") REFERENCES " + TABLE_CAMPAMENTOS + "(" + CAMPAMENTO_NOMBRE + "))";
         db.execSQL(createTableInscritos);
@@ -347,6 +347,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 " INNER JOIN " + TABLE_INSCRITOS +
                 " ON " + TABLE_INSCRITOS + "." + INSCRITOS_CAMPAMENTO_NOMBRE + " = " + TABLE_CAMPAMENTOS + "." + CAMPAMENTO_NOMBRE +
                 " WHERE " + TABLE_INSCRITOS + "." + INSCRITOS_USUARIO_NOMBRE + " = '" + usuarioNombre + "';";
+
+
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
