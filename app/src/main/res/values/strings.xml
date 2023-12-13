@@ -136,4 +136,5 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="añadir_a_campamento">Apuntar</string>
+    <string name="apuntar_hijo">Apuntar</string>
 </resources>
