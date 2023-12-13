@@ -22,7 +22,7 @@ class PerfilFragment : Fragment() {
         usuario = obtenerUsuario()
 
         // Llena tus TextView con la información del usuario
-        Log.d("MiApp", "Se va a msotrar la informacion del Usuario ")
+        Log.d("MiApp", "Se va a mostrar la informacion del Usuario ")
 
         view?.findViewById<TextView>(R.id.tvNombreUsuario)?.text = "Nombre de Usuario: ${usuario.nombreUsuario}"
             view?.findViewById<TextView>(R.id.tvTipoUsuario)?.text = "Tipo de Usuario: ${usuario.tipoUsuario}"
