@@ -517,12 +517,20 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
     public List<CampamentoDto> obtenerCampamentosConFavoritos(long usuarioId) {
-        List<CampamentoDto> campamentosConFavoritos = new ArrayList<>();
-
         String selectQuery = "SELECT * FROM " + TABLE_CAMPAMENTOS;
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursorCampamentos = db.rawQuery(selectQuery, null);
 
+        List<CampamentoDto> campamentosConFavoritos = getListaCampamentosConFavoritos(cursorCampamentos, usuarioId, db);
+
+        cursorCampamentos.close();
+        db.close();
+
+        return campamentosConFavoritos;
+    }
+
+    private List<CampamentoDto> getListaCampamentosConFavoritos(Cursor cursorCampamentos, long usuarioId, SQLiteDatabase db){
+        List<CampamentoDto> campamentos = new ArrayList<>();
         if (cursorCampamentos.moveToFirst()) {
             do {
                 @SuppressLint("Range") long campamentoId = cursorCampamentos.getLong(cursorCampamentos.getColumnIndex(CAMPAMENTO_ID));
@@ -545,9 +553,18 @@ public class DBHelper extends SQLiteOpenHelper {
                         cursorCampamentos.getString(cursorCampamentos.getColumnIndex(CAMPAMENTO_IMAGEN)),
                         esFavorito
                 );
-                campamentosConFavoritos.add(campamento);
+                campamentos.add(campamento);
             } while (cursorCampamentos.moveToNext());
         }
+        return campamentos;
+    }
+
+    public List<CampamentoDto> obtenerCampamentosCon(long usuarioId, String query) {
+        String selectQuery = "SELECT * FROM " + TABLE_CAMPAMENTOS + " WHERE " + CAMPAMENTO_NOMBRE + " LIKE '%" + query + "%'";
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursorCampamentos = db.rawQuery(selectQuery, null);
+
+        List<CampamentoDto> campamentosConFavoritos = getListaCampamentosConFavoritos(cursorCampamentos, usuarioId, db);
 
         cursorCampamentos.close();
         db.close();
