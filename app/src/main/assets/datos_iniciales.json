@@ -239,18 +239,18 @@
       "titulo_tarea": "Despertar niños",
       "descripcion_tarea": "Levantar a los niños por las mañanas",
       "fecha_tarea": "8:00 am",
-      "nombre_usuario_tarea" : "trabajador1"
+      "nombre_usuario_tarea" : "trabajador@gmail.com"
     }
 
   ],
 
   "inscritos": [
     {
-      "usuario_nombre": "trabajador1",
+      "usuario_nombre": "trabajador@gmail.com",
       "campamento_nombre": "Aventura Extrema"
     },
     {
-      "usuario_nombre": "trabajador1",
+      "usuario_nombre": "trabajador@gmail.com",
       "campamento_nombre": "Naturaleza Serena"
     }
   ]
