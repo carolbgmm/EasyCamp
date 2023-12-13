@@ -1,6 +1,5 @@
 package com.example.easycamp.ui.buscadorTrabajador
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -9,12 +8,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.easycamp.R
-import com.example.easycamp.domain.CampamentoDto
 import com.example.easycamp.domain.LoggedUserDTO
 import com.example.easycamp.domain.TareaDTO
-import com.example.easycamp.ui.buscadorCliente.BuscadorClienteAdapter
-import com.example.easycamp.ui.buscadorCliente.RecyclerClienteFragment
-import com.example.easycamp.ui.detalle.DetalleCampamentoActivity
 import com.example.easycamp.util.DBHelper
 
 class TareasTrabajadorFragment : Fragment() {

@@ -13,8 +13,6 @@ import com.example.easycamp.domain.CampamentoDto
 import com.example.easycamp.domain.LoggedUserDTO
 import com.example.easycamp.ui.detalle.DetalleCampamentoActivity
 import com.example.easycamp.util.DBHelper
-import com.google.android.material.search.SearchBar
-import com.google.android.material.search.SearchView
 
 class RecyclerClienteFragment : Fragment() {
     private lateinit var recyclerCamp: RecyclerView

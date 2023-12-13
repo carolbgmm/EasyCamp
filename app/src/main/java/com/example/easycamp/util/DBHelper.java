@@ -10,9 +10,11 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.example.easycamp.domain.CampamentoDto;
+import com.example.easycamp.domain.FavoritoDTO;
 import com.example.easycamp.domain.HijoDTO;
 import com.example.easycamp.domain.TareaDTO;
 import com.example.easycamp.domain.UserDTO;
+import com.google.firebase.Firebase;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -95,6 +97,8 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String TICK_USUARIO_ID = "usuario_id_tick";
     private static final String TICK_CAMPAMENTO_ID = "campamento_id_tick";
 
+
+   DatabaseReference mDataBase;
     //otros atributos
     private Context context;
 
@@ -103,6 +107,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
+        mDataBase= FirebaseDatabase.getInstance().getReference();
         Log.d("MiApp", "Se crea la base de datos");
         this.db = this;
     }
@@ -137,7 +142,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         // Crear la tabla de usuarios
         String createTableUsuarios = "CREATE TABLE " + TABLE_USUARIOS + " (" +
-                USUARIO_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                USUARIO_ID + " TEXT PRIMARY KEY , " +
                 USUARIO_NOMBRE_USUARIO + " TEXT, " +
                 USUARIO_CONTRASENA + " TEXT, " +
                 USUARIO_TIPO + " TEXT, " +
@@ -205,7 +210,7 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(HIJO_APELLIDOS, hijo.getApellidos());
         values.put(HIJO_EDAD, hijo.getEdad());
         values.put(HIJO_OBSERVACIONES, hijo.getObservaciones());
-        values.put(HIJO_USUARIO_ID, id); // Asumiendo que tienes un método getIdUsuario en HijoDTO
+        values.put(HIJO_USUARIO_ID, id);
 
         long resultado = db.insert(TABLE_HIJOS, null, values);
         db.close();
@@ -242,38 +247,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return listaHijos;
     }
 
-    private void insertarDatosTareasDesdeJSON(Context context, SQLiteDatabase db, String tableName, String jsonArrayName, String fileName) {
-        Log.d("MiApp", "Se intenta poner las tareas");
-        try {
-            InputStream inputStream = context.getAssets().open(fileName);
-            int size = inputStream.available();
-            byte[] buffer = new byte[size];
-            inputStream.read(buffer);
-            inputStream.close();
 
-            String jsonString = new String(buffer, "UTF-8");
-            JSONObject jsonObject = new JSONObject(jsonString);
-            JSONArray jsonArray = jsonObject.getJSONArray(jsonArrayName);
-
-            for (int i = 0; i < jsonArray.length(); i++) {
-                ContentValues values = new ContentValues();
-                JSONObject item = jsonArray.getJSONObject(i);
-
-                // Agregar cada columna y valor al ContentValues
-                values.put(TAREA_TITULO, item.getString("titulo_tarea"));
-                values.put(TAREA_DESCRIPCION, item.getString("descripcion_tarea"));
-                values.put(TAREA_FECHA, item.getString("fecha_tarea"));
-                values.put(USUARIO_TAREA_ID, item.getString("id_usuario_tarea"));
-
-
-                Log.d("MiApp", "Nueva tarea  "+item.getString("titulo_tarea")+" "+item.getString("descripcion_tarea"));
-                // Insertar los valores en la base de datos
-                db.insert(tableName, null, values);
-            }
-        } catch (IOException | JSONException e) {
-            e.printStackTrace();
-        }
-    }
 
     public void agregarFavorito(String usuarioId, long campamentoId) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -282,17 +256,24 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(FAVORITO_CAMPAMENTO_ID, campamentoId);
         db.insert(TABLE_FAVORITOS, null, values);
         db.close();
+
+        // Agregar el favorito en Firebase
+        DatabaseReference favoritosReference = mDataBase.child("favoritos");
+        FavoritoDTO favoritoFirebase = new FavoritoDTO(usuarioId, campamentoId);
+        favoritosReference.child(usuarioId + "_" + campamentoId).setValue(favoritoFirebase);
     }
+
     public void quitarDeFavoritos(String usuarioId, long campamentoId) {
         SQLiteDatabase db = this.getWritableDatabase();
-
-        String whereClause = FAVORITO_USUARIO_ID + " = ? AND " + FAVORITO_CAMPAMENTO_ID + " = ?";
-        String[] whereArgs = {String.valueOf(usuarioId), String.valueOf(campamentoId)};
-
-        db.delete(TABLE_FAVORITOS, whereClause, whereArgs);
-
+        db.delete(TABLE_FAVORITOS, FAVORITO_USUARIO_ID + "=? AND " + FAVORITO_CAMPAMENTO_ID + "=?",
+                new String[]{usuarioId, String.valueOf(campamentoId)});
         db.close();
+
+        // Eliminar el favorito de Firebase
+        DatabaseReference favoritosReference = mDataBase.child("favoritos");
+        favoritosReference.child(usuarioId + "_" + campamentoId).removeValue();
     }
+
 
     public List<CampamentoDto> obtenerFavoritosDeUsuario(long usuarioId) {
         List<CampamentoDto> campamentosFavoritos = new ArrayList<>();
@@ -407,53 +388,39 @@ public class DBHelper extends SQLiteOpenHelper {
     @SuppressLint("Range")
     public UserDTO obtenerUsuarioPorCredenciales(String nombreUsuario, String contrasena) {
         SQLiteDatabase db = this.getReadableDatabase();
-
-        // Define las columnas que deseas recuperar
-        String[] columnas = {
-                USUARIO_ID,
-                USUARIO_NOMBRE_USUARIO,
-                USUARIO_TIPO,
-                USUARIO_NOMBRE,
-                USUARIO_APELLIDOS,
-                USUARIO_EDAD,
-                USUARIO_CONTRASENA
-        };
-
-
-        // Define la cláusula WHERE para la consulta
-        String whereClause = USUARIO_NOMBRE_USUARIO + " = ? AND " + USUARIO_CONTRASENA + " = ?";
-        String[] whereArgs = {nombreUsuario, contrasena};
-        Log.d("MiApp", "Intento inicio de sesion "+nombreUsuario+" "+contrasena);
-        // Realiza la consulta en la base de datos
-        Cursor cursor = db.query(TABLE_USUARIOS, columnas, whereClause, whereArgs, null, null, null);
-
-        UserDTO usuarioDto = null;
+        UserDTO usuario = null;
+        Log.d("MiApp", "intentando obtener un usuario con  " +  nombreUsuario + " " + contrasena);
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_USUARIOS + " WHERE " + USUARIO_NOMBRE_USUARIO + " = ? AND " + USUARIO_CONTRASENA + " = ?", new String[]{nombreUsuario, contrasena});
 
         if (cursor.moveToFirst()) {
-            // Si se encuentra el usuario, crea un objeto UsuarioDto
-            usuarioDto = new UserDTO(
-                    cursor.getString(cursor.getColumnIndex(USUARIO_ID)),
-                    cursor.getString(cursor.getColumnIndex(USUARIO_NOMBRE_USUARIO)),
-                    cursor.getString(cursor.getColumnIndex(USUARIO_TIPO)),
-                    cursor.getString(cursor.getColumnIndex(USUARIO_NOMBRE)),
-                    cursor.getString(cursor.getColumnIndex(USUARIO_APELLIDOS)),
-                    cursor.getInt(cursor.getColumnIndex(USUARIO_EDAD)),
-                    cursor.getString(cursor.getColumnIndex(USUARIO_CONTRASENA))
-            );
+            usuario = new UserDTO();
+            usuario.setId(cursor.getString(cursor.getColumnIndex(USUARIO_ID)));
+            usuario.setNombreUsuario(cursor.getString(cursor.getColumnIndex(USUARIO_NOMBRE_USUARIO)));
+            usuario.setContrasena(cursor.getString(cursor.getColumnIndex(USUARIO_CONTRASENA)));
+            usuario.setTipoUsuario(cursor.getString(cursor.getColumnIndex(USUARIO_TIPO)));
+            usuario.setNombre(cursor.getString(cursor.getColumnIndex(USUARIO_NOMBRE)));
+            usuario.setApellidos(cursor.getString(cursor.getColumnIndex(USUARIO_APELLIDOS)));
+            usuario.setEdad(cursor.getInt(cursor.getColumnIndex(USUARIO_EDAD)));
         }
 
-        // Cierra el cursor y la conexión a la base de datos
         cursor.close();
         db.close();
+        if(usuario!=null){
+            Log.d("MiApp", "Se encontro  " +  usuario.toString());
 
-        return usuarioDto;
+        }else{
+            Log.d("MiApp", "No se encontro a nadie");
+        }
+        return usuario;
     }
+
 
 
 
     public List<CampamentoDto> obtenerCampamentosConFavoritos(String usuarioId) {
         List<CampamentoDto> campamentosConFavoritos = new ArrayList<>();
-
+        sincronizarCampamentos();
+        sincronizarFavoritos();
         String selectQuery = "SELECT * FROM " + TABLE_CAMPAMENTOS;
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursorCampamentos = db.rawQuery(selectQuery, null);
@@ -461,7 +428,7 @@ public class DBHelper extends SQLiteOpenHelper {
         if (cursorCampamentos.moveToFirst()) {
             do {
                 @SuppressLint("Range") long campamentoId = cursorCampamentos.getLong(cursorCampamentos.getColumnIndex(CAMPAMENTO_ID));
-                boolean esFavorito = esCampamentoFavorito(usuarioId, campamentoId, db);
+                boolean esFavorito = esCampamentoFavorito(usuarioId, campamentoId);
 
                 @SuppressLint("Range") CampamentoDto campamento = new CampamentoDto(
                         cursorCampamentos.getLong(cursorCampamentos.getColumnIndex(CAMPAMENTO_ID)),
@@ -490,19 +457,38 @@ public class DBHelper extends SQLiteOpenHelper {
         return campamentosConFavoritos;
     }
 
-    private boolean esCampamentoFavorito(String usuarioId, long campamentoId, SQLiteDatabase db) {
-        String selectQuery = "SELECT * FROM " + TABLE_FAVORITOS +
-                " WHERE " + FAVORITO_USUARIO_ID + " = " + usuarioId +
-                " AND " + FAVORITO_CAMPAMENTO_ID + " = " + campamentoId;
+    public boolean esCampamentoFavorito(String usuarioId, long campamentoId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        boolean esFavorito = false;
 
-        Cursor cursorFavoritos = db.rawQuery(selectQuery, null);
+        try {
+            // Utiliza marcadores de posición en la consulta para evitar problemas de SQL injection
+            String consulta = "SELECT * FROM " + TABLE_FAVORITOS + " WHERE " +
+                    FAVORITO_USUARIO_ID + " = ? AND " + FAVORITO_CAMPAMENTO_ID + " = ?";
+            String[] argumentos = {usuarioId, String.valueOf(campamentoId)};
 
-        boolean esFavorito = cursorFavoritos.getCount() > 0;
+            Cursor cursor = db.rawQuery(consulta, argumentos);
 
-        cursorFavoritos.close();
+            if (cursor != null && cursor.moveToFirst()) {
+                // Si hay al menos una fila, el campamento es favorito
+                esFavorito = true;
+            }
+
+            if (cursor != null) {
+                cursor.close();
+            }
+        } catch (Exception e) {
+            // Manejar la excepción según tus necesidades
+            e.printStackTrace();
+        } finally {
+            if (db != null) {
+                db.close();
+            }
+        }
 
         return esFavorito;
     }
+
 
 
 
@@ -564,6 +550,7 @@ public class DBHelper extends SQLiteOpenHelper {
         long resultado = -1;
 
         try {
+            values.put(USUARIO_ID, usuario.getId()); // Asegúrate de proporcionar tu propio valor para USUARIO_ID
             values.put(USUARIO_NOMBRE_USUARIO, usuario.getNombreUsuario());
             values.put(USUARIO_CONTRASENA, usuario.getContrasena());
             values.put(USUARIO_TIPO, usuario.getTipoUsuario());
@@ -579,18 +566,22 @@ public class DBHelper extends SQLiteOpenHelper {
             e.printStackTrace();
         } finally {
             if (db != null) {
-                db.endTransaction();
-                db.close();
+                try {
+                    db.endTransaction();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    db.close();
+                }
             }
         }
 
         if (resultado != -1) {
-            Log.d("MiApp", "Se creó un nuevo usuario con " + usuario.getNombreUsuario() + " " + usuario.getContrasena());
+            Log.d("MiApp", "Se creó un nuevo usuario con " + usuario.getId() + " " + usuario.getNombreUsuario() + " " + usuario.getContrasena());
         }
-
-
-
     }
+
+
 
     public void sincronizarUsuarios() {
         DatabaseReference referenciaFirebase = FirebaseDatabase.getInstance().getReference("usuarios");
@@ -599,14 +590,14 @@ public class DBHelper extends SQLiteOpenHelper {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 limpiarTablaUsuarios();
-                Log.d("MiApp", "Punta A");
+
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    Log.d("MiApp", "Punta B");
+
                     UserDTO usuarioFirebase = snapshot.getValue(UserDTO.class);
                     // Actualizar la base de datos local con los datos de usuarioFirebase
                     actualizarBaseDeDatosLocal(usuarioFirebase);
                 }
-                Log.d("MiApp", "Punta C");
+
             }
 
             @Override
@@ -623,8 +614,136 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
     }
     private void actualizarBaseDeDatosLocal(UserDTO usuarioFirebase) {
-        Log.d("MiApp", "Se agrega el ususario "+usuarioFirebase.getNombreUsuario());
+        Log.d("MiApp", "Se agrega el ususario "+usuarioFirebase.getNombreUsuario() + usuarioFirebase.getId());
 
         agregarUsuario(usuarioFirebase);
     }
+
+
+
+    private void sincronizarCampamentos() {
+        DatabaseReference campamentoReference = mDataBase.child("campamentos");
+        Log.d("MiApp", "Se sincronizan los campamentos");
+        campamentoReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                limpiarTablaCampamentos();
+
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    // Obtén la ID del campamento del nombre del nodo
+                    String campamentoId = snapshot.getKey();
+
+                    CampamentoDto campamentoFirebase = snapshot.getValue(CampamentoDto.class);
+
+                    // Establece la ID en el objeto CampamentoDto
+                    if (campamentoFirebase != null) {
+                        campamentoFirebase.setId(Long.parseLong(campamentoId));
+                    }
+
+                    // Actualizar la base de datos local con los datos de campamentoFirebase
+                    actualizarBaseDeDatosLocalCampamento(campamentoFirebase);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Manejar errores de lectura de datos, si es necesario
+            }
+        });
+    }
+
+
+    private void limpiarTablaCampamentos() {
+        Log.d("MiApp", "Se limpia todos los campamentos");
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_CAMPAMENTOS, null, null);
+        db.close();
+    }
+
+    private void actualizarBaseDeDatosLocalCampamento(CampamentoDto campamento) {
+        // Implementar lógica para actualizar la base de datos local con los datos del campamento, si es necesario
+        // Puedes guardar los datos localmente, mostrarlos en la interfaz de usuario, etc.
+        Log.d("MiApp", "se agrega el campamento "+campamento.getNombre());
+        agregarCampamento(campamento);
+    }
+
+    private void agregarCampamento(CampamentoDto campamento) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        // Incluye la columna de la ID del campamento
+        values.put(CAMPAMENTO_ID, campamento.getId());
+        values.put(CAMPAMENTO_NOMBRE, campamento.getNombre());
+        values.put(CAMPAMENTO_DESCRIPCION, campamento.getDescripcion());
+        values.put(CAMPAMENTO_FECHA_INICIO, campamento.getFechaInicio());
+        values.put(CAMPAMENTO_FECHA_FINAL, campamento.getFechaFinal());
+        values.put(CAMPAMENTO_NUMERO_MAX_PARTICIPANTES, campamento.getNumeroMaxParticipantes());
+        values.put(CAMPAMENTO_NUMERO_APUNTADOS, campamento.getNumeroApuntados());
+        values.put(CAMPAMENTO_UBICACION, campamento.getUbicacion());
+        values.put(CAMPAMENTO_IMAGEN, campamento.getImagen());
+        values.put(CAMPAMENTO_EDAD_MINIMA, campamento.getEdadMinima());
+        values.put(CAMPAMENTO_EDAD_MAXIMA, campamento.getEdadMaxima());
+        values.put(CAMPAMENTO_NUM_MONITORES, campamento.getNumMonitores());
+        values.put(CAMPAMENTO_PRECIO, campamento.getPrecio());
+        values.put(CAMPAMENTO_CATEGORIA, campamento.getCategoria());
+
+        db.insert(TABLE_CAMPAMENTOS, null, values);
+        db.close();
+    }
+    private void sincronizarFavoritos() {
+        DatabaseReference favoritosReference = mDataBase.child("favoritos");
+        Log.d("MiApp", "Se sincronizan los favoritos");
+        favoritosReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                limpiarTablaFavoritos();
+
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    // Obtén la ID del favorito del nombre del nodo
+                    String favoritoId = snapshot.getKey();
+
+                    FavoritoDTO favoritoFirebase = snapshot.getValue(FavoritoDTO.class);
+
+
+
+                    // Actualizar la base de datos local con los datos de favoritoFirebase
+                    actualizarBaseDeDatosLocalFavorito(favoritoFirebase);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Manejar errores de lectura de datos, si es necesario
+            }
+        });
+    }
+
+    private void limpiarTablaFavoritos() {
+        Log.d("MiApp", "Se limpian todos los favoritos");
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_FAVORITOS, null, null);
+        db.close();
+    }
+
+    private void actualizarBaseDeDatosLocalFavorito(FavoritoDTO favorito) {
+        // Implementar lógica para actualizar la base de datos local con los datos del favorito, si es necesario
+        // Puedes guardar los datos localmente, mostrarlos en la interfaz de usuario, etc.
+        Log.d("MiApp", "Se agrega el favorito para el usuario " + favorito.getUsuarioId() + " y campamento " + favorito.getCampamentoId());
+        agregarFavorito(favorito);
+    }
+
+    private void agregarFavorito(FavoritoDTO favorito) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        // Incluye la columna de la ID del favorito
+
+        values.put(FAVORITO_USUARIO_ID, favorito.getUsuarioId());
+        values.put(FAVORITO_CAMPAMENTO_ID, favorito.getCampamentoId());
+
+        db.insert(TABLE_FAVORITOS, null, values);
+        db.close();
+    }
+
+
 }
