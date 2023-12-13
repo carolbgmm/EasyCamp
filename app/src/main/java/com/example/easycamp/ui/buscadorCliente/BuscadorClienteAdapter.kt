@@ -44,6 +44,7 @@ class BuscadorClienteAdapter( val listaCampamento: List<CampamentoDto>, val list
         val bdHelper =  DBHelper.getInstance(null)
         val userId = LoggedUserDTO.getInstance(null).user.id
 
+
         var txtNombre = view.findViewById<TextView>(R.id.txtNombre)
         var txtDescripcion = view.findViewById<TextView>(R.id.txtDescripcion)
         var imgFavoritos = view.findViewById<ImageButton>(R.id.imgFavoritos)
