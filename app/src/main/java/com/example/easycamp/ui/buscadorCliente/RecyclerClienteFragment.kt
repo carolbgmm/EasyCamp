@@ -96,6 +96,11 @@ class RecyclerClienteFragment : Fragment() {
             }
         }
 
+        searchBar.visibility = View.VISIBLE
+        searchBar.isVisible = true
+        searchView.setVisible(false)
+        searchView.visibility = View.GONE
+
     }
 
     companion object {

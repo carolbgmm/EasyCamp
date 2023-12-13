@@ -189,14 +189,88 @@ public class DBHelper extends SQLiteOpenHelper {
                 "FOREIGN KEY(" + TICK_CAMPAMENTO_ID + ") REFERENCES " + TABLE_CAMPAMENTOS + "(" + CAMPAMENTO_ID + "))";
         db.execSQL(createTableTick);
 
+        // se cargan 3 de aventuras , 3 de naturaleza , 2 de deportes , 1 de arte y dos de ciencias
+        insertarDatosDesdeJSON(context, db, TABLE_CAMPAMENTOS, "campamentos", "datos_iniciales.json");
 
+        //se crean 3 usuarios de clientes y 3 de trabajadores
+        insertarDatosUsuariosDesdeJSON(context, db, TABLE_USUARIOS, "usuarios", "datos_iniciales.json");
 
 
 
     }
+    private void insertarDatosDesdeJSON(Context context, SQLiteDatabase db, String tableName, String jsonArrayName, String fileName) {
+        Log.d("MiApp", "Se intenta poner los campamentos");
+        try {
+            InputStream inputStream = context.getAssets().open(fileName);
+            int size = inputStream.available();
+            byte[] buffer = new byte[size];
+            inputStream.read(buffer);
+            inputStream.close();
 
+            String jsonString = new String(buffer, "UTF-8");
+            JSONObject jsonObject = new JSONObject(jsonString);
+            JSONArray jsonArray = jsonObject.getJSONArray(jsonArrayName);
 
+            for (int i = 0; i < jsonArray.length(); i++) {
+                ContentValues values = new ContentValues();
+                JSONObject item = jsonArray.getJSONObject(i);
 
+                // Agregar cada columna y valor al ContentValues
+                values.put(CAMPAMENTO_NOMBRE, item.getString("nombre"));
+                values.put(CAMPAMENTO_DESCRIPCION, item.getString("descripcion"));
+                values.put(CAMPAMENTO_FECHA_INICIO, item.getString("fecha_inicio"));
+                values.put(CAMPAMENTO_FECHA_FINAL, item.getString("fecha_final"));
+                values.put(CAMPAMENTO_NUMERO_MAX_PARTICIPANTES, item.getInt("numero_max_participantes"));
+                values.put(CAMPAMENTO_NUMERO_APUNTADOS, item.getInt("numero_apuntados"));
+                values.put(CAMPAMENTO_UBICACION, item.getString("ubicacion"));
+                values.put(CAMPAMENTO_IMAGEN, item.getString("imagen"));
+                values.put(CAMPAMENTO_EDAD_MINIMA, item.getInt("edad_minima"));
+                values.put(CAMPAMENTO_EDAD_MAXIMA, item.getInt("edad_maxima"));
+                values.put(CAMPAMENTO_NUM_MONITORES, item.getInt("num_monitores"));
+                values.put(CAMPAMENTO_PRECIO, item.getDouble("precio"));
+                values.put(CAMPAMENTO_CATEGORIA, item.getString("categoria"));
+                Log.d("MiApp", "Nuevo Campamento "+item.getString("nombre")+" "+item.getString("descripcion"));
+
+                // Insertar los valores en la base de datos
+                db.insert(tableName, null, values);
+            }
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void insertarDatosUsuariosDesdeJSON(Context context, SQLiteDatabase db, String tableName, String jsonArrayName, String fileName) {
+        Log.d("MiApp", "Se intenta poner los usuarios");
+        try {
+            InputStream inputStream = context.getAssets().open(fileName);
+            int size = inputStream.available();
+            byte[] buffer = new byte[size];
+            inputStream.read(buffer);
+            inputStream.close();
+
+            String jsonString = new String(buffer, "UTF-8");
+            JSONObject jsonObject = new JSONObject(jsonString);
+            JSONArray jsonArray = jsonObject.getJSONArray(jsonArrayName);
+
+            for (int i = 0; i < jsonArray.length(); i++) {
+                ContentValues values = new ContentValues();
+                JSONObject item = jsonArray.getJSONObject(i);
+
+                // Agregar cada columna y valor al ContentValues
+                values.put(USUARIO_NOMBRE_USUARIO, item.getString("nombre_usuario"));
+                values.put(USUARIO_CONTRASENA, item.getString("contrasena"));
+                values.put(USUARIO_TIPO, item.getString("tipo_usuario"));
+                values.put(USUARIO_NOMBRE, item.getString("nombre"));
+                values.put(USUARIO_APELLIDOS, item.getString("apellidos"));
+                values.put(USUARIO_EDAD, item.getInt("edad"));
+                Log.d("MiApp", "Nuevo Usuario  "+item.getString("nombre_usuario")+" "+item.getString("contrasena"));
+                // Insertar los valores en la base de datos
+                db.insert(tableName, null, values);
+            }
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+        }
+    }
     public long crearHijo(HijoDTO hijo,int id) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -214,7 +288,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     // Método para obtener la lista de hijos dado el ID de un usuario
     @SuppressLint("Range")
-    public List<HijoDTO> obtenerHijosPorUsuario(long idUsuario) {
+    public List<HijoDTO> obtenerHijosPorUsuario(String idUsuario) {
         List<HijoDTO> listaHijos = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -275,7 +349,7 @@ public class DBHelper extends SQLiteOpenHelper {
         }
     }
 
-    public void agregarFavorito(long usuarioId, long campamentoId) {
+    public void agregarFavorito(String usuarioId, long campamentoId) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(FAVORITO_USUARIO_ID, usuarioId);
@@ -283,7 +357,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.insert(TABLE_FAVORITOS, null, values);
         db.close();
     }
-    public void quitarDeFavoritos(long usuarioId, long campamentoId) {
+    public void quitarDeFavoritos(String usuarioId, long campamentoId) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         String whereClause = FAVORITO_USUARIO_ID + " = ? AND " + FAVORITO_CAMPAMENTO_ID + " = ?";
@@ -334,7 +408,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return campamentosFavoritos;
     }
 
-    public List<TareaDTO> obtenerTicksDeUsuario(long usuarioId) {
+    public List<TareaDTO> obtenerTicksDeUsuario(String usuarioId) {
         List<TareaDTO> tareasTick = new ArrayList<>();
 
 //        String selectQuery = "SELECT * FROM " + TABLE_TICK +
@@ -365,7 +439,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return tareasTick;
     }
 
-    public List<CampamentoDto> obtenerInscritosDeUsuario(long usuarioId) {
+    public List<CampamentoDto> obtenerInscritosDeUsuario(String usuarioId) {
         List<CampamentoDto> campamentosFavoritos = new ArrayList<>();
 
         String selectQuery = "SELECT * FROM " + TABLE_INSCRITOS +
@@ -415,8 +489,10 @@ public class DBHelper extends SQLiteOpenHelper {
                 USUARIO_TIPO,
                 USUARIO_NOMBRE,
                 USUARIO_APELLIDOS,
-                USUARIO_EDAD
+                USUARIO_EDAD,
+                USUARIO_CONTRASENA
         };
+
 
         // Define la cláusula WHERE para la consulta
         String whereClause = USUARIO_NOMBRE_USUARIO + " = ? AND " + USUARIO_CONTRASENA + " = ?";
@@ -430,12 +506,13 @@ public class DBHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             // Si se encuentra el usuario, crea un objeto UsuarioDto
             usuarioDto = new UserDTO(
-                    cursor.getLong(cursor.getColumnIndex(USUARIO_ID)),
+                    cursor.getString(cursor.getColumnIndex(USUARIO_ID)),
                     cursor.getString(cursor.getColumnIndex(USUARIO_NOMBRE_USUARIO)),
                     cursor.getString(cursor.getColumnIndex(USUARIO_TIPO)),
                     cursor.getString(cursor.getColumnIndex(USUARIO_NOMBRE)),
                     cursor.getString(cursor.getColumnIndex(USUARIO_APELLIDOS)),
-                    cursor.getInt(cursor.getColumnIndex(USUARIO_EDAD))
+                    cursor.getInt(cursor.getColumnIndex(USUARIO_EDAD)),
+                    cursor.getString(cursor.getColumnIndex(USUARIO_CONTRASENA))
             );
         }
 
@@ -448,9 +525,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
 
-    public List<CampamentoDto> obtenerCampamentosConFavoritos(long usuarioId) {
-        List<CampamentoDto> campamentosConFavoritos = new ArrayList<>();
-
+    public List<CampamentoDto> obtenerCampamentosConFavoritos(String usuarioId) {
         String selectQuery = "SELECT * FROM " + TABLE_CAMPAMENTOS;
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursorCampamentos = db.rawQuery(selectQuery, null);
@@ -463,7 +538,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return campamentosConFavoritos;
     }
 
-    private List<CampamentoDto> getListaCampamentosConFavoritos(Cursor cursorCampamentos, long usuarioId, SQLiteDatabase db){
+    private List<CampamentoDto> getListaCampamentosConFavoritos(Cursor cursorCampamentos, String usuarioId, SQLiteDatabase db){
         List<CampamentoDto> campamentos = new ArrayList<>();
         if (cursorCampamentos.moveToFirst()) {
             do {
@@ -493,7 +568,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return campamentos;
     }
 
-    public List<CampamentoDto> obtenerCampamentosCon(long usuarioId, String query) {
+    public List<CampamentoDto> obtenerCampamentosCon(String usuarioId, String query) {
         String selectQuery = "SELECT * FROM " + TABLE_CAMPAMENTOS + " WHERE " + CAMPAMENTO_NOMBRE + " LIKE '%" + query + "%'";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursorCampamentos = db.rawQuery(selectQuery, null);
@@ -506,7 +581,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return campamentosConFavoritos;
     }
 
-    private boolean esCampamentoFavorito(long usuarioId, long campamentoId, SQLiteDatabase db) {
+    private boolean esCampamentoFavorito(String usuarioId, long campamentoId, SQLiteDatabase db) {
         String selectQuery = "SELECT * FROM " + TABLE_FAVORITOS +
                 " WHERE " + FAVORITO_USUARIO_ID + " = " + usuarioId +
                 " AND " + FAVORITO_CAMPAMENTO_ID + " = " + campamentoId;
@@ -675,4 +750,5 @@ public class DBHelper extends SQLiteOpenHelper {
 
         agregarUsuario(usuarioFirebase);
     }
+
 }
