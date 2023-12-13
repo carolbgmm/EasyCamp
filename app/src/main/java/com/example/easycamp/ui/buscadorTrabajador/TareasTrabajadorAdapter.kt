@@ -53,10 +53,10 @@ class TareasTrabajadorAdapter(val listaTareas: List<TareaDTO>, val listener: Tar
 
             imgTick?.setOnClickListener {
                 if(item.tick){
-                    imgTick.setImageResource(R.drawable.favoritos_vacio)
+                    imgTick.setImageResource(R.drawable.tick_vacio)
                     item.tick = false
                 } else {
-                    imgTick.setImageResource(R.drawable.favoritos_relleno)
+                    imgTick.setImageResource(R.drawable.tick_relleno)
                     item.tick = true
                 }
             }

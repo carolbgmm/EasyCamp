@@ -35,7 +35,7 @@ class TareasTrabajadorFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val lista = persistencia.obtenerTicksDeUsuario(LoggedUserDTO.getInstance(null).user.id)
+        val lista = persistencia.obtenerTareasDeUsuario(LoggedUserDTO.getInstance(null).user.nombreUsuario)
         val adapterTareas = TareasTrabajadorAdapter(lista, object : TareasTrabajadorAdapter.OnItemClickListener {
             override fun onItemClick(tarea: TareaDTO?) {
                 tarea?.let { clickonItem(tarea) }
@@ -51,7 +51,7 @@ class TareasTrabajadorFragment : Fragment() {
     }
 
     companion object {
-        val TAREA_SELECCIONADO = "tarea_seleccionada"
+        //val TAREA_SELECCIONADO = "tarea_seleccionada"
         @JvmStatic
         fun newInstance() =
             TareasTrabajadorFragment()
