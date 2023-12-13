@@ -12,23 +12,27 @@ import android.widget.EditText
 import androidx.fragment.app.DialogFragment
 import com.example.easycamp.R
 import com.example.easycamp.domain.HijoDTO
-import com.example.easycamp.domain.LoggedUserDTO
 import com.example.easycamp.domain.UserDTO
 import com.example.easycamp.util.DBHelper
 
 
 
 
-class AgregarHijoFragment : DialogFragment() {
-
+class AgregarHijoFragment(
+    adapter: ListaHijosAdapter,
+    listaDeHijos: MutableList<HijoDTO>,
+    usuarioActual: UserDTO
+) : DialogFragment() {
+    private var usuarioActual: UserDTO=usuarioActual
+    private var adapter: ListaHijosAdapter =adapter
     private lateinit var service: DBHelper
     private lateinit var btnAceptar: Button
     private lateinit var etNombre: EditText
     private lateinit var etApellidos: EditText
     private lateinit var etEdad: EditText
     private lateinit var etObservaciones: EditText
+    private var listaDeHijos: MutableList<HijoDTO> =listaDeHijos
 
-    private var nuevoHijo: HijoDTO = HijoDTO(0, "", "", 0, "")
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -71,18 +75,17 @@ class AgregarHijoFragment : DialogFragment() {
             // Manejar el error según tus necesidades
             return
         }
+        var nuevoHijo = HijoDTO(0, nombre, apellidos, edad, observaciones)
 
-        // Crear un nuevo objeto HijoDTO con los valores proporcionados
-        nuevoHijo = HijoDTO(0, nombre, apellidos, edad, observaciones)
+        val nuevoHijoId = service.crearHijo(nuevoHijo, usuarioActual.id)
+        nuevoHijo.id = nuevoHijoId
+        listaDeHijos.add(nuevoHijo)
+        adapter.submitList(listaDeHijos)
 
-        // Puedes realizar alguna acción adicional aquí si es necesario
 
-        // Cerrar el diálogo después de guardar
         dismiss()
     }
 
-    fun getHijoDTO(): HijoDTO {
-        return nuevoHijo
-    }
+
 }
 
