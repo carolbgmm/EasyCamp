@@ -55,7 +55,7 @@ class ListaHijosFragment : Fragment() {
 
 
             val nuevoHijo =  agregarHijoFragment.getHijoDTO()
-            val nuevoHijoId = service.crearHijo(nuevoHijo, usuarioActual.id.toInt())
+            val nuevoHijoId = service.crearHijo(nuevoHijo, usuarioActual.id)
             nuevoHijo.id = nuevoHijoId
             listaDeHijos.add(nuevoHijo)
             adapter.submitList(listaDeHijos)

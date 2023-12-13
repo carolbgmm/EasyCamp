@@ -17,17 +17,19 @@ import com.example.easycamp.domain.UserDTO
 import com.example.easycamp.util.DBHelper
 
 
+
+
 class AgregarHijoFragment : DialogFragment() {
 
     private lateinit var service: DBHelper
-    private lateinit var usuarioActual: UserDTO
+    private lateinit var btnAceptar: Button
+    private lateinit var etNombre: EditText
+    private lateinit var etApellidos: EditText
+    private lateinit var etEdad: EditText
+    private lateinit var etObservaciones: EditText
 
-    private lateinit var  btnGuardarNuevoHijo :Button
-    private lateinit var etNombreNuevoHijo :  EditText
-    private lateinit var etApellidosNuevoHijo : EditText
-    private lateinit var etEdadNuevoHijo :  EditText
-    private lateinit var etObservacionesNuevoHijo : EditText
-    private lateinit var nuevoHijo:HijoDTO
+    private var nuevoHijo: HijoDTO = HijoDTO(0, "", "", 0, "")
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -39,42 +41,26 @@ class AgregarHijoFragment : DialogFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         service = DBHelper(requireContext())
-        usuarioActual = obtenerUsuarioActual()
-        btnGuardarNuevoHijo = view.findViewById(R.id.btnGuardarNuevoHijo)
+                btnAceptar = view.findViewById(R.id.btnAceptar)
+                etNombre = view.findViewById(R.id.etNombre)
+                etApellidos = view.findViewById(R.id.etApellidos)
+                etEdad = view.findViewById(R.id.etEdad)
+                etObservaciones = view.findViewById(R.id.etObservaciones)
 
-        btnGuardarNuevoHijo.setOnClickListener {
+                btnAceptar.setOnClickListener {
             guardarNuevoHijo()
         }
     }
 
-    private fun obtenerUsuarioActual(): UserDTO {
-        return LoggedUserDTO.getInstance(null).user;
-    }
-
     private fun guardarNuevoHijo() {
-        val nombre = etNombreNuevoHijo.text.toString()
-        val apellidos = etApellidosNuevoHijo.text.toString()
-        val edadText = etEdadNuevoHijo.text.toString()
-        val observaciones = etObservacionesNuevoHijo.text.toString()
+        val nombre = etNombre.text.toString()
+        val apellidos = etApellidos.text.toString()
+        val edadText = etEdad.text.toString()
+        val observaciones = etObservaciones.text.toString()
 
-        // Comprobar si el campo de nombre está vacío
-        if (nombre.isEmpty()) {
-            etNombreNuevoHijo.error = "Nombre de hijo vacío"
-            etNombreNuevoHijo.requestFocus()
-            return
-        }
-
-        // Comprobar si el campo de apellidos está vacío
-        if (apellidos.isEmpty()) {
-            etApellidosNuevoHijo.error = "Apellidos de hijo vacíos"
-            etApellidosNuevoHijo.requestFocus()
-            return
-        }
-
-        // Comprobar si el campo de edad está vacío
-        if (edadText.isEmpty()) {
-            etEdadNuevoHijo.error = "Edad de hijo vacía"
-            etEdadNuevoHijo.requestFocus()
+        // Validar campos vacíos
+        if (nombre.isEmpty() || apellidos.isEmpty() || edadText.isEmpty()) {
+            // Manejar el error según tus necesidades
             return
         }
 
@@ -82,22 +68,21 @@ class AgregarHijoFragment : DialogFragment() {
         val edad = try {
             edadText.toInt()
         } catch (e: NumberFormatException) {
-            etEdadNuevoHijo.error = "Edad de hijo no válida"
-            etEdadNuevoHijo.requestFocus()
+            // Manejar el error según tus necesidades
             return
         }
 
         // Crear un nuevo objeto HijoDTO con los valores proporcionados
-         nuevoHijo = HijoDTO(0, nombre, apellidos, edad, observaciones)
+        nuevoHijo = HijoDTO(0, nombre, apellidos, edad, observaciones)
 
+        // Puedes realizar alguna acción adicional aquí si es necesario
 
-
-        // Aquí puedes actualizar la lista de hijos en el fragmento principal o hacer lo que sea necesario
-        dismiss()  // Cerrar el diálogo después de guardar
+        // Cerrar el diálogo después de guardar
+        dismiss()
     }
 
     fun getHijoDTO(): HijoDTO {
         return nuevoHijo
     }
-
 }
+
