@@ -14,6 +14,8 @@ import com.example.easycamp.domain.FavoritoDTO;
 import com.example.easycamp.domain.HijoDTO;
 import com.example.easycamp.domain.TareaDTO;
 import com.example.easycamp.domain.UserDTO;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -21,7 +23,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DBHelper extends SQLiteOpenHelper {
 
@@ -533,26 +537,33 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
     // Método para actualizar un usuario
-    public boolean actualizarUsuario(UserDTO usuario,String contrasena) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
+    public void actualizarUsuario(UserDTO usuario, String nombre, String apellidos, String edad) {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("usuarios").child(String.valueOf(usuario.getId()));
+        usuario.setNombre(nombre);
+        usuario.setApellidos(apellidos);
+        usuario.setEdad(Integer.parseInt(edad));
 
-        values.put(USUARIO_NOMBRE_USUARIO, usuario.getNombreUsuario());
-        values.put(USUARIO_CONTRASENA, contrasena); // Asegúrate de tener el campo de contraseña en tu UserDTO
-        values.put(USUARIO_TIPO, usuario.getTipoUsuario());
-        values.put(USUARIO_NOMBRE, usuario.getNombre());
-        values.put(USUARIO_APELLIDOS, usuario.getApellidos());
-        values.put(USUARIO_EDAD, usuario.getEdad());
+        Map<String, Object> actualizacionUsuario = new HashMap<>();
 
-        // Define la cláusula WHERE para la actualización
-        String whereClause = USUARIO_ID + " = ?";
-        String[] whereArgs = {String.valueOf(usuario.getId())};
+        actualizacionUsuario.put("nombre", nombre);
+        actualizacionUsuario.put("apellidos", apellidos);
+        actualizacionUsuario.put("edad", Integer.parseInt(edad));
+        databaseReference.updateChildren(actualizacionUsuario).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    // La actualización en Firebase fue exitosa
+                    Log.d("Firebase", "Usuario actualizado en Firebase");
+                    sincronizarUsuarios();
 
-        int filasActualizadas = db.update(TABLE_USUARIOS, values, whereClause, whereArgs);
-        db.close();
-
-        return filasActualizadas > 0; // Si se actualizó al menos una fila, retorna true.
+                } else {
+                    // Hubo un error en la actualización en Firebase
+                    Log.e("Firebase", "Error al actualizar usuario en Firebase", task.getException());
+                }
+            }
+        });
     }
+
 
 
 
