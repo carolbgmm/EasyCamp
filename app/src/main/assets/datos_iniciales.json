@@ -240,6 +240,18 @@
       "descripcion_tarea": "Levantar a los niños por las mañanas",
       "fecha_tarea": "8:00 am",
       "nombre_usuario_tarea" : "trabajador@gmail.com"
+    },
+    {
+      "titulo_tarea": "Recoger pelotas",
+      "descripcion_tarea": "Recoger las pelotas de la cancha",
+      "fecha_tarea": "12:00 am",
+      "nombre_usuario_tarea" : "trabajador@gmail.com"
+    },
+    {
+      "titulo_tarea": "Limpiar material",
+      "descripcion_tarea": "Limpiar material de las actividades",
+      "fecha_tarea": "9:00 am",
+      "nombre_usuario_tarea" : "trabajador@gmail.com"
     }
 
   ],
