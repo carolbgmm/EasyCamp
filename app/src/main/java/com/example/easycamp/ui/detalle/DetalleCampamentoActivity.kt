@@ -32,8 +32,8 @@ class DetalleCampamentoActivity : AppCompatActivity() {
                 if (itemId == R.id.navigation_resumen) {
                     val resumenFragment = ResumenDetalleCampamentoFragment.newInstance(
                         c.descripcion!!,
-                        c.fechaFinal!!,
-                        c.fechaInicio!!,
+                        c.fecha_final!!,
+                        c.fecha_inicio!!,
                         c.ubicacion!!,
                         c.categoria!!
                     )
@@ -43,11 +43,11 @@ class DetalleCampamentoActivity : AppCompatActivity() {
                 }
                 if (itemId == R.id.navigation_descripcion) {
                     val descripcionFragment = DescripcionDetalleCampamentoFragment.newInstance(
-                        c.numeroMaxParticipantes,
-                        c.numeroApuntados,
-                        c.edadMinima,
-                        c.edadMaxima,
-                        c.numMonitores,
+                        c.numero_max_participantes,
+                        c.numero_apuntados,
+                        c.edad_minima,
+                        c.edad_maxima,
+                        c.num_monitores,
                         c.precio
                     )
                     supportFragmentManager.beginTransaction()
@@ -92,8 +92,8 @@ class DetalleCampamentoActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container_detalle, ResumenDetalleCampamentoFragment.newInstance(
                 campamento?.descripcion!!,
-                campamento?.fechaFinal!!,
-                campamento?.fechaInicio!!,
+                campamento?.fecha_final!!,
+                campamento?.fecha_inicio!!,
                 campamento?.ubicacion!!,
                 campamento?.categoria!!
             ))

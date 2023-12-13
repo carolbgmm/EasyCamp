@@ -2,6 +2,7 @@ package com.example.easycamp.ui.buscadorCliente
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -112,6 +113,7 @@ class RecyclerClienteFragment : Fragment() {
 
     fun clickonItem(campamento: CampamentoDto) {
         val intent = Intent(activity, DetalleCampamentoActivity::class.java)
+        Log.d("MiApp", "Se abre los detalles del campamento "+campamento.toString())
         intent.putExtra(CAMPAMENTO_SELECCIONADO, campamento)
         startActivity(intent)
     }

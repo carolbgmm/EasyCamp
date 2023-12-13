@@ -27,7 +27,7 @@ class BuscadorTrabajadorActivity : AppCompatActivity() {
                 return@OnItemSelectedListener true
             }
             if (itemId == R.id.herramientas_trabajador) {
-                val herramientasFragment = HerramientasFragment.newInstance("", "")
+                val herramientasFragment = HerramientasFragment.newInstance()
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container_trabajador, herramientasFragment).commit()
                 return@OnItemSelectedListener true

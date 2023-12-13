@@ -1,7 +1,5 @@
 package com.example.easycamp.ui.buscadorTrabajador
 
-import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,7 +7,6 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.easycamp.R
-import com.example.easycamp.domain.CampamentoDto
 import com.example.easycamp.domain.TareaDTO
 
 class TareasTrabajadorAdapter(val listaTareas: List<TareaDTO>, val listener: TareasTrabajadorAdapter.OnItemClickListener) :
@@ -53,10 +50,10 @@ class TareasTrabajadorAdapter(val listaTareas: List<TareaDTO>, val listener: Tar
 
             imgTick?.setOnClickListener {
                 if(item.tick){
-                    imgTick.setImageResource(R.drawable.favoritos_vacio)
+                    imgTick.setImageResource(R.drawable.tick_vacio)
                     item.tick = false
                 } else {
-                    imgTick.setImageResource(R.drawable.favoritos_relleno)
+                    imgTick.setImageResource(R.drawable.tick_relleno)
                     item.tick = true
                 }
             }

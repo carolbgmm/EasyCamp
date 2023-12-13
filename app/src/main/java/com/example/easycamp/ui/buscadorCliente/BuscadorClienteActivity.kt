@@ -1,14 +1,8 @@
 package com.example.easycamp.ui.buscadorCliente
 
-import android.content.Intent
 import android.os.Bundle
-import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import com.example.easycamp.R
-import com.example.easycamp.domain.CampamentoDto
-import com.example.easycamp.ui.PerfilFragment
-import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
 

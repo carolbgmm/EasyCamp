@@ -1,6 +1,5 @@
 package com.example.easycamp.ui.buscadorTrabajador
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -9,12 +8,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.easycamp.R
-import com.example.easycamp.domain.CampamentoDto
 import com.example.easycamp.domain.LoggedUserDTO
 import com.example.easycamp.domain.TareaDTO
-import com.example.easycamp.ui.buscadorCliente.BuscadorClienteAdapter
-import com.example.easycamp.ui.buscadorCliente.RecyclerClienteFragment
-import com.example.easycamp.ui.detalle.DetalleCampamentoActivity
 import com.example.easycamp.util.DBHelper
 
 class TareasTrabajadorFragment : Fragment() {
@@ -35,7 +30,7 @@ class TareasTrabajadorFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val lista = persistencia.obtenerTicksDeUsuario(LoggedUserDTO.getInstance(null).user.id)
+        val lista = persistencia.obtenerTareasDeUsuario(LoggedUserDTO.getInstance(null).user.nombreUsuario)
         val adapterTareas = TareasTrabajadorAdapter(lista, object : TareasTrabajadorAdapter.OnItemClickListener {
             override fun onItemClick(tarea: TareaDTO?) {
                 tarea?.let { clickonItem(tarea) }
@@ -51,7 +46,7 @@ class TareasTrabajadorFragment : Fragment() {
     }
 
     companion object {
-        val TAREA_SELECCIONADO = "tarea_seleccionada"
+        //val TAREA_SELECCIONADO = "tarea_seleccionada"
         @JvmStatic
         fun newInstance() =
             TareasTrabajadorFragment()

@@ -5,11 +5,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
-import androidx.core.graphics.drawable.toDrawable
 import androidx.recyclerview.widget.RecyclerView
 import com.example.easycamp.R
 import com.example.easycamp.domain.CampamentoDto
-import com.example.easycamp.ui.buscadorCliente.BuscadorClienteAdapter
 
 class BuscadorTrabajadorAdapter (val listaCampamento: List<CampamentoDto>, val listener: OnItemClickListener) :
     RecyclerView.Adapter<BuscadorTrabajadorAdapter.CampamentoViewHolder>() {
@@ -44,19 +42,19 @@ class BuscadorTrabajadorAdapter (val listaCampamento: List<CampamentoDto>, val l
             txtNombre.setText(item.nombre)
             txtDescripcion.setText(item.descripcion)
 
-            if(item.favorito){
+            if(item.isFavorito){
                 imgFavoritos.setImageResource(R.drawable.favoritos_relleno)
             } else {
                 imgFavoritos.setImageResource(R.drawable.favoritos_vacio)
             }
 
             imgFavoritos?.setOnClickListener {
-                if(item.favorito){
+                if(item.isFavorito){
                     imgFavoritos.setImageResource(R.drawable.favoritos_vacio)
-                    item.favorito = false
+                    item.isFavorito= false
                 } else {
                     imgFavoritos.setImageResource(R.drawable.favoritos_relleno)
-                    item.favorito = true
+                    item.isFavorito = true
                 }
             }
             // cargar imagen
