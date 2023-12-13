@@ -14,15 +14,16 @@ import com.example.easycamp.domain.LoggedUserDTO
 import com.example.easycamp.domain.UserDTO
 import com.example.easycamp.ui.PerfilFragment
 import com.example.easycamp.ui.inicioSesion.Login_Activity
+import com.google.firebase.auth.FirebaseAuth
 
 
 class CuentaClienteFragment : Fragment() {
 
     private lateinit var usuarioActual: UserDTO
-
+    private lateinit var  mAuth: FirebaseAuth;
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_cuenta_cliente, container, false)
-
+        mAuth=FirebaseAuth.getInstance()
         usuarioActual = obtenerUsuarioActual()
 
         val btnPerfil: Button = view.findViewById(R.id.btnPerfil)
@@ -75,6 +76,8 @@ class CuentaClienteFragment : Fragment() {
 
         val intent = Intent(activity, Login_Activity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+        mAuth.signOut()
+
         startActivity(intent)
         activity?.finish()
     }

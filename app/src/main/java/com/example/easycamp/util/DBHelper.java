@@ -6,12 +6,18 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.example.easycamp.domain.CampamentoDto;
 import com.example.easycamp.domain.HijoDTO;
 import com.example.easycamp.domain.TareaDTO;
 import com.example.easycamp.domain.UserDTO;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -183,88 +189,14 @@ public class DBHelper extends SQLiteOpenHelper {
                 "FOREIGN KEY(" + TICK_CAMPAMENTO_ID + ") REFERENCES " + TABLE_CAMPAMENTOS + "(" + CAMPAMENTO_ID + "))";
         db.execSQL(createTableTick);
 
-        // se cargan 3 de aventuras , 3 de naturaleza , 2 de deportes , 1 de arte y dos de ciencias
-        insertarDatosDesdeJSON(context, db, TABLE_CAMPAMENTOS, "campamentos", "datos_iniciales.json");
 
-        //se crean 3 usuarios de clientes y 3 de trabajadores
-        insertarDatosUsuariosDesdeJSON(context, db, TABLE_USUARIOS, "usuarios", "datos_iniciales.json");
 
 
 
     }
-    private void insertarDatosDesdeJSON(Context context, SQLiteDatabase db, String tableName, String jsonArrayName, String fileName) {
-        Log.d("MiApp", "Se intenta poner los campamentos");
-        try {
-            InputStream inputStream = context.getAssets().open(fileName);
-            int size = inputStream.available();
-            byte[] buffer = new byte[size];
-            inputStream.read(buffer);
-            inputStream.close();
 
-            String jsonString = new String(buffer, "UTF-8");
-            JSONObject jsonObject = new JSONObject(jsonString);
-            JSONArray jsonArray = jsonObject.getJSONArray(jsonArrayName);
 
-            for (int i = 0; i < jsonArray.length(); i++) {
-                ContentValues values = new ContentValues();
-                JSONObject item = jsonArray.getJSONObject(i);
 
-                // Agregar cada columna y valor al ContentValues
-                values.put(CAMPAMENTO_NOMBRE, item.getString("nombre"));
-                values.put(CAMPAMENTO_DESCRIPCION, item.getString("descripcion"));
-                values.put(CAMPAMENTO_FECHA_INICIO, item.getString("fecha_inicio"));
-                values.put(CAMPAMENTO_FECHA_FINAL, item.getString("fecha_final"));
-                values.put(CAMPAMENTO_NUMERO_MAX_PARTICIPANTES, item.getInt("numero_max_participantes"));
-                values.put(CAMPAMENTO_NUMERO_APUNTADOS, item.getInt("numero_apuntados"));
-                values.put(CAMPAMENTO_UBICACION, item.getString("ubicacion"));
-                values.put(CAMPAMENTO_IMAGEN, item.getString("imagen"));
-                values.put(CAMPAMENTO_EDAD_MINIMA, item.getInt("edad_minima"));
-                values.put(CAMPAMENTO_EDAD_MAXIMA, item.getInt("edad_maxima"));
-                values.put(CAMPAMENTO_NUM_MONITORES, item.getInt("num_monitores"));
-                values.put(CAMPAMENTO_PRECIO, item.getDouble("precio"));
-                values.put(CAMPAMENTO_CATEGORIA, item.getString("categoria"));
-                Log.d("MiApp", "Nuevo Campamento "+item.getString("nombre")+" "+item.getString("descripcion"));
-
-                // Insertar los valores en la base de datos
-                db.insert(tableName, null, values);
-            }
-        } catch (IOException | JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void insertarDatosUsuariosDesdeJSON(Context context, SQLiteDatabase db, String tableName, String jsonArrayName, String fileName) {
-        Log.d("MiApp", "Se intenta poner los usuarios");
-        try {
-            InputStream inputStream = context.getAssets().open(fileName);
-            int size = inputStream.available();
-            byte[] buffer = new byte[size];
-            inputStream.read(buffer);
-            inputStream.close();
-
-            String jsonString = new String(buffer, "UTF-8");
-            JSONObject jsonObject = new JSONObject(jsonString);
-            JSONArray jsonArray = jsonObject.getJSONArray(jsonArrayName);
-
-            for (int i = 0; i < jsonArray.length(); i++) {
-                ContentValues values = new ContentValues();
-                JSONObject item = jsonArray.getJSONObject(i);
-
-                // Agregar cada columna y valor al ContentValues
-                values.put(USUARIO_NOMBRE_USUARIO, item.getString("nombre_usuario"));
-                values.put(USUARIO_CONTRASENA, item.getString("contrasena"));
-                values.put(USUARIO_TIPO, item.getString("tipo_usuario"));
-                values.put(USUARIO_NOMBRE, item.getString("nombre"));
-                values.put(USUARIO_APELLIDOS, item.getString("apellidos"));
-                values.put(USUARIO_EDAD, item.getInt("edad"));
-                Log.d("MiApp", "Nuevo Usuario  "+item.getString("nombre_usuario")+" "+item.getString("contrasena"));
-                // Insertar los valores en la base de datos
-                db.insert(tableName, null, values);
-            }
-        } catch (IOException | JSONException e) {
-            e.printStackTrace();
-        }
-    }
     public long crearHijo(HijoDTO hijo,int id) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -282,7 +214,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     // Método para obtener la lista de hijos dado el ID de un usuario
     @SuppressLint("Range")
-    public List<HijoDTO> obtenerHijosPorUsuario(long idUsuario) {
+    public List<HijoDTO> obtenerHijosPorUsuario(String idUsuario) {
         List<HijoDTO> listaHijos = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -343,7 +275,7 @@ public class DBHelper extends SQLiteOpenHelper {
         }
     }
 
-    public void agregarFavorito(long usuarioId, long campamentoId) {
+    public void agregarFavorito(String usuarioId, long campamentoId) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(FAVORITO_USUARIO_ID, usuarioId);
@@ -351,7 +283,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.insert(TABLE_FAVORITOS, null, values);
         db.close();
     }
-    public void quitarDeFavoritos(long usuarioId, long campamentoId) {
+    public void quitarDeFavoritos(String usuarioId, long campamentoId) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         String whereClause = FAVORITO_USUARIO_ID + " = ? AND " + FAVORITO_CAMPAMENTO_ID + " = ?";
@@ -402,7 +334,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return campamentosFavoritos;
     }
 
-    public List<TareaDTO> obtenerTicksDeUsuario(long usuarioId) {
+    public List<TareaDTO> obtenerTicksDeUsuario(String usuarioId) {
         List<TareaDTO> tareasTick = new ArrayList<>();
 
 //        String selectQuery = "SELECT * FROM " + TABLE_TICK +
@@ -433,7 +365,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return tareasTick;
     }
 
-    public List<CampamentoDto> obtenerInscritosDeUsuario(long usuarioId) {
+    public List<CampamentoDto> obtenerInscritosDeUsuario(String usuarioId) {
         List<CampamentoDto> campamentosFavoritos = new ArrayList<>();
 
         String selectQuery = "SELECT * FROM " + TABLE_INSCRITOS +
@@ -483,8 +415,10 @@ public class DBHelper extends SQLiteOpenHelper {
                 USUARIO_TIPO,
                 USUARIO_NOMBRE,
                 USUARIO_APELLIDOS,
-                USUARIO_EDAD
+                USUARIO_EDAD,
+                USUARIO_CONTRASENA
         };
+
 
         // Define la cláusula WHERE para la consulta
         String whereClause = USUARIO_NOMBRE_USUARIO + " = ? AND " + USUARIO_CONTRASENA + " = ?";
@@ -498,12 +432,13 @@ public class DBHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             // Si se encuentra el usuario, crea un objeto UsuarioDto
             usuarioDto = new UserDTO(
-                    cursor.getLong(cursor.getColumnIndex(USUARIO_ID)),
+                    cursor.getString(cursor.getColumnIndex(USUARIO_ID)),
                     cursor.getString(cursor.getColumnIndex(USUARIO_NOMBRE_USUARIO)),
                     cursor.getString(cursor.getColumnIndex(USUARIO_TIPO)),
                     cursor.getString(cursor.getColumnIndex(USUARIO_NOMBRE)),
                     cursor.getString(cursor.getColumnIndex(USUARIO_APELLIDOS)),
-                    cursor.getInt(cursor.getColumnIndex(USUARIO_EDAD))
+                    cursor.getInt(cursor.getColumnIndex(USUARIO_EDAD)),
+                    cursor.getString(cursor.getColumnIndex(USUARIO_CONTRASENA))
             );
         }
 
@@ -516,7 +451,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
 
-    public List<CampamentoDto> obtenerCampamentosConFavoritos(long usuarioId) {
+    public List<CampamentoDto> obtenerCampamentosConFavoritos(String usuarioId) {
         List<CampamentoDto> campamentosConFavoritos = new ArrayList<>();
 
         String selectQuery = "SELECT * FROM " + TABLE_CAMPAMENTOS;
@@ -555,7 +490,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return campamentosConFavoritos;
     }
 
-    private boolean esCampamentoFavorito(long usuarioId, long campamentoId, SQLiteDatabase db) {
+    private boolean esCampamentoFavorito(String usuarioId, long campamentoId, SQLiteDatabase db) {
         String selectQuery = "SELECT * FROM " + TABLE_FAVORITOS +
                 " WHERE " + FAVORITO_USUARIO_ID + " = " + usuarioId +
                 " AND " + FAVORITO_CAMPAMENTO_ID + " = " + campamentoId;
@@ -568,39 +503,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         return esFavorito;
     }
-    // Método para crear un nuevo usuario
-    public boolean crearUsuario(UserDTO usuario, String contrasena) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        long resultado = -1;
 
-        try {
-            values.put(USUARIO_NOMBRE_USUARIO, usuario.getNombreUsuario());
-            values.put(USUARIO_CONTRASENA, contrasena);
-            values.put(USUARIO_TIPO, usuario.getTipoUsuario());
-            values.put(USUARIO_NOMBRE, usuario.getNombre());
-            values.put(USUARIO_APELLIDOS, usuario.getApellidos());
-            values.put(USUARIO_EDAD, usuario.getEdad());
-
-            db.beginTransaction();
-            resultado = db.insert(TABLE_USUARIOS, null, values);
-            db.setTransactionSuccessful();
-        } catch (Exception e) {
-            // Manejar la excepción según tus necesidades
-            e.printStackTrace();
-        } finally {
-            if (db != null) {
-                db.endTransaction();
-                db.close();
-            }
-        }
-
-        if (resultado != -1) {
-            Log.d("MiApp", "Se creó un nuevo usuario con " + usuario.getNombreUsuario() + " " + contrasena);
-        }
-
-        return resultado != -1;
-    }
 
 
     // Método para actualizar un usuario
@@ -655,4 +558,73 @@ public class DBHelper extends SQLiteOpenHelper {
         return existeUsuario;
     }
 
+    public void agregarUsuario(UserDTO usuario) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        long resultado = -1;
+
+        try {
+            values.put(USUARIO_NOMBRE_USUARIO, usuario.getNombreUsuario());
+            values.put(USUARIO_CONTRASENA, usuario.getContrasena());
+            values.put(USUARIO_TIPO, usuario.getTipoUsuario());
+            values.put(USUARIO_NOMBRE, usuario.getNombre());
+            values.put(USUARIO_APELLIDOS, usuario.getApellidos());
+            values.put(USUARIO_EDAD, usuario.getEdad());
+
+            db.beginTransaction();
+            resultado = db.insert(TABLE_USUARIOS, null, values);
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            // Manejar la excepción según tus necesidades
+            e.printStackTrace();
+        } finally {
+            if (db != null) {
+                db.endTransaction();
+                db.close();
+            }
+        }
+
+        if (resultado != -1) {
+            Log.d("MiApp", "Se creó un nuevo usuario con " + usuario.getNombreUsuario() + " " + usuario.getContrasena());
+        }
+
+
+
+    }
+
+    public void sincronizarUsuarios() {
+        DatabaseReference referenciaFirebase = FirebaseDatabase.getInstance().getReference("usuarios");
+
+        referenciaFirebase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                limpiarTablaUsuarios();
+                Log.d("MiApp", "Punta A");
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Log.d("MiApp", "Punta B");
+                    UserDTO usuarioFirebase = snapshot.getValue(UserDTO.class);
+                    // Actualizar la base de datos local con los datos de usuarioFirebase
+                    actualizarBaseDeDatosLocal(usuarioFirebase);
+                }
+                Log.d("MiApp", "Punta C");
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Manejar el error, si es necesario
+            }
+        });
+    }
+    public void limpiarTablaUsuarios() {
+        Log.d("MiApp", "Se limpia todos los usuarios");
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_USUARIOS, null, null);
+        db.close();
+    }
+    private void actualizarBaseDeDatosLocal(UserDTO usuarioFirebase) {
+        Log.d("MiApp", "Se agrega el ususario "+usuarioFirebase.getNombreUsuario());
+
+        agregarUsuario(usuarioFirebase);
+    }
 }
