@@ -268,7 +268,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
 
-    public long crearHijo(HijoDTO hijo,int id) {
+    public long crearHijo(HijoDTO hijo,String id) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
@@ -290,7 +290,8 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         String query = "SELECT * FROM " + TABLE_HIJOS +
-                " WHERE " + HIJO_USUARIO_ID + " = " + idUsuario;
+                " WHERE " + HIJO_USUARIO_ID + " = '" + idUsuario + "'";
+
 
         Cursor cursor = db.rawQuery(query, null);
 
