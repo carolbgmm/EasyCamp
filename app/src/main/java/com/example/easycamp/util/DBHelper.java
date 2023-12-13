@@ -14,19 +14,12 @@ import com.example.easycamp.domain.FavoritoDTO;
 import com.example.easycamp.domain.HijoDTO;
 import com.example.easycamp.domain.TareaDTO;
 import com.example.easycamp.domain.UserDTO;
-import com.google.firebase.Firebase;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -708,7 +701,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private void actualizarBaseDeDatosLocalCampamento(CampamentoDto campamento) {
         // Implementar lógica para actualizar la base de datos local con los datos del campamento, si es necesario
         // Puedes guardar los datos localmente, mostrarlos en la interfaz de usuario, etc.
-        Log.d("MiApp", "se agrega el campamento "+campamento.getNombre());
+        Log.d("MiApp", "se agrega el campamento "+campamento.toString());
         agregarCampamento(campamento);
     }
 
@@ -720,15 +713,15 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(CAMPAMENTO_ID, campamento.getId());
         values.put(CAMPAMENTO_NOMBRE, campamento.getNombre());
         values.put(CAMPAMENTO_DESCRIPCION, campamento.getDescripcion());
-        values.put(CAMPAMENTO_FECHA_INICIO, campamento.getFechaInicio());
-        values.put(CAMPAMENTO_FECHA_FINAL, campamento.getFechaFinal());
-        values.put(CAMPAMENTO_NUMERO_MAX_PARTICIPANTES, campamento.getNumeroMaxParticipantes());
-        values.put(CAMPAMENTO_NUMERO_APUNTADOS, campamento.getNumeroApuntados());
+        values.put(CAMPAMENTO_FECHA_INICIO, campamento.getFecha_inicio());
+        values.put(CAMPAMENTO_FECHA_FINAL, campamento.getFecha_final());
+        values.put(CAMPAMENTO_NUMERO_MAX_PARTICIPANTES, campamento.getNumero_max_participantes());
+        values.put(CAMPAMENTO_NUMERO_APUNTADOS, campamento.getNumero_apuntados());
         values.put(CAMPAMENTO_UBICACION, campamento.getUbicacion());
         values.put(CAMPAMENTO_IMAGEN, campamento.getImagen());
-        values.put(CAMPAMENTO_EDAD_MINIMA, campamento.getEdadMinima());
-        values.put(CAMPAMENTO_EDAD_MAXIMA, campamento.getEdadMaxima());
-        values.put(CAMPAMENTO_NUM_MONITORES, campamento.getNumMonitores());
+        values.put(CAMPAMENTO_EDAD_MINIMA, campamento.getEdad_minima());
+        values.put(CAMPAMENTO_EDAD_MAXIMA, campamento.getEdad_maxima());
+        values.put(CAMPAMENTO_NUM_MONITORES, campamento.getNum_monitores());
         values.put(CAMPAMENTO_PRECIO, campamento.getPrecio());
         values.put(CAMPAMENTO_CATEGORIA, campamento.getCategoria());
 
