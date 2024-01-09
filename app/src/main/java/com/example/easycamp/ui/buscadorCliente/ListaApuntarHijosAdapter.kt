@@ -3,19 +3,21 @@ package com.example.easycamp.ui.buscadorCliente
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.easycamp.R
-import com.example.easycamp.domain.CampamentoDto
 import com.example.easycamp.domain.HijoDTO
+import com.example.easycamp.util.DBHelper
+import kotlin.coroutines.coroutineContext
 
 class ListaApuntarHijosAdapter : ListAdapter<HijoDTO, ListaApuntarHijosAdapter.HijoViewHolder>(HijoDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HijoViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val view = inflater.inflate(R.layout.item_hijo, parent, false)
+        val view = inflater.inflate(R.layout.item_apuntar_hijo, parent, false)
         return HijoViewHolder(view)
     }
 
@@ -30,13 +32,19 @@ class ListaApuntarHijosAdapter : ListAdapter<HijoDTO, ListaApuntarHijosAdapter.H
         private val tvApellidos: TextView = itemView.findViewById(R.id.tvApellidos)
         private val tvEdad: TextView = itemView.findViewById(R.id.tvEdad)
         private val tvObservaciones: TextView = itemView.findViewById(R.id.tvObservaciones)
+        private val btnAdd: ImageButton = itemView.findViewById(R.id.btnAdd)
+        private lateinit var service: DBHelper
 
         fun bind(hijo: HijoDTO) {
+            service = DBHelper(itemView.context)
+
             tvNombreHijo.text = hijo.nombre
             tvApellidos.text = hijo.apellidos
             tvEdad.text = "Edad: ${hijo.edad}"
             tvObservaciones.text = "Observaciones: ${hijo.observaciones}"
-            // Puedes personalizar esto según tus necesidades
+            btnAdd.setOnClickListener {
+
+            }
         }
     }
 

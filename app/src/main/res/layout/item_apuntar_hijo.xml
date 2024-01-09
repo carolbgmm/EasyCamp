@@ -44,6 +44,7 @@
     </LinearLayout>
 
     <ImageButton
+        android:id="@+id/btnAdd"
         android:layout_width="wrap_content"
         android:layout_height="30dp"
         android:layout_weight="1"
