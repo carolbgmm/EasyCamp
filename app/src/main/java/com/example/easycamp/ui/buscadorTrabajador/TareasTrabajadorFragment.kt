@@ -32,10 +32,9 @@ class TareasTrabajadorFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val lista = persistencia.obtenerTareasDeUsuario(LoggedUserDTO.getInstance(null).user.nombreUsuario)
-        //Log.i("AYUDA", lista.size.toString())
+
         val adapterTareas = TareasTrabajadorAdapter(lista, object : TareasTrabajadorAdapter.OnItemClickListener {
             override fun onItemClick(tarea: TareaDTO?) {
-                tarea?.let { clickonItem(tarea) }
             }
         })
         recyclerCamp.apply {
@@ -48,16 +47,9 @@ class TareasTrabajadorFragment : Fragment() {
     }
 
     companion object {
-        //val TAREA_SELECCIONADO = "tarea_seleccionada"
         @JvmStatic
         fun newInstance() =
             TareasTrabajadorFragment()
-    }
-
-    fun clickonItem(tarea: TareaDTO) {
-//        val intent = Intent(activity, DetalleCampamentoActivity::class.java)
-//        intent.putExtra(TAREA_SELECCIONADO, TAREA_SELECCIONADO)
-//        startActivity(intent)
     }
 
 }

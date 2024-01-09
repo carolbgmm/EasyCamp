@@ -6,10 +6,10 @@
         android:icon="@drawable/icon_search"
         android:title="@string/text_lupa"/>
     <item
-        android:id="@+id/tareas_trabajador"
+        android:id="@+id/inscritos_trabajador"
         android:enabled="true"
         android:icon="@drawable/icon_tareas"
-        android:title="@string/text_tareas"/>
+        android:title="@string/text_inscritos"/>
     <item
         android:id="@+id/herramientas_trabajador"
         android:enabled="true"
