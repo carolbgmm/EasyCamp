@@ -3,6 +3,7 @@ package com.example.easycamp.ui.detalle
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.easycamp.R
@@ -100,8 +101,10 @@ class DetalleCampamentoActivity : AppCompatActivity() {
             .commit()
 
         fab.setOnClickListener {
+            val intent = Intent(this, ApuntarHijosActivity::class.java)
             // Redirige a la página principal TRABAJADOR
-            startActivity(Intent(this, ApuntarHijosActivity::class.java))
+            intent.putExtra(RecyclerClienteFragment.CAMPAMENTO_SELECCIONADO, campamento)
+            startActivity(intent)
             fab.setImageResource(R.drawable.campamento_solicitado)
         }
     }

@@ -11,9 +11,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.easycamp.R
 import com.example.easycamp.domain.HijoDTO
 import com.example.easycamp.util.DBHelper
-import kotlin.coroutines.coroutineContext
 
-class ListaApuntarHijosAdapter : ListAdapter<HijoDTO, ListaApuntarHijosAdapter.HijoViewHolder>(HijoDiffCallback()) {
+class ListaApuntarHijosAdapter(val listener: OnClickListener) : ListAdapter<HijoDTO, ListaApuntarHijosAdapter.HijoViewHolder>(HijoDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HijoViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -23,8 +22,12 @@ class ListaApuntarHijosAdapter : ListAdapter<HijoDTO, ListaApuntarHijosAdapter.H
 
     override fun onBindViewHolder(holder: HijoViewHolder, position: Int) {
         val hijo = getItem(position)
-        holder.bind(hijo)
+        holder.bind(hijo, listener)
     }
+    fun interface OnClickListener {
+        fun onClick(item: HijoDTO?)
+    }
+
 
     class HijoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
@@ -35,15 +38,20 @@ class ListaApuntarHijosAdapter : ListAdapter<HijoDTO, ListaApuntarHijosAdapter.H
         private val btnAdd: ImageButton = itemView.findViewById(R.id.btnAdd)
         private lateinit var service: DBHelper
 
-        fun bind(hijo: HijoDTO) {
+        fun bind(hijo: HijoDTO, listener: OnClickListener) {
             service = DBHelper(itemView.context)
 
             tvNombreHijo.text = hijo.nombre
             tvApellidos.text = hijo.apellidos
             tvEdad.text = "Edad: ${hijo.edad}"
             tvObservaciones.text = "Observaciones: ${hijo.observaciones}"
+            var apuntado = false
             btnAdd.setOnClickListener {
-
+                if(!apuntado) {
+                    btnAdd.setImageResource(R.drawable.icon_hijo_apuntado)
+                    listener.onClick(hijo)
+                    apuntado = true
+                }
             }
         }
     }

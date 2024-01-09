@@ -176,8 +176,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
         String createTableInscritos = "CREATE TABLE " + TABLE_INSCRITOS + " (" +
                 INSCRITOS_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                INSCRITOS_HIJO_ID + " TEXT, " +  // Cambiado a TEXT
-                INSCRITOS_CAMPAMENTO_ID + " TEXT, " +  // Cambiado a TEXT
+                INSCRITOS_HIJO_ID + " INTEGER, " +  // Cambiado a TEXT
+                INSCRITOS_CAMPAMENTO_ID + " INTEGER, " +  // Cambiado a TEXT
                 "FOREIGN KEY(" + INSCRITOS_HIJO_ID + ") REFERENCES " + TABLE_HIJOS + "(" + HIJO_ID + "), " +
                 "FOREIGN KEY(" + INSCRITOS_CAMPAMENTO_ID + ") REFERENCES " + TABLE_CAMPAMENTOS + "(" + CAMPAMENTO_ID + "))";
         db.execSQL(createTableInscritos);
@@ -266,8 +266,6 @@ public class DBHelper extends SQLiteOpenHelper {
         }
     }
 
-
-
     public long crearHijo(HijoDTO hijo,String id) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -279,6 +277,18 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(HIJO_USUARIO_ID, id);
 
         long resultado = db.insert(TABLE_HIJOS, null, values);
+        db.close();
+        return resultado;
+    }
+
+    public long inscribirHijo(long hijoId,long campamentoId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(INSCRITOS_HIJO_ID, hijoId);
+        values.put(INSCRITOS_CAMPAMENTO_ID, campamentoId);
+
+        long resultado = db.insert(TABLE_INSCRITOS, null, values);
         db.close();
         return resultado;
     }
@@ -419,9 +429,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 " ON " + TABLE_INSCRITOS + "." +INSCRITOS_CAMPAMENTO_ID + " = " + TABLE_CAMPAMENTOS + "." + CAMPAMENTO_ID +
                 " INNER JOIN " + TABLE_HIJOS +
                 " ON " + TABLE_INSCRITOS + "." +INSCRITOS_HIJO_ID + " = " + TABLE_HIJOS + "." + HIJO_ID +
-                " INNER JOIN " + TABLE_USUARIOS +
-                " ON " + TABLE_USUARIOS + "." +USUARIO_ID + " = " + TABLE_HIJOS + "." + HIJO_USUARIO_ID +
-                " WHERE " + TABLE_USUARIOS + "." + USUARIO_ID + " = '" + usuarioID + "';";
+                " WHERE " + TABLE_HIJOS + "." + HIJO_USUARIO_ID + " = '" + usuarioID + "';";
 
 
 
