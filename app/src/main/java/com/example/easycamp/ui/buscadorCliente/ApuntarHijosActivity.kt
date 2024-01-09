@@ -39,16 +39,18 @@ class ApuntarHijosActivity : AppCompatActivity() {
         val layoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = layoutManager
 
-
-
-        val adapter = ListaApuntarHijosAdapter(ListaApuntarHijosAdapter.OnClickListener {
-            fun onClick(item: HijoDTO?) {
-                campamento?.let { clickonItem(item) }
+        campamento?.let { c->
+            listaDeHijos.removeIf{
+                it.edad < c.edad_minima || it.edad > c.edad_maxima
             }
-        })
-        recyclerView.adapter = adapter
-        adapter.submitList(listaDeHijos)
-
+            val adapter = ListaApuntarHijosAdapter(object: ListaApuntarHijosAdapter.MyOnClickListener {
+                override fun onClick(item: HijoDTO?) {
+                     clickonItem(item)
+                }
+            })
+            recyclerView.adapter = adapter
+            adapter.submitList(listaDeHijos)
+        }
 
     }
 

@@ -12,7 +12,7 @@ import com.example.easycamp.R
 import com.example.easycamp.domain.HijoDTO
 import com.example.easycamp.util.DBHelper
 
-class ListaApuntarHijosAdapter(val listener: OnClickListener) : ListAdapter<HijoDTO, ListaApuntarHijosAdapter.HijoViewHolder>(HijoDiffCallback()) {
+class ListaApuntarHijosAdapter(val listener: MyOnClickListener) : ListAdapter<HijoDTO, ListaApuntarHijosAdapter.HijoViewHolder>(HijoDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HijoViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -24,7 +24,7 @@ class ListaApuntarHijosAdapter(val listener: OnClickListener) : ListAdapter<Hijo
         val hijo = getItem(position)
         holder.bind(hijo, listener)
     }
-    fun interface OnClickListener {
+    fun interface MyOnClickListener {
         fun onClick(item: HijoDTO?)
     }
 
@@ -38,7 +38,7 @@ class ListaApuntarHijosAdapter(val listener: OnClickListener) : ListAdapter<Hijo
         private val btnAdd: ImageButton = itemView.findViewById(R.id.btnAdd)
         private lateinit var service: DBHelper
 
-        fun bind(hijo: HijoDTO, listener: OnClickListener) {
+        fun bind(hijo: HijoDTO, listener: MyOnClickListener) {
             service = DBHelper(itemView.context)
 
             tvNombreHijo.text = hijo.nombre
