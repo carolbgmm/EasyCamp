@@ -49,16 +49,12 @@ class ListaHijosFragment : Fragment() {
 
             Log.d("MiApp", "Tamaño de listaDeHijos antes de agregar: ${listaDeHijos.size}")
 
-            val agregarHijoFragment = AgregarHijoFragment()
+            val agregarHijoFragment = AgregarHijoFragment(adapter,listaDeHijos,usuarioActual)
             agregarHijoFragment.show(requireFragmentManager(), "AgregarHijoFragment")
 
 
 
-            val nuevoHijo =  agregarHijoFragment.getHijoDTO()
-            val nuevoHijoId = service.crearHijo(nuevoHijo, usuarioActual.id.toInt())
-            nuevoHijo.id = nuevoHijoId
-            listaDeHijos.add(nuevoHijo)
-            adapter.submitList(listaDeHijos)
+
             Log.d("MiApp", "Tamaño de listaDeHijos después de agregar: ${listaDeHijos.size}")
 
             adapter.notifyDataSetChanged()

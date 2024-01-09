@@ -22,6 +22,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -194,15 +200,75 @@ public class DBHelper extends SQLiteOpenHelper {
                 "FOREIGN KEY(" + TICK_CAMPAMENTO_NOMBRE + ") REFERENCES " + TABLE_CAMPAMENTOS + "(" + CAMPAMENTO_NOMBRE + "))";
         db.execSQL(createTableTick);
 
+        insertarDatosTareasDesdeJSON(context, db, TABLE_TAREAS, "tareas", "datos_iniciales.json");
 
+        insertarDatosInscritosDesdeJSON(context, db, TABLE_INSCRITOS, "inscritos", "datos_iniciales.json");
 
+    }
 
+    private void insertarDatosTareasDesdeJSON(Context context, SQLiteDatabase db, String tableName, String jsonArrayName, String fileName) {
+        Log.d("MiApp", "Se intenta poner las tareas");
+        try {
+            InputStream inputStream = context.getAssets().open(fileName);
+            int size = inputStream.available();
+            byte[] buffer = new byte[size];
+            inputStream.read(buffer);
+            inputStream.close();
 
+            String jsonString = new String(buffer, "UTF-8");
+            JSONObject jsonObject = new JSONObject(jsonString);
+            JSONArray jsonArray = jsonObject.getJSONArray(jsonArrayName);
+
+            for (int i = 0; i < jsonArray.length(); i++) {
+                ContentValues values = new ContentValues();
+                JSONObject item = jsonArray.getJSONObject(i);
+
+                // Agregar cada columna y valor al ContentValues
+                values.put(TAREA_TITULO, item.getString("titulo_tarea"));
+                values.put(TAREA_DESCRIPCION, item.getString("descripcion_tarea"));
+                values.put(TAREA_FECHA, item.getString("fecha_tarea"));
+                values.put(USUARIO_TAREA_NOMBRE, item.getString("nombre_usuario_tarea"));
+                Log.d("MiApp", "Nueva Tarea  "+item.getString("nombre_usuario_tarea")+" "+item.getString("titulo_tarea"));
+                // Insertar los valores en la base de datos
+                db.insert(tableName, null, values);
+            }
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void insertarDatosInscritosDesdeJSON(Context context, SQLiteDatabase db, String tableName, String jsonArrayName, String fileName) {
+        Log.d("MiApp", "Se intenta poner los inscritos");
+        try {
+            InputStream inputStream = context.getAssets().open(fileName);
+            int size = inputStream.available();
+            byte[] buffer = new byte[size];
+            inputStream.read(buffer);
+            inputStream.close();
+
+            String jsonString = new String(buffer, "UTF-8");
+            JSONObject jsonObject = new JSONObject(jsonString);
+            JSONArray jsonArray = jsonObject.getJSONArray(jsonArrayName);
+
+            for (int i = 0; i < jsonArray.length(); i++) {
+                ContentValues values = new ContentValues();
+                JSONObject item = jsonArray.getJSONObject(i);
+
+                // Agregar cada columna y valor al ContentValues
+                values.put(INSCRITOS_USUARIO_NOMBRE, item.getString("usuario_nombre"));
+                values.put(INSCRITOS_CAMPAMENTO_NOMBRE, item.getString("campamento_nombre"));
+                Log.d("MiApp", "Nuevo inscrito  "+item.getString("usuario_nombre")+" "+item.getString("campamento_nombre"));
+                // Insertar los valores en la base de datos
+                db.insert(tableName, null, values);
+            }
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+        }
     }
 
 
 
-    public long crearHijo(HijoDTO hijo,int id) {
+    public long crearHijo(HijoDTO hijo,String id) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
@@ -224,7 +290,8 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         String query = "SELECT * FROM " + TABLE_HIJOS +
-                " WHERE " + HIJO_USUARIO_ID + " = " + idUsuario;
+                " WHERE " + HIJO_USUARIO_ID + " = '" + idUsuario + "'";
+
 
         Cursor cursor = db.rawQuery(query, null);
 
