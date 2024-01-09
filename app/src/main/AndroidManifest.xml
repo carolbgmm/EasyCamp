@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
@@ -35,6 +36,8 @@
         <activity
             android:name=".ui.detalle.DetalleAsistentesActivity"
             android:exported="false" />
+        <activity android:name=".ui.buscadorCliente.ApuntarHijosActivity"
+            android:exported="false"/>
         <activity
             android:name=".ui.inicioSesion.RegistroActivity"
             android:exported="false" />
@@ -43,7 +46,7 @@
             android:exported="false" />
         <activity
             android:name=".ui.inicioSesion.Login_Activity"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

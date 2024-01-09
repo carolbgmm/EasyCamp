@@ -96,7 +96,7 @@ public class Login_Activity extends AppCompatActivity {
                 startActivity(new Intent(this, BuscadorTrabajadorActivity.class));
                 break;
             default:
-                showToast("A ocurrido un error, no se encuentra su tipo de ususario");
+                showToast("Ha ocurrido un error, no se encuentra su tipo de ususario");
                 break;
         }
     }

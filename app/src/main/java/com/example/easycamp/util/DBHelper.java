@@ -85,8 +85,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
     // Columnas de la tabla de inscritos
     private static final String INSCRITOS_ID = "id";
-    private static final String INSCRITOS_USUARIO_NOMBRE = "usuario_nombre";
-    private static final String INSCRITOS_CAMPAMENTO_NOMBRE = "campamento_nombre";
+    private static final String INSCRITOS_HIJO_ID = "hijo_id";
+    private static final String INSCRITOS_CAMPAMENTO_ID = "campamento_id";
 
     // Nombre de la tabla de tareas
     private static final String TABLE_TAREAS = "tareas";
@@ -176,10 +176,10 @@ public class DBHelper extends SQLiteOpenHelper {
 
         String createTableInscritos = "CREATE TABLE " + TABLE_INSCRITOS + " (" +
                 INSCRITOS_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                INSCRITOS_USUARIO_NOMBRE + " TEXT, " +  // Cambiado a TEXT
-                INSCRITOS_CAMPAMENTO_NOMBRE + " TEXT, " +  // Cambiado a TEXT
-                "FOREIGN KEY(" + INSCRITOS_USUARIO_NOMBRE + ") REFERENCES " + TABLE_USUARIOS + "(" + USUARIO_NOMBRE_USUARIO + "), " +
-                "FOREIGN KEY(" + INSCRITOS_CAMPAMENTO_NOMBRE + ") REFERENCES " + TABLE_CAMPAMENTOS + "(" + CAMPAMENTO_NOMBRE + "))";
+                INSCRITOS_HIJO_ID + " INTEGER, " +  // Cambiado a TEXT
+                INSCRITOS_CAMPAMENTO_ID + " INTEGER, " +  // Cambiado a TEXT
+                "FOREIGN KEY(" + INSCRITOS_HIJO_ID + ") REFERENCES " + TABLE_HIJOS + "(" + HIJO_ID + "), " +
+                "FOREIGN KEY(" + INSCRITOS_CAMPAMENTO_ID + ") REFERENCES " + TABLE_CAMPAMENTOS + "(" + CAMPAMENTO_ID + "))";
         db.execSQL(createTableInscritos);
 
 
@@ -255,9 +255,9 @@ public class DBHelper extends SQLiteOpenHelper {
                 JSONObject item = jsonArray.getJSONObject(i);
 
                 // Agregar cada columna y valor al ContentValues
-                values.put(INSCRITOS_USUARIO_NOMBRE, item.getString("usuario_nombre"));
-                values.put(INSCRITOS_CAMPAMENTO_NOMBRE, item.getString("campamento_nombre"));
-                Log.d("MiApp", "Nuevo inscrito  "+item.getString("usuario_nombre")+" "+item.getString("campamento_nombre"));
+                values.put(INSCRITOS_HIJO_ID, item.getString(INSCRITOS_HIJO_ID));
+                values.put(INSCRITOS_CAMPAMENTO_ID, item.getString(INSCRITOS_CAMPAMENTO_ID));
+                Log.d("MiApp", "Nuevo inscrito  "+item.getString(INSCRITOS_HIJO_ID)+" "+item.getString(INSCRITOS_CAMPAMENTO_ID));
                 // Insertar los valores en la base de datos
                 db.insert(tableName, null, values);
             }
@@ -265,8 +265,6 @@ public class DBHelper extends SQLiteOpenHelper {
             e.printStackTrace();
         }
     }
-
-
 
     public long crearHijo(HijoDTO hijo,String id) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -279,6 +277,18 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(HIJO_USUARIO_ID, id);
 
         long resultado = db.insert(TABLE_HIJOS, null, values);
+        db.close();
+        return resultado;
+    }
+
+    public long inscribirHijo(long hijoId,long campamentoId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(INSCRITOS_HIJO_ID, hijoId);
+        values.put(INSCRITOS_CAMPAMENTO_ID, campamentoId);
+
+        long resultado = db.insert(TABLE_INSCRITOS, null, values);
         db.close();
         return resultado;
     }
@@ -411,13 +421,15 @@ public class DBHelper extends SQLiteOpenHelper {
         return tareas;
     }
 
-    public List<CampamentoDto> obtenerInscritosDeUsuario(String usuarioNombre) {
+    public List<CampamentoDto> obtenerInscritosDeUsuario(String usuarioID) {
         List<CampamentoDto> campamentosInscritos = new ArrayList<>();
 
         String selectQuery = "SELECT * FROM " + TABLE_CAMPAMENTOS +
                 " INNER JOIN " + TABLE_INSCRITOS +
-                " ON " + TABLE_INSCRITOS + "." + INSCRITOS_CAMPAMENTO_NOMBRE + " = " + TABLE_CAMPAMENTOS + "." + CAMPAMENTO_NOMBRE +
-                " WHERE " + TABLE_INSCRITOS + "." + INSCRITOS_USUARIO_NOMBRE + " = '" + usuarioNombre + "';";
+                " ON " + TABLE_INSCRITOS + "." +INSCRITOS_CAMPAMENTO_ID + " = " + TABLE_CAMPAMENTOS + "." + CAMPAMENTO_ID +
+                " INNER JOIN " + TABLE_HIJOS +
+                " ON " + TABLE_INSCRITOS + "." +INSCRITOS_HIJO_ID + " = " + TABLE_HIJOS + "." + HIJO_ID +
+                " WHERE " + TABLE_HIJOS + "." + HIJO_USUARIO_ID + " = '" + usuarioID + "';";
 
 
 

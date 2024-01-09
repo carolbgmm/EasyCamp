@@ -25,6 +25,7 @@
     <string name="navigation_campamentos">Campamentos</string>
     <string name="navigation_inscritos">Inscipciones</string>
     <string name="navigation_cuenta">Cuenta</string>
+    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="navigation_resumen">Resumen</string>
     <string name="navigation_descripcion">Descripción</string>
@@ -135,6 +136,7 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="añadir_a_campamento">Apuntar</string>
+    <string name="apuntar_hijo">Apuntar</string>
     <string name="horaTarea">Hora de la tarea</string>
     <string name="text_inscritos">Inscritos</string>
     <string name="boton_tareas">Tareas</string>

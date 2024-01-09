@@ -1,12 +1,16 @@
 package com.example.easycamp.ui.detalle
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.easycamp.R
 import com.example.easycamp.domain.CampamentoDto
+import com.example.easycamp.ui.buscadorCliente.ApuntarHijosActivity
 import com.example.easycamp.ui.buscadorCliente.RecyclerClienteFragment
+import com.example.easycamp.ui.buscadorTrabajador.BuscadorTrabajadorActivity
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -97,6 +101,10 @@ class DetalleCampamentoActivity : AppCompatActivity() {
             .commit()
 
         fab.setOnClickListener {
+            val intent = Intent(this, ApuntarHijosActivity::class.java)
+            // Redirige a la página principal TRABAJADOR
+            intent.putExtra(RecyclerClienteFragment.CAMPAMENTO_SELECCIONADO, campamento)
+            startActivity(intent)
             fab.setImageResource(R.drawable.campamento_solicitado)
         }
     }

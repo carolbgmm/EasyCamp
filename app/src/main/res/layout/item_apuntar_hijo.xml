@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="16dp">
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_weight="9">
+
+        <TextView
+            android:id="@+id/tvNombreHijo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nombre del Hijo"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvApellidos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Apellidos"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tvEdad"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Edad"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tvObservaciones"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Observaciones"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/btnAdd"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_weight="1"
+        android:layout_marginTop="20dp"
+        android:src="@drawable/incono_apuntar_hijo"
+        android:background="@color/backgroundButton"/>
+
+
+</LinearLayout>
+
