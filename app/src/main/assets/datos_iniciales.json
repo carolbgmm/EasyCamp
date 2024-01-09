@@ -13,7 +13,9 @@
       "num_monitores": 6,
       "precio": 299.99,
       "categoria": "Aventura",
-      "imagen": "https://picsum.photos/id/17/367/267"
+      "imagen": "https://picsum.photos/id/17/367/267",
+      "latitud":40.262341,
+      "longuitud": -4.976861
     },
     {
       "nombre": "Naturaleza Serena",
@@ -28,7 +30,9 @@
       "num_monitores": 4,
       "precio": 199.99,
       "categoria": "Naturaleza",
-      "imagen": "https://picsum.photos/id/18/367/267"
+      "imagen": "https://picsum.photos/id/18/367/267",
+      "latitud":43.025032,
+      "longuitud": -5.381511
     },
     {
       "nombre": "Deportes en Acción",
@@ -43,7 +47,9 @@
       "num_monitores": 5,
       "precio": 249.99,
       "categoria": "Deportes",
-      "imagen": "https://picsum.photos/id/19/367/267"
+      "imagen": "https://picsum.photos/id/19/367/267",
+      "latitud":39.590745,
+      "longuitud": -4.769288
     },
     {
       "nombre": "Arte y Creatividad",
@@ -58,7 +64,9 @@
       "num_monitores": 4,
       "precio": 219.99,
       "categoria": "Arte",
-      "imagen": "https://picsum.photos/id/20/367/267"
+      "imagen": "https://picsum.photos/id/20/367/267",
+      "latitud":40.424496,
+      "longuitud": -2.047965
     },
     {
       "nombre": "Ciencia y Tecnología",
@@ -73,7 +81,9 @@
       "num_monitores": 6,
       "precio": 269.99,
       "categoria": "Ciencia",
-      "imagen": "https://picsum.photos/id/21/367/267"
+      "imagen": "https://picsum.photos/id/21/367/267",
+      "latitud":37.116696,
+      "longuitud": -3.573257
     },
     {
       "nombre": "Aventura Acuática",
@@ -88,7 +98,9 @@
       "num_monitores": 5,
       "precio": 239.99,
       "categoria": "Aventura",
-      "imagen": "https://picsum.photos/id/22/367/267"
+      "imagen": "https://picsum.photos/id/22/367/267",
+      "latitud":36.753822,
+      "longuitud": -3.834172
     },
     {
       "nombre": "Exploradores del Espacio",
@@ -103,7 +115,9 @@
       "num_monitores": 4,
       "precio": 279.99,
       "categoria": "Ciencia",
-      "imagen": "https://picsum.photos/id/23/367/267"
+      "imagen": "https://picsum.photos/id/23/367/267",
+      "latitud":38.708179,
+      "longuitud": -4.173083
     },
     {
       "nombre": "Aventura en la Granja",
@@ -118,7 +132,9 @@
       "num_monitores": 3,
       "precio": 189.99,
       "categoria": "Naturaleza",
-      "imagen": "https://picsum.photos/id/24/367/267"
+      "imagen": "https://picsum.photos/id/24/367/267",
+      "latitud":43.357382,
+      "longuitud": -5.797813
     },
     {
       "nombre": "Cine y Entretenimiento",
@@ -133,7 +149,9 @@
       "num_monitores": 5,
       "precio": 229.99,
       "categoria": "Arte",
-      "imagen": "https://picsum.photos/id/25/367/267"
+      "imagen": "https://picsum.photos/id/25/367/267",
+      "latitud":43.370539,
+      "longuitud": -5.831519
     },
     {
       "nombre": "Aventura en el Desierto",
@@ -148,7 +166,9 @@
       "num_monitores": 4,
       "precio": 259.99,
       "categoria": "Aventura",
-      "imagen": "https://picsum.photos/id/26/367/267"
+      "imagen": "https://picsum.photos/id/26/367/267",
+      "latitud":38.205071,
+      "longuitud": -1.072712
     },
     {
       "nombre": "Deportes Extremos",
@@ -163,7 +183,9 @@
       "num_monitores": 6,
       "precio": 309.99,
       "categoria": "Deportes",
-      "imagen": "https://picsum.photos/id/27/367/267"
+      "imagen": "https://picsum.photos/id/27/367/267",
+      "latitud":42.479520,
+      "longuitud": 0.224328
     },
     {
       "nombre": "Aventura en el Bosque",
@@ -178,7 +200,9 @@
       "num_monitores": 4,
       "precio": 219.99,
       "categoria": "Naturaleza",
-      "imagen": "https://picsum.photos/id/28/367/267"
+      "imagen": "https://picsum.photos/id/28/367/267",
+      "latitud":42.825184,
+      "longuitud": -7.121016
     }
   ],
 
