@@ -36,11 +36,13 @@ class TareasTrabajadorAdapter(val listaTareas: List<TareaDTO>, val listener: Tar
 
         var txtTitulo = view.findViewById<TextView>(R.id.txtTituloTarea)
         var txtDescripcion = view.findViewById<TextView>(R.id.txtDescripcionTarea)
+        var txtHora = view.findViewById<TextView>(R.id.txtHoraTarea)
         var imgTick = view.findViewById<ImageButton>(R.id.imgTick)
 
         fun bind(item: TareaDTO, listener: OnItemClickListener) {
             txtTitulo.setText(item.titulo)
             txtDescripcion.setText(item.descripcion)
+            txtHora.setText(item.fechaLimite)
 
             if(item.tick){
                 imgTick.setImageResource(R.drawable.tick_relleno)

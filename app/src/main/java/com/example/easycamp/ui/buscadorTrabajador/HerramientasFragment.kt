@@ -32,7 +32,7 @@ class HerramientasFragment : androidx.fragment.app.Fragment() {
         val btnListaAsist: Button = view.findViewById(R.id.button_lista_asistentes)
         val btnVehiculos: Button = view.findViewById(R.id.button_vehiculos)
         val btnUbis: Button = view.findViewById(R.id.button_ubicaciones)
-        val btnDocumentacion: Button = view.findViewById(R.id.button_documentos)
+        val btnTareas: Button = view.findViewById(R.id.button_tareas)
 
         btnListaAsist.setOnClickListener {
             // Acción para el botón Perfil
@@ -47,17 +47,33 @@ class HerramientasFragment : androidx.fragment.app.Fragment() {
 
         btnUbis.setOnClickListener {
             // Acción para el botón Cerrar Sesión
-            //mostrarUbis()
+            mostrarUbis()
         }
 
-        btnDocumentacion.setOnClickListener {
+        btnTareas.setOnClickListener {
             // Acción para el botón Cerrar Sesión
-           // mostrarDocumentos()
+           mostrarTareas()
         }
         
         return view
     }
-    
+
+    private fun mostrarUbis() {
+        val ubicacionesTrabajadorFragment = UbicacionesFragment.newInstance()
+        fragmentManager?.beginTransaction()
+            ?.replace(R.id.fragment_container_trabajador, ubicacionesTrabajadorFragment)
+            ?.addToBackStack(null)
+            ?.commit()
+    }
+
+    private fun mostrarTareas() {
+        val tareasTrabajadorFragment = TareasTrabajadorFragment.newInstance()
+        fragmentManager?.beginTransaction()
+            ?.replace(R.id.fragment_container_trabajador, tareasTrabajadorFragment)
+            ?.addToBackStack(null)
+            ?.commit()
+    }
+
 
     private fun obtenerUsuarioActual(): UserDTO {
 
