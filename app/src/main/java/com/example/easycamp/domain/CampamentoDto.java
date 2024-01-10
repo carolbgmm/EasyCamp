@@ -19,6 +19,10 @@ public class CampamentoDto implements Parcelable {
     private String categoria;
     private String imagen;
     private boolean favorito;
+    private float latitud;
+
+    private float longuitud;
+
 
     // Constructor vacío necesario para Firebase
     public CampamentoDto() {
@@ -39,7 +43,9 @@ public class CampamentoDto implements Parcelable {
             double precio,
             String categoria,
             String imagen,
-            boolean favorito
+            boolean favorito,
+            float latitud,
+            float longuitud
     ) {
         this.id = id;
         this.nombre = nombre;
@@ -56,6 +62,8 @@ public class CampamentoDto implements Parcelable {
         this.categoria = categoria;
         this.imagen = imagen;
         this.favorito = favorito;
+        this.latitud = latitud;
+        this.longuitud = longuitud;
     }
 
     protected CampamentoDto(Parcel in) {
@@ -74,6 +82,9 @@ public class CampamentoDto implements Parcelable {
         categoria = in.readString();
         imagen = in.readString();
         favorito = in.readByte() != 0;
+        latitud = in.readFloat();
+        longuitud = in.readFloat();
+
     }
 
     @Override
@@ -93,6 +104,8 @@ public class CampamentoDto implements Parcelable {
         dest.writeString(categoria);
         dest.writeString(imagen);
         dest.writeByte((byte) (favorito ? 1 : 0));
+        dest.writeFloat(latitud);
+        dest.writeFloat(longuitud);
     }
 
     @Override
@@ -233,6 +246,23 @@ public class CampamentoDto implements Parcelable {
     public void setFavorito(boolean favorito) {
         this.favorito = favorito;
     }
+
+    public void setLonguitud(float longuitud) {
+        this.longuitud = longuitud;
+    }
+
+    public void setLatitud(float latitud) {
+        this.latitud = latitud;
+    }
+
+    public float getLonguitud() {
+        return longuitud;
+    }
+
+    public float getLatitud() {
+        return latitud;
+    }
+
     @Override
     public String toString() {
         return "CampamentoDto{" +
@@ -251,6 +281,8 @@ public class CampamentoDto implements Parcelable {
                 ", categoria='" + categoria + '\'' +
                 ", imagen='" + imagen + '\'' +
                 ", favorito=" + favorito +
+                ", latitud=" + latitud +
+                ", longuitud=" + longuitud +
                 '}';
     }
 

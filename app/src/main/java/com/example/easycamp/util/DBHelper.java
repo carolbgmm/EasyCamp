@@ -56,6 +56,8 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String CAMPAMENTO_NUM_MONITORES = "num_monitores";
     private static final String CAMPAMENTO_PRECIO = "precio";
     private static final String CAMPAMENTO_CATEGORIA = "categoria";
+    private static final String CAMPAMENTO_LATITUD = "latitud";
+    private static final String CAMPAMENTO_LONGUITUD = "longuitud";
 
     // Nombre de la tabla de usuarios
     private static final String TABLE_USUARIOS = "usuarios";
@@ -144,7 +146,9 @@ public class DBHelper extends SQLiteOpenHelper {
                 CAMPAMENTO_EDAD_MAXIMA + " INTEGER, " +
                 CAMPAMENTO_NUM_MONITORES + " INTEGER, " +
                 CAMPAMENTO_PRECIO + " REAL, " +
-                CAMPAMENTO_CATEGORIA + " TEXT)";
+                CAMPAMENTO_CATEGORIA + " TEXT, " +
+                CAMPAMENTO_LATITUD+ " REAL, " +
+                CAMPAMENTO_LONGUITUD + " REAL)";
         db.execSQL(createTableCampamentos);
 
         // Crear la tabla de usuarios
@@ -418,8 +422,12 @@ public class DBHelper extends SQLiteOpenHelper {
                         cursor.getDouble(cursor.getColumnIndex(CAMPAMENTO_PRECIO)),
                         cursor.getString(cursor.getColumnIndex(CAMPAMENTO_CATEGORIA)),
                         cursor.getString(cursor.getColumnIndex(CAMPAMENTO_IMAGEN)),
-                        true
-                );
+                        true,
+                        cursor.getFloat(cursor.getColumnIndex(CAMPAMENTO_LATITUD)),
+                        cursor.getFloat(cursor.getColumnIndex(CAMPAMENTO_LONGUITUD))
+
+
+                        );
                 campamentosFavoritos.add(campamento);
             } while (cursor.moveToNext());
         }
@@ -496,7 +504,9 @@ public class DBHelper extends SQLiteOpenHelper {
                         cursor.getDouble(cursor.getColumnIndex(CAMPAMENTO_PRECIO)),
                         cursor.getString(cursor.getColumnIndex(CAMPAMENTO_CATEGORIA)),
                         cursor.getString(cursor.getColumnIndex(CAMPAMENTO_IMAGEN)),
-                        true
+                        true,
+                        cursor.getFloat(cursor.getColumnIndex(CAMPAMENTO_LATITUD)),
+                        cursor.getFloat(cursor.getColumnIndex(CAMPAMENTO_LONGUITUD))
                 );
                 campamentosInscritos.add(campamento);
 
@@ -569,7 +579,9 @@ public class DBHelper extends SQLiteOpenHelper {
                         cursorCampamentos.getDouble(cursorCampamentos.getColumnIndex(CAMPAMENTO_PRECIO)),
                         cursorCampamentos.getString(cursorCampamentos.getColumnIndex(CAMPAMENTO_CATEGORIA)),
                         cursorCampamentos.getString(cursorCampamentos.getColumnIndex(CAMPAMENTO_IMAGEN)),
-                        esFavorito
+                        esFavorito,
+                        cursorCampamentos.getFloat(cursorCampamentos.getColumnIndex(CAMPAMENTO_LATITUD)),
+                        cursorCampamentos.getFloat(cursorCampamentos.getColumnIndex(CAMPAMENTO_LONGUITUD))
                 );
                 campamentosConFavoritos.add(campamento);
             } while (cursorCampamentos.moveToNext());
@@ -614,7 +626,9 @@ public class DBHelper extends SQLiteOpenHelper {
                         cursorCampamentos.getDouble(cursorCampamentos.getColumnIndex(CAMPAMENTO_PRECIO)),
                         cursorCampamentos.getString(cursorCampamentos.getColumnIndex(CAMPAMENTO_CATEGORIA)),
                         cursorCampamentos.getString(cursorCampamentos.getColumnIndex(CAMPAMENTO_IMAGEN)),
-                        esFavorito
+                        esFavorito,
+                        cursorCampamentos.getFloat(cursorCampamentos.getColumnIndex(CAMPAMENTO_LATITUD)),
+                        cursorCampamentos.getFloat(cursorCampamentos.getColumnIndex(CAMPAMENTO_LONGUITUD))
                 );
                 campamentos.add(campamento);
             } while (cursorCampamentos.moveToNext());
