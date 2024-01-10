@@ -9,10 +9,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.easycamp.R
+import com.example.easycamp.domain.CampamentoDto
 import com.example.easycamp.domain.HijoDTO
 import com.example.easycamp.util.DBHelper
 
-class ListaApuntarHijosAdapter(val listener: MyOnClickListener) : ListAdapter<HijoDTO, ListaApuntarHijosAdapter.HijoViewHolder>(HijoDiffCallback()) {
+class ListaApuntarHijosAdapter(val campamento: CampamentoDto) : ListAdapter<HijoDTO, ListaApuntarHijosAdapter.HijoViewHolder>(HijoDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HijoViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -22,12 +23,8 @@ class ListaApuntarHijosAdapter(val listener: MyOnClickListener) : ListAdapter<Hi
 
     override fun onBindViewHolder(holder: HijoViewHolder, position: Int) {
         val hijo = getItem(position)
-        holder.bind(hijo, listener)
+        holder.bind(hijo, campamento)
     }
-    fun interface MyOnClickListener {
-        fun onClick(item: HijoDTO?)
-    }
-
 
     class HijoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
@@ -38,19 +35,29 @@ class ListaApuntarHijosAdapter(val listener: MyOnClickListener) : ListAdapter<Hi
         private val btnAdd: ImageButton = itemView.findViewById(R.id.btnAdd)
         private lateinit var service: DBHelper
 
-        fun bind(hijo: HijoDTO, listener: MyOnClickListener) {
+        fun bind(hijo: HijoDTO, campamento: CampamentoDto) {
             service = DBHelper(itemView.context)
 
             tvNombreHijo.text = hijo.nombre
             tvApellidos.text = hijo.apellidos
             tvEdad.text = "Edad: ${hijo.edad}"
             tvObservaciones.text = "Observaciones: ${hijo.observaciones}"
-            var apuntado = false
+            val inscritos = service.getInscripcionesCampamento(campamento.id)
+            inscritos.removeIf { it.hijoId != hijo.id }
+
+            if(inscritos.isEmpty()){
+                btnAdd.setImageResource(R.drawable.incono_apuntar_hijo)
+            } else {
+                btnAdd.setImageResource(R.drawable.icon_hijo_apuntado)
+            }
             btnAdd.setOnClickListener {
-                if(!apuntado) {
+
+                if (inscritos.isEmpty()) {
+                    service.inscribirHijo(hijo.id, campamento.id)
                     btnAdd.setImageResource(R.drawable.icon_hijo_apuntado)
-                    listener.onClick(hijo)
-                    apuntado = true
+                } else {
+                    service.desInscribirHijos(hijo.id, campamento.id)
+                    btnAdd.setImageResource(R.drawable.incono_apuntar_hijo)
                 }
             }
         }

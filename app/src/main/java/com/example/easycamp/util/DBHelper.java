@@ -12,6 +12,7 @@ import android.util.Log;
 import com.example.easycamp.domain.CampamentoDto;
 import com.example.easycamp.domain.FavoritoDTO;
 import com.example.easycamp.domain.HijoDTO;
+import com.example.easycamp.domain.InscripcionDTO;
 import com.example.easycamp.domain.TareaDTO;
 import com.example.easycamp.domain.UserDTO;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -42,7 +43,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String TABLE_CAMPAMENTOS = "campamentos";
     // Columnas de la tabla de campamentos
     private static final String CAMPAMENTO_ID = "id";
-    private static final String CAMPAMENTO_NOMBRE = "nombre";
+    private static final String CAMPAMENTO_NOMBRE = "nombre_campamento";
     private static final String CAMPAMENTO_DESCRIPCION = "descripcion";
     private static final String CAMPAMENTO_FECHA_INICIO = "fecha_inicio";
     private static final String CAMPAMENTO_FECHA_FINAL = "fecha_final";
@@ -74,7 +75,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public static final String TABLE_HIJOS = "hijos";
     public static final String HIJO_ID = "id";
-    public static final String HIJO_NOMBRE = "nombre";
+    public static final String HIJO_NOMBRE = "nombre_hijo";
     public static final String HIJO_APELLIDOS = "apellidos";
     public static final String HIJO_EDAD = "edad";
     public static final String HIJO_OBSERVACIONES = "observaciones";
@@ -293,6 +294,17 @@ public class DBHelper extends SQLiteOpenHelper {
         return resultado;
     }
 
+    public void desInscribirHijos(long hijoId, long campamentoId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_INSCRITOS, INSCRITOS_HIJO_ID + "=? AND " + INSCRITOS_CAMPAMENTO_ID + "=?",
+                new String[]{String.valueOf(hijoId), String.valueOf(campamentoId)});
+        db.close();
+
+        // Eliminar el favorito de Firebase
+        DatabaseReference favoritosReference = mDataBase.child(TABLE_INSCRITOS);
+        favoritosReference.child(hijoId + "_" + campamentoId).removeValue();
+    }
+
     // Método para obtener la lista de hijos dado el ID de un usuario
     @SuppressLint("Range")
     public List<HijoDTO> obtenerHijosPorUsuario(String idUsuario) {
@@ -349,6 +361,32 @@ public class DBHelper extends SQLiteOpenHelper {
         // Eliminar el favorito de Firebase
         DatabaseReference favoritosReference = mDataBase.child("favoritos");
         favoritosReference.child(usuarioId + "_" + campamentoId).removeValue();
+    }
+
+    public List<InscripcionDTO> getInscripcionesCampamento(long campamentoId) {
+        List<InscripcionDTO> inscripciones = new ArrayList<>();
+
+        String selectQuery = "SELECT * FROM " + TABLE_INSCRITOS +
+                " WHERE " + TABLE_INSCRITOS + "." + INSCRITOS_CAMPAMENTO_ID + " = " + campamentoId;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                @SuppressLint("Range") InscripcionDTO inscripcion = new InscripcionDTO(
+                        cursor.getLong(cursor.getColumnIndex(INSCRITOS_ID)),
+                        cursor.getLong(cursor.getColumnIndex(INSCRITOS_HIJO_ID)),
+                        cursor.getLong(cursor.getColumnIndex(INSCRITOS_CAMPAMENTO_ID))
+                );
+                inscripciones.add(inscripcion);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return inscripciones;
     }
 
 
@@ -424,7 +462,11 @@ public class DBHelper extends SQLiteOpenHelper {
     public List<CampamentoDto> obtenerInscritosDeUsuario(String usuarioID) {
         List<CampamentoDto> campamentosInscritos = new ArrayList<>();
 
-        String selectQuery = "SELECT * FROM " + TABLE_CAMPAMENTOS +
+        String selectQuery = "SELECT DISTINCT ("+ TABLE_CAMPAMENTOS +"." + CAMPAMENTO_ID + ")," + CAMPAMENTO_NOMBRE + "," + CAMPAMENTO_DESCRIPCION
+                + "," + CAMPAMENTO_FECHA_INICIO + "," + CAMPAMENTO_FECHA_FINAL + "," + CAMPAMENTO_NUMERO_MAX_PARTICIPANTES
+                + "," + CAMPAMENTO_NUMERO_APUNTADOS + "," + CAMPAMENTO_UBICACION + "," + CAMPAMENTO_EDAD_MINIMA
+                + "," + CAMPAMENTO_EDAD_MAXIMA + "," + CAMPAMENTO_NUM_MONITORES + "," + CAMPAMENTO_PRECIO
+                + "," + CAMPAMENTO_CATEGORIA + "," + CAMPAMENTO_IMAGEN +"  FROM " + TABLE_CAMPAMENTOS +
                 " INNER JOIN " + TABLE_INSCRITOS +
                 " ON " + TABLE_INSCRITOS + "." +INSCRITOS_CAMPAMENTO_ID + " = " + TABLE_CAMPAMENTOS + "." + CAMPAMENTO_ID +
                 " INNER JOIN " + TABLE_HIJOS +

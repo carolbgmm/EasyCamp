@@ -43,22 +43,9 @@ class ApuntarHijosActivity : AppCompatActivity() {
             listaDeHijos.removeIf{
                 it.edad < c.edad_minima || it.edad > c.edad_maxima
             }
-            val adapter = ListaApuntarHijosAdapter(object: ListaApuntarHijosAdapter.MyOnClickListener {
-                override fun onClick(item: HijoDTO?) {
-                     clickonItem(item)
-                }
-            })
+            val adapter = ListaApuntarHijosAdapter(c)
             recyclerView.adapter = adapter
             adapter.submitList(listaDeHijos)
-        }
-
-    }
-
-    fun clickonItem(hijo: HijoDTO?) {
-        hijo?.let { h->
-            campamento?.let { c->
-                service.inscribirHijo(h.id, c.id)
-            }
         }
 
     }
