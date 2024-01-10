@@ -8,9 +8,11 @@ import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.easycamp.R
 import com.example.easycamp.domain.CampamentoDto
+import com.example.easycamp.domain.LoggedUserDTO
 import com.example.easycamp.ui.buscadorCliente.ApuntarHijosActivity
 import com.example.easycamp.ui.buscadorCliente.RecyclerClienteFragment
 import com.example.easycamp.ui.buscadorTrabajador.BuscadorTrabajadorActivity
+import com.example.easycamp.util.DBHelper
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -23,6 +25,7 @@ class DetalleCampamentoActivity : AppCompatActivity() {
     var campamento: CampamentoDto? = null
     lateinit var toolbar: androidx.appcompat.widget.Toolbar
     lateinit var fab: FloatingActionButton
+    private lateinit var service: DBHelper
 
     private var navView: BottomNavigationView? = null
     private val mOnNavigationItemSelectedListener =
@@ -65,6 +68,8 @@ class DetalleCampamentoActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detalle_campamento)
 
+        service = DBHelper(baseContext)
+
         campamento =
             intent.getParcelableExtra(RecyclerClienteFragment.CAMPAMENTO_SELECCIONADO)
 
@@ -75,7 +80,6 @@ class DetalleCampamentoActivity : AppCompatActivity() {
 
 
     }
-
 
     private fun getComponentes() {
         toolbar = findViewById(R.id.toolbar)
@@ -101,11 +105,17 @@ class DetalleCampamentoActivity : AppCompatActivity() {
             .commit()
 
         fab.setOnClickListener {
-            val intent = Intent(this, ApuntarHijosActivity::class.java)
-            // Redirige a la página principal TRABAJADOR
-            intent.putExtra(RecyclerClienteFragment.CAMPAMENTO_SELECCIONADO, campamento)
-            startActivity(intent)
-            fab.setImageResource(R.drawable.campamento_solicitado)
+            val user = LoggedUserDTO.getInstance(null).user
+            if(user.tipoUsuario.equals("CLIENTE")){
+                val intent = Intent(this, ApuntarHijosActivity::class.java)
+                // Redirige a la página principal TRABAJADOR
+                intent.putExtra(RecyclerClienteFragment.CAMPAMENTO_SELECCIONADO, campamento)
+                startActivity(intent)
+            } else {
+                service.inscribirUsuario(user.id, campamento!!.id)
+                fab.setImageResource(R.drawable.campamento_solicitado)
+            }
+
         }
     }
 

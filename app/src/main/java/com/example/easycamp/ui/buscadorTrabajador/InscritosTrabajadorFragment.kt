@@ -40,23 +40,23 @@ class InscritosTrabajadorFragment : Fragment() {
             }
     }
 
-//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        super.onViewCreated(view, savedInstanceState)
-//        val lista =
-//            persistencia.obtenerInscritosDeTrabajador(LoggedUserDTO.getInstance(null).user.id)
-//        val adapterCampamentos =
-//            BuscadorTrabajadorAdapter(lista, object : BuscadorTrabajadorAdapter.OnItemClickListener {
-//                override fun onItemClick(campamento: CampamentoDto?) {
-//                    campamento?.let { clickonItem(campamento) }
-//                }
-//            })
-//        recyclerCamp.apply {
-//            setHasFixedSize(true)
-//            layoutManager = LinearLayoutManager(activity)
-//            adapter = adapterCampamentos
-//
-//        }
-//    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val lista =
+            persistencia.obtenerInscritosDeTrabajador(LoggedUserDTO.getInstance(null).user.id)
+        val adapterCampamentos =
+            BuscadorTrabajadorAdapter(lista, object : BuscadorTrabajadorAdapter.OnItemClickListener {
+                override fun onItemClick(campamento: CampamentoDto?) {
+                    campamento?.let { clickonItem(campamento) }
+                }
+            })
+        recyclerCamp.apply {
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(activity)
+            adapter = adapterCampamentos
+
+        }
+    }
     fun clickonItem(campamento: CampamentoDto) {
         val intent = Intent(activity, DetalleCampamentoActivity::class.java)
         intent.putExtra(RecyclerClienteFragment.CAMPAMENTO_SELECCIONADO, campamento)
