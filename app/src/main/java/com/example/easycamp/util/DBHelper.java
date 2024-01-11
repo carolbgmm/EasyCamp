@@ -216,11 +216,12 @@ public class DBHelper extends SQLiteOpenHelper {
                 INSCRITOS_CAMPAMENTO_ID + " INTEGER, " +  // Cambiado a TEXT
                 "FOREIGN KEY(" + INSCRITOS_TRABAJADOR_TRABAJADOR_ID + ") REFERENCES " + TABLE_USUARIOS + "(" + USUARIO_ID + "), " +
                 "FOREIGN KEY(" + INSCRITOS_CAMPAMENTO_ID + ") REFERENCES " + TABLE_CAMPAMENTOS + "(" + CAMPAMENTO_ID + "))";
-        db.execSQL(createTableInscritos);
+        db.execSQL(createTableInscritosTrabajador);
 
         insertarDatosTareasDesdeJSON(context, db, TABLE_TAREAS, "tareas", "datos_iniciales.json");
 
         insertarDatosInscritosDesdeJSON(context, db, TABLE_INSCRITOS, "inscritos", "datos_iniciales.json");
+
 
     }
 
