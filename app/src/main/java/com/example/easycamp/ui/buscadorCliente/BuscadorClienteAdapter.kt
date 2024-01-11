@@ -5,13 +5,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.core.graphics.drawable.toDrawable
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.easycamp.R
 import com.example.easycamp.domain.CampamentoDto
-import com.example.easycamp.domain.LoggedUserDTO
-import com.example.easycamp.util.DBHelper
-
 
 class BuscadorClienteAdapter(val listaCampamento: List<CampamentoDto>, val listener: OnItemClickListener) :
     RecyclerView.Adapter<BuscadorClienteAdapter.CampamentoViewHolder>() {
@@ -36,9 +34,6 @@ class BuscadorClienteAdapter(val listaCampamento: List<CampamentoDto>, val liste
     }
 
     class CampamentoViewHolder(view: View): ViewHolder(view){
-        val bdHelper =  DBHelper.getInstance(null)
-        val userId = LoggedUserDTO.getInstance(null).user.id
-
 
         var txtNombre = view.findViewById<TextView>(R.id.txtNombre)
         var txtDescripcion = view.findViewById<TextView>(R.id.txtDescripcion)
@@ -48,23 +43,16 @@ class BuscadorClienteAdapter(val listaCampamento: List<CampamentoDto>, val liste
             txtNombre.setText(item.nombre)
             txtDescripcion.setText(item.descripcion)
 
-            if(item.isFavorito){
-                imgFavoritos.setImageResource(R.drawable.favoritos_relleno)
+            if(item.favourite){
+                imgFavoritos.setImageDrawable(R.drawable.favoritos_relleno.toDrawable())
             } else {
-                imgFavoritos.setImageResource(R.drawable.favoritos_vacio)
+                imgFavoritos.setImageDrawable(R.drawable.favoritos_vacio.toDrawable())
             }
 
-
             imgFavoritos?.setOnClickListener {
-                if(item.isFavorito){
-                    imgFavoritos.setImageResource(R.drawable.favoritos_vacio)
-                    bdHelper.quitarDeFavoritos(userId, item.id)
-                    item.isFavorito=false
-                } else {
-                    imgFavoritos.setImageResource(R.drawable.favoritos_relleno)
-                    bdHelper.agregarFavorito(userId, item.id)
-                    item.isFavorito=true
-                }
+                if(item.favourite){
+                    imgFavoritos.setImageDrawable(R.drawable.favoritos_vacio.toDrawable())
+                } else imgFavoritos.setImageDrawable(R.drawable.favoritos_relleno.toDrawable())
             }
             // cargar imagen
             itemView.setOnClickListener { listener.onItemClick(item) }
