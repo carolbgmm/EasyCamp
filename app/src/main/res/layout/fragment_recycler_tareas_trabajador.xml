@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.buscadorTrabajador.TareasTrabajadorFragment">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_tareas_trabajador"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:listitem="@layout/linea_recycler_view_tareas_trabajador" />
+    
+</FrameLayout>

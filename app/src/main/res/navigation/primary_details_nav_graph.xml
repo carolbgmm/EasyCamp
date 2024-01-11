@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/detallecampamento_list_fragment">
+
+    <fragment
+        android:id="@+id/detallecampamento_list_fragment"
+        android:name="com.example.easycamp.detallecampamentoListFragment"
+        android:label="detallecampamentoListFragment" >
+        <action
+            android:id="@+id/show_detallecampamento_detail"
+            app:destination="@id/detallecampamento_detail_fragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/detallecampamento_detail_fragment"
+        android:name="com.example.easycamp.detallecampamentoDetailFragment"
+        android:label="detallecampamento_detail"
+        tools:layout="@layout/fragment_detallecampamento_detail">
+        <argument
+            android:name="item_id"
+            app:argType="string"
+            android:defaultValue="" />
+    </fragment>
+</navigation>

@@ -5,21 +5,29 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".ui.DetalleCampamentoActivity"
+    tools:context=".ui.detalle.DetalleCampamentoActivity"
     tools:showIn="@layout/activity_detalle_campamento">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/text_margin"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/descripcion"
-            android:layout_width="wrap_content"
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottom_navigation_detalle"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/text_margin"/>
+            app:layout_constraintBottom_toTopOf="@id/fragment_container_cliente"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:menu="@menu/bottom_navigation_menu_detalle_campamento" />
+
+        <FrameLayout
+            android:id="@+id/fragment_container_detalle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
-
 
 </androidx.core.widget.NestedScrollView>
