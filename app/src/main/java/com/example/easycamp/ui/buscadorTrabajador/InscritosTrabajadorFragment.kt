@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.easycamp.R
 import com.example.easycamp.domain.CampamentoDto
@@ -15,12 +14,18 @@ import com.example.easycamp.ui.buscadorCliente.BuscadorClienteAdapter
 import com.example.easycamp.ui.buscadorCliente.InscritosFragment
 import com.example.easycamp.ui.buscadorCliente.RecyclerClienteFragment
 import com.example.easycamp.ui.detalle.DetalleCampamentoActivity
+<<<<<<< HEAD
 import com.example.easycamp.util.DBHelper
+=======
+>>>>>>> parent of e772b2d (Merge nueva parte)
 
 class InscritosTrabajadorFragment : Fragment() {
 
     private lateinit var recyclerCamp: RecyclerView
+<<<<<<< HEAD
     private lateinit var persistencia: DBHelper
+=======
+>>>>>>> parent of e772b2d (Merge nueva parte)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,7 +33,11 @@ class InscritosTrabajadorFragment : Fragment() {
     ): View? {
         val view =inflater.inflate(R.layout.fragment_inscritos_trabajador, container, false)
 
+<<<<<<< HEAD
         persistencia = DBHelper.getInstance(context)
+=======
+
+>>>>>>> parent of e772b2d (Merge nueva parte)
         recyclerCamp= view.findViewById(R.id.recycler_campamentos_inscrito)
         // Inflate the layout for this fragment
         return view

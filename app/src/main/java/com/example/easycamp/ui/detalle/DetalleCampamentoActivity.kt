@@ -11,8 +11,11 @@ import com.example.easycamp.domain.CampamentoDto
 import com.example.easycamp.domain.LoggedUserDTO
 import com.example.easycamp.ui.buscadorCliente.ApuntarHijosActivity
 import com.example.easycamp.ui.buscadorCliente.RecyclerClienteFragment
+<<<<<<< HEAD
 import com.example.easycamp.ui.buscadorTrabajador.BuscadorTrabajadorActivity
 import com.example.easycamp.util.DBHelper
+=======
+>>>>>>> parent of e772b2d (Merge nueva parte)
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
