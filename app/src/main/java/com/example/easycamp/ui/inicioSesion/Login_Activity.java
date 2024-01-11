@@ -1,5 +1,4 @@
 package com.example.easycamp.ui.inicioSesion;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,16 +10,13 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.easycamp.domain.LoggedUserDTO;
-import com.example.easycamp.domain.LoginService;
 import com.example.easycamp.R;
 import com.example.easycamp.domain.UserDTO;
 import com.example.easycamp.ui.buscadorCliente.BuscadorClienteActivity;
 import com.example.easycamp.ui.buscadorTrabajador.BuscadorTrabajadorActivity;
-import com.example.easycamp.util.DBHelper;
+import com.example.easycamp.util.crud.FirebaseUserManager;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -30,24 +26,21 @@ public class Login_Activity extends AppCompatActivity {
     private EditText passwordEditText;
     private Button loginButton;
 
-    private LoginService service;
-    private DBHelper persistencia;
-
     private FirebaseAuth mAuth;
-    private UserDTO user;
+    private FirebaseUserManager firebaseUserManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        FirebaseApp.initializeApp(this);
-        this.service=new LoginService(this);
+
+        mAuth = FirebaseAuth.getInstance();
+        firebaseUserManager = new FirebaseUserManager();
 
         usernameEditText = findViewById(R.id.usernameEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
         loginButton = findViewById(R.id.loginButton);
-        persistencia=new DBHelper(this);
-        persistencia.sincronizarUsuarios();
-        mAuth=FirebaseAuth.getInstance();
+
         Button registerButton = findViewById(R.id.registerButton);
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,48 +48,58 @@ public class Login_Activity extends AppCompatActivity {
                 startActivity(new Intent(Login_Activity.this, RegistroActivity.class));
             }
         });
+
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String username = usernameEditText.getText().toString();
                 String password = passwordEditText.getText().toString();
 
-                if (checkCredentials(username, password)) {
-                    mAuth.signInWithEmailAndPassword(username,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            redirigir(service.getUser());
-                        }
-                    });
+                signInWithEmailAndPassword(username, password);
+            }
+        });
+    }
 
+    private void signInWithEmailAndPassword(String username, String password) {
+        mAuth.signInWithEmailAndPassword(username, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            getUserInfo();
+                        } else {
+                            showToast("Authentication failed. Check your credentials.");
+                        }
+                    }
+                });
+    }
+
+    private void getUserInfo() {
+        firebaseUserManager.obtenerUsuarioActual(new FirebaseUserManager.OnUserDTOReceivedListener() {
+            @Override
+            public void onUserDTOReceived(UserDTO userDTO) {
+                if (userDTO != null) {
+                    redirigir(userDTO);
                 } else {
-                    showToast(getString(R.string.user_not_found));
+                    showToast("Error retrieving user information.");
                 }
             }
         });
-
-        Log.d("MiApp", "Se creo la activity del login ");
-    }
-
-    private boolean checkCredentials(String username, String password) {
-        return service.checkCredentials(username,password);
     }
 
     private void redirigir(UserDTO usuario) {
-        LoggedUserDTO.getInstance(usuario);
-        String tipoUsuario=usuario.getTipoUsuario();
-        Log.d("MiApp", "tipo usuario "+tipoUsuario);
-        //hay que enviar user(es un dto) al resto de las pantallas , de esta menera es mas comodo usar sus datos
+        String tipoUsuario = usuario.getTipoUsuario();
+        Log.d("MiApp", "Tipo usuario " + tipoUsuario);
+
         switch (tipoUsuario) {
             case "CLIENTE":
-                startActivity(new Intent(this, BuscadorClienteActivity.class));
+                startActivity(new Intent(Login_Activity.this, BuscadorClienteActivity.class));
                 break;
             case "TRABAJADOR":
-                // Redirige a la página principal TRABAJADOR
-                startActivity(new Intent(this, BuscadorTrabajadorActivity.class));
+                startActivity(new Intent(Login_Activity.this, BuscadorTrabajadorActivity.class));
                 break;
             default:
-                showToast("Ha ocurrido un error, no se encuentra su tipo de ususario");
+                showToast("Error: Unknown user type.");
                 break;
         }
     }

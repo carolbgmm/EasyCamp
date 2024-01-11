@@ -15,7 +15,6 @@ import android.widget.Toast;
 
 import com.example.easycamp.R;
 import com.example.easycamp.domain.UserDTO;
-import com.example.easycamp.util.DBHelper;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -30,7 +29,7 @@ public class RegistroActivity extends AppCompatActivity {
     private Spinner spTipoUsuario;
     private Button btnConfirmar;
 
-    private DBHelper persistencia;
+
     private UserDTO nuevoUsuario;
     private FirebaseAuth mAuth;
 
@@ -39,7 +38,7 @@ public class RegistroActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registro);
-        persistencia=new DBHelper(this);
+
         mAuth = FirebaseAuth.getInstance();
         mDataBase= FirebaseDatabase.getInstance().getReference();
         // Inicializar vistas
@@ -96,7 +95,7 @@ public class RegistroActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<Void> task2) {
                             if(task2.isSuccessful()){
 
-                                persistencia.sincronizarUsuarios();
+
                                 Toast.makeText(RegistroActivity.this, "Usuario guardado exitosamente", Toast.LENGTH_LONG).show();
 
                                 Intent intent = new Intent(RegistroActivity.this, Login_Activity.class);
@@ -134,11 +133,6 @@ public class RegistroActivity extends AppCompatActivity {
         }
 
 
-        if (persistencia.existeNombreUsuario(etNombreUsuario.getText().toString())) {
-            etNombreUsuario.setError("Correo ya en uso");
-            etNombreUsuario.requestFocus();
-            return false;
-        }
 
         if (etContrasena.getText().toString().isEmpty()) {
             etContrasena.setError("Contraseña vacía");

@@ -3,29 +3,27 @@ package com.example.easycamp.ui.detalle
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.easycamp.R
-import com.example.easycamp.domain.CampamentoDto
-import com.example.easycamp.domain.LoggedUserDTO
+import com.example.easycamp.domain.CampamentoDTO
 import com.example.easycamp.ui.buscadorCliente.ApuntarHijosActivity
 import com.example.easycamp.ui.buscadorCliente.RecyclerClienteFragment
-import com.example.easycamp.ui.buscadorTrabajador.BuscadorTrabajadorActivity
-import com.example.easycamp.util.DBHelper
+import com.example.easycamp.util.crud.FirebaseInscritosManager
+import com.example.easycamp.util.crud.FirebaseUserManager
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationBarView
+import com.google.firebase.auth.FirebaseAuth
 import com.squareup.picasso.Picasso
 
 class DetalleCampamentoActivity : AppCompatActivity() {
     lateinit var toolBarLayout: CollapsingToolbarLayout
     lateinit var imagen: ImageView
-    var campamento: CampamentoDto? = null
+    var campamento: CampamentoDTO? = null
     lateinit var toolbar: androidx.appcompat.widget.Toolbar
     lateinit var fab: FloatingActionButton
-    private lateinit var service: DBHelper
 
     private var navView: BottomNavigationView? = null
     private val mOnNavigationItemSelectedListener =
@@ -68,8 +66,6 @@ class DetalleCampamentoActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detalle_campamento)
 
-        service = DBHelper(baseContext)
-
         campamento =
             intent.getParcelableExtra(RecyclerClienteFragment.CAMPAMENTO_SELECCIONADO)
 
@@ -80,6 +76,7 @@ class DetalleCampamentoActivity : AppCompatActivity() {
 
 
     }
+
 
     private fun getComponentes() {
         toolbar = findViewById(R.id.toolbar)
@@ -105,16 +102,19 @@ class DetalleCampamentoActivity : AppCompatActivity() {
             .commit()
 
         fab.setOnClickListener {
-            val user = LoggedUserDTO.getInstance(null).user
-            if(user.tipoUsuario.equals("CLIENTE")){
-                val intent = Intent(this, ApuntarHijosActivity::class.java)
+           var firebaseUserManager = FirebaseUserManager()
+            //firebaseUserManager.obtenerUsuarioActual { ... }
+
+            //if(user.tipoUsuario.equals("CLIENTE")){
+            //    val intent = Intent(this, ApuntarHijosActivity::class.java)
                 // Redirige a la página principal TRABAJADOR
-                intent.putExtra(RecyclerClienteFragment.CAMPAMENTO_SELECCIONADO, campamento)
-                startActivity(intent)
-            } else {
-                service.inscribirUsuario(user.id, campamento!!.id)
-                fab.setImageResource(R.drawable.campamento_solicitado)
-            }
+           //     intent.putExtra(RecyclerClienteFragment.CAMPAMENTO_SELECCIONADO, campamento)
+           //     startActivity(intent)
+          //  } else {
+          //      var firebaseInscritosManager= FirebaseInscritosManager()
+          //      firebaseInscritosManager.agregarInscrito(....)
+           //     fab.setImageResource(R.drawable.campamento_solicitado)
+          //  }
 
         }
     }

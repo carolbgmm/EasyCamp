@@ -8,12 +8,14 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.easycamp.R
-import com.example.easycamp.domain.CampamentoDto
-import com.example.easycamp.domain.LoggedUserDTO
-import com.example.easycamp.util.DBHelper
+import com.example.easycamp.domain.CampamentoDTO
+import com.example.easycamp.domain.FavoritoDTO
+import com.example.easycamp.domain.UserDTO
+import com.example.easycamp.util.crud.FirebaseFavoritoManager
+import com.example.easycamp.util.crud.FirebaseUserManager
 
 
-class BuscadorClienteAdapter(val listaCampamento: List<CampamentoDto>, val listener: OnItemClickListener) :
+class BuscadorClienteAdapter(val listaCampamento: List<CampamentoDTO>, val listener: OnItemClickListener) :
     RecyclerView.Adapter<BuscadorClienteAdapter.CampamentoViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CampamentoViewHolder {
@@ -32,42 +34,72 @@ class BuscadorClienteAdapter(val listaCampamento: List<CampamentoDto>, val liste
     }
 
     fun interface OnItemClickListener {
-        fun onItemClick(item: CampamentoDto?)
+        fun onItemClick(item: CampamentoDTO?)
     }
 
-    class CampamentoViewHolder(view: View): ViewHolder(view){
-        val bdHelper =  DBHelper.getInstance(null)
-        val userId = LoggedUserDTO.getInstance(null).user.id
+    class CampamentoViewHolder(view: View): ViewHolder(view) {
 
 
         var txtNombre = view.findViewById<TextView>(R.id.txtNombre)
         var txtDescripcion = view.findViewById<TextView>(R.id.txtDescripcion)
         var imgFavoritos = view.findViewById<ImageButton>(R.id.imgFavoritos)
 
-        fun bind(item : CampamentoDto, listener: OnItemClickListener){
+        fun bind(item: CampamentoDTO, listener: OnItemClickListener) {
             txtNombre.setText(item.nombre)
             txtDescripcion.setText(item.descripcion)
 
-            if(item.isFavorito){
-                imgFavoritos.setImageResource(R.drawable.favoritos_relleno)
-            } else {
-                imgFavoritos.setImageResource(R.drawable.favoritos_vacio)
-            }
+            val firebaseFavoritoManager = FirebaseFavoritoManager()
+            val firebaseUserManager = FirebaseUserManager()
+            var userId:String =""
+            // Obtener el usuario actual
+            firebaseUserManager.obtenerUsuarioActual(object :
+                FirebaseUserManager.OnUserDTOReceivedListener {
+                override fun onUserDTOReceived(userDTO: UserDTO?) {
+                    userDTO?.let { user ->
+                         userId = user.id
 
+                        // Obtener la lista de favoritos del usuario actual
+                        firebaseFavoritoManager.obtenerFavoritosPorUsuario(
+                            userId,
+                            object : FirebaseFavoritoManager.OnFavoritosReceivedListener {
+                                override fun onFavoritosReceived(favoritos: List<FavoritoDTO>) {
+                                    // Verificar si el campamento está en la lista de favoritos
+                                    val isFavorito = favoritos.any { it.campamentoId == item.id }
+
+                                    // Establecer la imagen de favorito según el resultado
+                                    if (isFavorito) {
+                                        imgFavoritos?.setImageResource(R.drawable.favoritos_relleno)
+                                    } else {
+                                        imgFavoritos?.setImageResource(R.drawable.favoritos_vacio)
+                                    }
+                                }
+
+                                override fun onError(exception: Exception) {
+                                    // Manejar errores según tus necesidades
+                                }
+                            })
+                    }
+                }
+            })
 
             imgFavoritos?.setOnClickListener {
-                if(item.isFavorito){
-                    imgFavoritos.setImageResource(R.drawable.favoritos_vacio)
-                    bdHelper.quitarDeFavoritos(userId, item.id)
-                    item.isFavorito=false
-                } else {
-                    imgFavoritos.setImageResource(R.drawable.favoritos_relleno)
-                    bdHelper.agregarFavorito(userId, item.id)
-                    item.isFavorito=true
-                }
+                // Aquí puedes mantener la lógica existente para cambiar el estado del favorito
+                firebaseFavoritoManager.toggleFavorito(
+                    userId,
+                    item.id,
+                    object : FirebaseFavoritoManager.OnFavoritoToggleListener {
+                        override fun onFavoritoToggled(isFavorito: Boolean) {
+                            if (isFavorito) {
+                                imgFavoritos?.setImageResource(R.drawable.favoritos_relleno)
+                            } else {
+                                imgFavoritos?.setImageResource(R.drawable.favoritos_vacio)
+                            }
+                        }
+                    })
             }
+
             // cargar imagen
             itemView.setOnClickListener { listener.onItemClick(item) }
         }
     }
-}
+    }

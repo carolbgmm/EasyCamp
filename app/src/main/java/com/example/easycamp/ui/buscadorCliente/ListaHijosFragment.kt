@@ -11,12 +11,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.easycamp.R
 import com.example.easycamp.domain.HijoDTO
-import com.example.easycamp.domain.LoggedUserDTO
 import com.example.easycamp.domain.UserDTO
-import com.example.easycamp.util.DBHelper
+import com.example.easycamp.util.crud.FirebaseHijoManager
+import com.example.easycamp.util.crud.FirebaseUserManager
+import com.google.firebase.database.DatabaseException
 
 class ListaHijosFragment : Fragment() {
-    private lateinit var service: DBHelper
+
     private lateinit var usuarioActual: UserDTO
     private lateinit var listaDeHijos: MutableList<HijoDTO>
 
@@ -33,9 +34,39 @@ class ListaHijosFragment : Fragment() {
         recyclerView = view.findViewById(R.id.recyclerViewHijos)
         btnAgregarHijo = view.findViewById(R.id.btnAgregarHijo)
 
-        service = DBHelper(requireContext())
+
         usuarioActual = obtenerUsuarioActual()
-        listaDeHijos = service.obtenerHijosPorUsuario(usuarioActual.id).toMutableList()
+
+
+        val firebaseHijoManager = FirebaseHijoManager()
+
+// Obtener el usuario actual
+        val firebaseUserManager = FirebaseUserManager()
+        firebaseUserManager.obtenerUsuarioActual(object : FirebaseUserManager.OnUserDTOReceivedListener {
+            override fun onUserDTOReceived(userDTO: UserDTO?) {
+                // Verificar si se obtuvo el usuario correctamente
+                if (userDTO != null) {
+                    // Obtener el idPadre del usuario actual
+                    val idPadre = userDTO.getId()
+
+                    // Llamar al método que obtiene los hijos usando el idPadre
+                    firebaseHijoManager.obtenerHijosPorUsuario(idPadre, object : FirebaseHijoManager.OnHijosReceivedListener {
+                        override fun onHijosReceived(hijos: List<HijoDTO>) {
+                            listaDeHijos = hijos.toMutableList()
+                        }
+
+                        override fun onError(toException: DatabaseException?) {
+
+                        }
+
+
+                    })
+                } else {
+                    // No se pudo obtener el usuario actual, manejar el error según tus necesidades
+                }
+            }
+        })
+
         Log.d("MiApp", "Se cargo la lista de hijos ")
 
         val layoutManager = LinearLayoutManager(context)
@@ -65,8 +96,20 @@ class ListaHijosFragment : Fragment() {
 
 
     private fun obtenerUsuarioActual(): UserDTO {
-        return LoggedUserDTO.getInstance(null).user;
+        val firebaseUserManager = FirebaseUserManager()
+        var usuarioActual: UserDTO? = null
+
+        firebaseUserManager.obtenerUsuarioActual(object : FirebaseUserManager.OnUserDTOReceivedListener {
+            override fun onUserDTOReceived(userDTO: UserDTO?) {
+                userDTO?.let {
+                    usuarioActual = it
+                }
+            }
+        })
+
+        return usuarioActual ?: throw IllegalStateException("No se pudo obtener el usuario actual")
     }
+
 
     companion object {
         fun newInstance(): ListaHijosFragment {

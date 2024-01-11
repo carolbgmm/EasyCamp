@@ -10,21 +10,24 @@ import com.example.easycamp.R
 
 import android.widget.Button
 import android.widget.Toast
-import com.example.easycamp.domain.LoggedUserDTO
 import com.example.easycamp.domain.UserDTO
 import com.example.easycamp.ui.PerfilFragment
 import com.example.easycamp.ui.inicioSesion.Login_Activity
+import com.example.easycamp.util.crud.FirebaseUserManager
 import com.google.firebase.auth.FirebaseAuth
 
 
-class CuentaClienteFragment : Fragment() {
+// CuentaClienteFragment.kt
+class CuentaClienteFragment : Fragment(), CuentaClienteFragmentListener {
 
     private lateinit var usuarioActual: UserDTO
-    private lateinit var  mAuth: FirebaseAuth;
+    private lateinit var mAuth: FirebaseAuth
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_cuenta_cliente, container, false)
-        mAuth=FirebaseAuth.getInstance()
-        usuarioActual = obtenerUsuarioActual()
+
+        mAuth = FirebaseAuth.getInstance()
+        obtenerUsuarioActual(this)
 
         val btnPerfil: Button = view.findViewById(R.id.btnPerfil)
         val btnHijos: Button = view.findViewById(R.id.btnHijos)
@@ -48,9 +51,23 @@ class CuentaClienteFragment : Fragment() {
         return view
     }
 
-    private fun obtenerUsuarioActual(): UserDTO {
+    private fun obtenerUsuarioActual(listener: CuentaClienteFragmentListener) {
+        val firebaseUserManager = FirebaseUserManager()
 
-        return LoggedUserDTO.getInstance(null).user;
+        firebaseUserManager.obtenerUsuarioActual(object : FirebaseUserManager.OnUserDTOReceivedListener {
+            override fun onUserDTOReceived(userDTO: UserDTO?) {
+                listener.onUserDTOReceived(userDTO)
+            }
+        })
+    }
+
+    override fun onUserDTOReceived(userDTO: UserDTO?) {
+        userDTO?.let {
+            usuarioActual = it
+            // Ahora puedes utilizar el usuarioActual aquí
+        } ?: run {
+            Toast.makeText(requireContext(), "No se pudo obtener el usuario actual", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun mostrarInformacionPerfil() {
@@ -87,4 +104,9 @@ class CuentaClienteFragment : Fragment() {
             return CuentaClienteFragment()
         }
     }
+
+
+}
+interface CuentaClienteFragmentListener {
+    fun onUserDTOReceived(userDTO: UserDTO?)
 }
