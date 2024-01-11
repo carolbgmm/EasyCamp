@@ -99,11 +99,17 @@ class DetalleCampamentoActivity : AppCompatActivity() {
             .commit()
 
         fab.setOnClickListener {
-            val intent = Intent(this, ApuntarHijosActivity::class.java)
-            // Redirige a la página principal TRABAJADOR
-            intent.putExtra(RecyclerClienteFragment.CAMPAMENTO_SELECCIONADO, campamento)
-            startActivity(intent)
-            fab.setImageResource(R.drawable.campamento_solicitado)
+            val user = LoggedUserDTO.getInstance(null).user
+            if(user.tipoUsuario.equals("CLIENTE")){
+                val intent = Intent(this, ApuntarHijosActivity::class.java)
+                // Redirige a la página principal TRABAJADOR
+                intent.putExtra(RecyclerClienteFragment.CAMPAMENTO_SELECCIONADO, campamento)
+                startActivity(intent)
+            } else {
+                service.inscribirUsuario(user.id, campamento!!.id)
+                fab.setImageResource(R.drawable.campamento_solicitado)
+            }
+
         }
     }
 
