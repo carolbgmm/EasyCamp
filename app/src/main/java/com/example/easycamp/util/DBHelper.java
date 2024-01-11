@@ -324,6 +324,17 @@ public class DBHelper extends SQLiteOpenHelper {
         return resultado;
     }
 
+    public void desInscribirUsuario(String userId, long campamentoId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_INSCRITOS_TRABAJADOR, INSCRITOS_TRABAJADOR_TRABAJADOR_ID + "=? AND " + INSCRITOS_TRABAJADOR_CAMPAMENTO_ID + "=?",
+                new String[]{String.valueOf(userId), String.valueOf(campamentoId)});
+        db.close();
+
+        // Eliminar el favorito de Firebase
+        DatabaseReference favoritosReference = mDataBase.child(TABLE_INSCRITOS_TRABAJADOR);
+        favoritosReference.child(userId + "_" + campamentoId).removeValue();
+    }
+
     public void desInscribirHijos(long hijoId, long campamentoId) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_INSCRITOS, INSCRITOS_HIJO_ID + "=? AND " + INSCRITOS_CAMPAMENTO_ID + "=?",
