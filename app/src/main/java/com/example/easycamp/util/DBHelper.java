@@ -216,12 +216,10 @@ public class DBHelper extends SQLiteOpenHelper {
                 INSCRITOS_CAMPAMENTO_ID + " INTEGER, " +  // Cambiado a TEXT
                 "FOREIGN KEY(" + INSCRITOS_TRABAJADOR_TRABAJADOR_ID + ") REFERENCES " + TABLE_USUARIOS + "(" + USUARIO_ID + "), " +
                 "FOREIGN KEY(" + INSCRITOS_CAMPAMENTO_ID + ") REFERENCES " + TABLE_CAMPAMENTOS + "(" + CAMPAMENTO_ID + "))";
-        db.execSQL(createTableInscritos);
+        db.execSQL(createTableInscritosTrabajador);
 
         insertarDatosTareasDesdeJSON(context, db, TABLE_TAREAS, "tareas", "datos_iniciales.json");
-
         insertarDatosInscritosDesdeJSON(context, db, TABLE_INSCRITOS, "inscritos", "datos_iniciales.json");
-
     }
 
     private void insertarDatosTareasDesdeJSON(Context context, SQLiteDatabase db, String tableName, String jsonArrayName, String fileName) {
@@ -499,7 +497,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 + "," + CAMPAMENTO_FECHA_INICIO + "," + CAMPAMENTO_FECHA_FINAL + "," + CAMPAMENTO_NUMERO_MAX_PARTICIPANTES
                 + "," + CAMPAMENTO_NUMERO_APUNTADOS + "," + CAMPAMENTO_UBICACION + "," + CAMPAMENTO_EDAD_MINIMA
                 + "," + CAMPAMENTO_EDAD_MAXIMA + "," + CAMPAMENTO_NUM_MONITORES + "," + CAMPAMENTO_PRECIO
-                + "," + CAMPAMENTO_CATEGORIA + "," + CAMPAMENTO_IMAGEN +"  FROM " + TABLE_CAMPAMENTOS +
+                + "," + CAMPAMENTO_CATEGORIA + "," + CAMPAMENTO_IMAGEN + "," + CAMPAMENTO_LATITUD + "," + CAMPAMENTO_LONGUITUD +"  FROM " + TABLE_CAMPAMENTOS +
                 " INNER JOIN " + TABLE_INSCRITOS +
                 " ON " + TABLE_INSCRITOS + "." +INSCRITOS_CAMPAMENTO_ID + " = " + TABLE_CAMPAMENTOS + "." + CAMPAMENTO_ID +
                 " INNER JOIN " + TABLE_HIJOS +
@@ -550,7 +548,7 @@ public class DBHelper extends SQLiteOpenHelper {
         String selectQuery = "SELECT *  FROM " + TABLE_CAMPAMENTOS +
                 " INNER JOIN " + TABLE_INSCRITOS_TRABAJADOR +
                 " ON " + TABLE_INSCRITOS_TRABAJADOR + "." +INSCRITOS_TRABAJADOR_CAMPAMENTO_ID + " = " + TABLE_CAMPAMENTOS + "." + CAMPAMENTO_ID +
-                " WHERE " + TABLE_INSCRITOS_TRABAJADOR + "." + INSCRITOS_TRABAJADOR_ID + " = '" + usuarioID + "';";
+                " WHERE " + TABLE_INSCRITOS_TRABAJADOR + "." + INSCRITOS_TRABAJADOR_TRABAJADOR_ID + " = '" + usuarioID + "';";
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -922,7 +920,7 @@ public class DBHelper extends SQLiteOpenHelper {
         agregarCampamento(campamento);
     }
 
-    private void agregarCampamento(CampamentoDto campamento) {
+    public void agregarCampamento(CampamentoDto campamento) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
