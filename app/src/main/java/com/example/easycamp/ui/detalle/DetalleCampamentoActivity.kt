@@ -9,10 +9,13 @@ import com.example.easycamp.R
 import com.example.easycamp.domain.CampamentoDTO
 import com.example.easycamp.ui.buscadorCliente.ApuntarHijosActivity
 import com.example.easycamp.ui.buscadorCliente.RecyclerClienteFragment
+import com.example.easycamp.util.crud.FirebaseInscritosManager
+import com.example.easycamp.util.crud.FirebaseUserManager
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationBarView
+import com.google.firebase.auth.FirebaseAuth
 import com.squareup.picasso.Picasso
 
 class DetalleCampamentoActivity : AppCompatActivity() {
@@ -99,16 +102,19 @@ class DetalleCampamentoActivity : AppCompatActivity() {
             .commit()
 
         fab.setOnClickListener {
-            val user = LoggedUserDTO.getInstance(null).user
-            if(user.tipoUsuario.equals("CLIENTE")){
-                val intent = Intent(this, ApuntarHijosActivity::class.java)
+           var firebaseUserManager = FirebaseUserManager()
+            //firebaseUserManager.obtenerUsuarioActual { ... }
+
+            //if(user.tipoUsuario.equals("CLIENTE")){
+            //    val intent = Intent(this, ApuntarHijosActivity::class.java)
                 // Redirige a la página principal TRABAJADOR
-                intent.putExtra(RecyclerClienteFragment.CAMPAMENTO_SELECCIONADO, campamento)
-                startActivity(intent)
-            } else {
-                service.inscribirUsuario(user.id, campamento!!.id)
-                fab.setImageResource(R.drawable.campamento_solicitado)
-            }
+           //     intent.putExtra(RecyclerClienteFragment.CAMPAMENTO_SELECCIONADO, campamento)
+           //     startActivity(intent)
+          //  } else {
+          //      var firebaseInscritosManager= FirebaseInscritosManager()
+          //      firebaseInscritosManager.agregarInscrito(....)
+           //     fab.setImageResource(R.drawable.campamento_solicitado)
+          //  }
 
         }
     }

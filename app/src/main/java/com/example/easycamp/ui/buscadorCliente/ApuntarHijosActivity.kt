@@ -1,28 +1,21 @@
 package com.example.easycamp.ui.buscadorCliente
 
-import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.easycamp.R
-import com.example.easycamp.domain.CampamentoDto
+import com.example.easycamp.domain.CampamentoDTO
 import com.example.easycamp.domain.HijoDTO
-import com.example.easycamp.domain.LoggedUserDTO
-import com.example.easycamp.domain.UserDTO
-import com.example.easycamp.ui.detalle.DetalleCampamentoActivity
 import com.example.easycamp.util.crud.FirebaseHijoManager
-import com.example.easycamp.util.crud.FirebaseInscritosManager
-import com.example.easycamp.util.crud.FirebaseUserManager
-import com.google.firebase.database.DatabaseException
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseException
 
 class ApuntarHijosActivity : AppCompatActivity() {
 
     private lateinit var mAuth: FirebaseAuth
     private lateinit var listaDeHijos: MutableList<HijoDTO>
-    private var campamento: CampamentoDto? = null
+    private var campamento: CampamentoDTO? = null
     private lateinit var recyclerView: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,36 +48,16 @@ class ApuntarHijosActivity : AppCompatActivity() {
                     val layoutManager = LinearLayoutManager(this@ApuntarHijosActivity)
                     recyclerView.layoutManager = layoutManager
 
-                    val adapter = ListaApuntarHijosAdapter(object : ListaApuntarHijosAdapter.OnClickListener {
-                        override fun onClick(item: HijoDTO?) {
-                            campamento?.let { clickonItem(item) }
-                        }
-                    })
+                    val adapter = ListaApuntarHijosAdapter(campamento!!)
                     recyclerView.adapter = adapter
                     adapter.submitList(listaDeHijos)
                 }
 
                 override fun onError(toException: DatabaseException?) {
                     // Manejar errores según tus necesidades
-                    Log.e("MiApp", "Error al obtener la lista de hijos", toException)
+                    // Log.e("MiApp", "Error al obtener la lista de hijos", toException)
                 }
             })
-        }
-    }
-
-    private fun clickonItem(hijo: HijoDTO?) {
-        hijo?.let { h ->
-            mAuth.currentUser?.let { firebaseUser ->
-                val firebaseInscritosManager = FirebaseInscritosManager()
-
-                // Inscribir el hijo al campamento utilizando FirebaseInscritosManager
-                firebaseInscritosManager.inscribirHijoAlCampamento(h.id, campamento?.id, firebaseUser.uid, object : FirebaseInscritosManager.OnInscripcionCompletadaListener {
-                    override fun onInscripcionCompletada() {
-                        // La inscripción se ha completado con éxito
-                        // Puedes realizar alguna acción adicional si es necesario
-                    }
-                })
-            }
         }
     }
 }
