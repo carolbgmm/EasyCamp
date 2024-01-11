@@ -219,7 +219,10 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(createTableInscritosTrabajador);
 
         insertarDatosTareasDesdeJSON(context, db, TABLE_TAREAS, "tareas", "datos_iniciales.json");
+
         insertarDatosInscritosDesdeJSON(context, db, TABLE_INSCRITOS, "inscritos", "datos_iniciales.json");
+
+
     }
 
     private void insertarDatosTareasDesdeJSON(Context context, SQLiteDatabase db, String tableName, String jsonArrayName, String fileName) {
