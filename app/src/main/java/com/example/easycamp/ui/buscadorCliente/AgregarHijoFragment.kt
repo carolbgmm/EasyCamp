@@ -13,9 +13,8 @@ import androidx.fragment.app.DialogFragment
 import com.example.easycamp.R
 import com.example.easycamp.domain.HijoDTO
 import com.example.easycamp.domain.UserDTO
-import com.example.easycamp.util.DBHelper
-
-
+import com.example.easycamp.util.crud.FirebaseHijoManager
+import com.example.easycamp.util.crud.FirebaseUserManager
 
 
 class AgregarHijoFragment(
@@ -25,7 +24,7 @@ class AgregarHijoFragment(
 ) : DialogFragment() {
     private var usuarioActual: UserDTO=usuarioActual
     private var adapter: ListaHijosAdapter =adapter
-    private lateinit var service: DBHelper
+
     private lateinit var btnAceptar: Button
     private lateinit var etNombre: EditText
     private lateinit var etApellidos: EditText
@@ -44,7 +43,7 @@ class AgregarHijoFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        service = DBHelper(requireContext())
+
                 btnAceptar = view.findViewById(R.id.btnAceptar)
                 etNombre = view.findViewById(R.id.etNombre)
                 etApellidos = view.findViewById(R.id.etApellidos)
@@ -75,10 +74,9 @@ class AgregarHijoFragment(
             // Manejar el error según tus necesidades
             return
         }
-        var nuevoHijo = HijoDTO(0, nombre, apellidos, edad, observaciones)
-
-        val nuevoHijoId = service.crearHijo(nuevoHijo, usuarioActual.id)
-        nuevoHijo.id = nuevoHijoId
+        var nuevoHijo = HijoDTO( nombre, apellidos, edad, observaciones,usuarioActual.id)
+        var firebaseHijoManager=FirebaseHijoManager()
+        nuevoHijo = firebaseHijoManager.agregarHijo(nuevoHijo)
         listaDeHijos.add(nuevoHijo)
         adapter.submitList(listaDeHijos)
 

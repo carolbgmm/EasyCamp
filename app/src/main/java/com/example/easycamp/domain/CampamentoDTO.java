@@ -3,8 +3,8 @@ package com.example.easycamp.domain;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class CampamentoDto implements Parcelable {
-    private long id;
+public class CampamentoDTO implements Parcelable {
+    private String id;
     private String nombre;
     private String descripcion;
     private String fecha_inicio;
@@ -18,18 +18,15 @@ public class CampamentoDto implements Parcelable {
     private double precio;
     private String categoria;
     private String imagen;
-    private boolean favorito;
     private float latitud;
-
     private float longuitud;
 
-
     // Constructor vacío necesario para Firebase
-    public CampamentoDto() {
+    public CampamentoDTO() {
     }
 
-    public CampamentoDto(
-            long id,
+    public CampamentoDTO(
+            String id,
             String nombre,
             String descripcion,
             String fecha_inicio,
@@ -43,7 +40,6 @@ public class CampamentoDto implements Parcelable {
             double precio,
             String categoria,
             String imagen,
-            boolean favorito,
             float latitud,
             float longuitud
     ) {
@@ -61,13 +57,12 @@ public class CampamentoDto implements Parcelable {
         this.precio = precio;
         this.categoria = categoria;
         this.imagen = imagen;
-        this.favorito = favorito;
         this.latitud = latitud;
         this.longuitud = longuitud;
     }
 
-    protected CampamentoDto(Parcel in) {
-        id = in.readLong();
+    protected CampamentoDTO(Parcel in) {
+        id = in.readString();
         nombre = in.readString();
         descripcion = in.readString();
         fecha_inicio = in.readString();
@@ -81,15 +76,13 @@ public class CampamentoDto implements Parcelable {
         precio = in.readDouble();
         categoria = in.readString();
         imagen = in.readString();
-        favorito = in.readByte() != 0;
         latitud = in.readFloat();
         longuitud = in.readFloat();
-
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(id);
+        dest.writeString(id);
         dest.writeString(nombre);
         dest.writeString(descripcion);
         dest.writeString(fecha_inicio);
@@ -103,7 +96,6 @@ public class CampamentoDto implements Parcelable {
         dest.writeDouble(precio);
         dest.writeString(categoria);
         dest.writeString(imagen);
-        dest.writeByte((byte) (favorito ? 1 : 0));
         dest.writeFloat(latitud);
         dest.writeFloat(longuitud);
     }
@@ -113,25 +105,25 @@ public class CampamentoDto implements Parcelable {
         return 0;
     }
 
-    public static final Creator<CampamentoDto> CREATOR = new Creator<CampamentoDto>() {
+    public static final Parcelable.Creator<CampamentoDTO> CREATOR = new Parcelable.Creator<CampamentoDTO>() {
         @Override
-        public CampamentoDto createFromParcel(Parcel in) {
-            return new CampamentoDto(in);
+        public CampamentoDTO createFromParcel(Parcel in) {
+            return new CampamentoDTO(in);
         }
 
         @Override
-        public CampamentoDto[] newArray(int size) {
-            return new CampamentoDto[size];
+        public CampamentoDTO[] newArray(int size) {
+            return new CampamentoDTO[size];
         }
     };
 
     // Getters y setters
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -239,14 +231,6 @@ public class CampamentoDto implements Parcelable {
         this.imagen = imagen;
     }
 
-    public boolean isFavorito() {
-        return favorito;
-    }
-
-    public void setFavorito(boolean favorito) {
-        this.favorito = favorito;
-    }
-
     public void setLonguitud(float longuitud) {
         this.longuitud = longuitud;
     }
@@ -280,10 +264,8 @@ public class CampamentoDto implements Parcelable {
                 ", precio=" + precio +
                 ", categoria='" + categoria + '\'' +
                 ", imagen='" + imagen + '\'' +
-                ", favorito=" + favorito +
                 ", latitud=" + latitud +
                 ", longuitud=" + longuitud +
                 '}';
     }
-
 }

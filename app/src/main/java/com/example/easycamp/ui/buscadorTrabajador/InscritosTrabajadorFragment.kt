@@ -6,21 +6,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.easycamp.R
-import com.example.easycamp.domain.CampamentoDto
-import com.example.easycamp.domain.LoggedUserDTO
-import com.example.easycamp.ui.buscadorCliente.BuscadorClienteAdapter
-import com.example.easycamp.ui.buscadorCliente.InscritosFragment
+import com.example.easycamp.domain.CampamentoDTO
 import com.example.easycamp.ui.buscadorCliente.RecyclerClienteFragment
 import com.example.easycamp.ui.detalle.DetalleCampamentoActivity
-import com.example.easycamp.util.DBHelper
 
 class InscritosTrabajadorFragment : Fragment() {
 
     private lateinit var recyclerCamp: RecyclerView
-    private lateinit var persistencia: DBHelper
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,7 +23,7 @@ class InscritosTrabajadorFragment : Fragment() {
     ): View? {
         val view =inflater.inflate(R.layout.fragment_inscritos_trabajador, container, false)
 
-        persistencia = DBHelper.getInstance(context)
+
         recyclerCamp= view.findViewById(R.id.recycler_campamentos_inscrito)
         // Inflate the layout for this fragment
         return view
@@ -57,7 +52,7 @@ class InscritosTrabajadorFragment : Fragment() {
 //
 //        }
 //    }
-    fun clickonItem(campamento: CampamentoDto) {
+    fun clickonItem(campamento: CampamentoDTO) {
         val intent = Intent(activity, DetalleCampamentoActivity::class.java)
         intent.putExtra(RecyclerClienteFragment.CAMPAMENTO_SELECCIONADO, campamento)
         startActivity(intent)

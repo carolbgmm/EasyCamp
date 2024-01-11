@@ -1,18 +1,13 @@
 package com.example.easycamp.ui.buscadorTrabajador
 
-import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.Toast
 import com.example.easycamp.R
-import com.example.easycamp.domain.LoggedUserDTO
 import com.example.easycamp.domain.UserDTO
-import com.example.easycamp.ui.PerfilFragment
-import com.example.easycamp.ui.inicioSesion.Login_Activity
+import com.example.easycamp.util.crud.FirebaseUserManager
 
 
 class HerramientasFragment : androidx.fragment.app.Fragment() {
@@ -76,9 +71,20 @@ class HerramientasFragment : androidx.fragment.app.Fragment() {
 
 
     private fun obtenerUsuarioActual(): UserDTO {
+        val firebaseUserManager = FirebaseUserManager()
+        var usuarioActual: UserDTO? = null
 
-        return LoggedUserDTO.getInstance(null).user;
+        firebaseUserManager.obtenerUsuarioActual(object : FirebaseUserManager.OnUserDTOReceivedListener {
+            override fun onUserDTOReceived(userDTO: UserDTO?) {
+                userDTO?.let {
+                    usuarioActual = it
+                }
+            }
+        })
+
+        return usuarioActual ?: throw IllegalStateException("No se pudo obtener el usuario actual")
     }
+
 
     private fun mostrarListaAsistentes() {
         val listAsistFragment = ListaAsistentesFragment.newInstance()

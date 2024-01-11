@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.easycamp.R
 import com.example.easycamp.domain.HijoDTO
-import com.example.easycamp.util.DBHelper
 
 class ListaApuntarHijosAdapter(val listener: OnClickListener) : ListAdapter<HijoDTO, ListaApuntarHijosAdapter.HijoViewHolder>(HijoDiffCallback()) {
 
@@ -36,10 +35,10 @@ class ListaApuntarHijosAdapter(val listener: OnClickListener) : ListAdapter<Hijo
         private val tvEdad: TextView = itemView.findViewById(R.id.tvEdad)
         private val tvObservaciones: TextView = itemView.findViewById(R.id.tvObservaciones)
         private val btnAdd: ImageButton = itemView.findViewById(R.id.btnAdd)
-        private lateinit var service: DBHelper
+
 
         fun bind(hijo: HijoDTO, listener: OnClickListener) {
-            service = DBHelper(itemView.context)
+
 
             tvNombreHijo.text = hijo.nombre
             tvApellidos.text = hijo.apellidos

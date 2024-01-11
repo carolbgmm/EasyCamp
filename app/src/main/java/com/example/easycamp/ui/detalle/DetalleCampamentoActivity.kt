@@ -3,14 +3,12 @@ package com.example.easycamp.ui.detalle
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.easycamp.R
-import com.example.easycamp.domain.CampamentoDto
+import com.example.easycamp.domain.CampamentoDTO
 import com.example.easycamp.ui.buscadorCliente.ApuntarHijosActivity
 import com.example.easycamp.ui.buscadorCliente.RecyclerClienteFragment
-import com.example.easycamp.ui.buscadorTrabajador.BuscadorTrabajadorActivity
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -20,7 +18,7 @@ import com.squareup.picasso.Picasso
 class DetalleCampamentoActivity : AppCompatActivity() {
     lateinit var toolBarLayout: CollapsingToolbarLayout
     lateinit var imagen: ImageView
-    var campamento: CampamentoDto? = null
+    var campamento: CampamentoDTO? = null
     lateinit var toolbar: androidx.appcompat.widget.Toolbar
     lateinit var fab: FloatingActionButton
 

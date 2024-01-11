@@ -7,9 +7,13 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.easycamp.R
-import com.example.easycamp.domain.CampamentoDto
+import com.example.easycamp.domain.CampamentoDTO
+import com.example.easycamp.domain.FavoritoDTO
+import com.example.easycamp.domain.UserDTO
+import com.example.easycamp.util.crud.FirebaseFavoritoManager
+import com.example.easycamp.util.crud.FirebaseUserManager
 
-class BuscadorTrabajadorAdapter (val listaCampamento: List<CampamentoDto>, val listener: OnItemClickListener) :
+class BuscadorTrabajadorAdapter (val listaCampamento: List<CampamentoDTO>, val listener: OnItemClickListener) :
     RecyclerView.Adapter<BuscadorTrabajadorAdapter.CampamentoViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CampamentoViewHolder {
@@ -29,7 +33,7 @@ class BuscadorTrabajadorAdapter (val listaCampamento: List<CampamentoDto>, val l
     }
 
     fun interface OnItemClickListener {
-        fun onItemClick(item: CampamentoDto?)
+        fun onItemClick(item: CampamentoDTO?)
     }
 
     class CampamentoViewHolder(view: View): RecyclerView.ViewHolder(view) {
@@ -38,27 +42,57 @@ class BuscadorTrabajadorAdapter (val listaCampamento: List<CampamentoDto>, val l
         var txtDescripcion = view.findViewById<TextView>(R.id.txtDescripcion)
         var imgFavoritos = view.findViewById<ImageButton>(R.id.imgFavoritos)
 
-        fun bind(item: CampamentoDto, listener: OnItemClickListener) {
+        private val firebaseFavoritoManager = FirebaseFavoritoManager()
+        private val firebaseUserManager = FirebaseUserManager()
+
+        fun bind(item: CampamentoDTO, listener: OnItemClickListener) {
             txtNombre.setText(item.nombre)
             txtDescripcion.setText(item.descripcion)
+            var userId:String =""
+            // Obtener el usuario actual
+            firebaseUserManager.obtenerUsuarioActual(object : FirebaseUserManager.OnUserDTOReceivedListener {
+                override fun onUserDTOReceived(userDTO: UserDTO?) {
+                    userDTO?.let { user ->
+                         userId = user.id
 
-            if(item.isFavorito){
-                imgFavoritos.setImageResource(R.drawable.favoritos_relleno)
-            } else {
-                imgFavoritos.setImageResource(R.drawable.favoritos_vacio)
-            }
+                        // Obtener la lista de favoritos del usuario actual
+                        firebaseFavoritoManager.obtenerFavoritosPorUsuario(userId, object : FirebaseFavoritoManager.OnFavoritosReceivedListener {
+                            override fun onFavoritosReceived(favoritos: List<FavoritoDTO>) {
+                                // Verificar si el campamento está en la lista de favoritos
+                                val isFavorito = favoritos.any { it.campamentoId == item.id }
+
+                                // Establecer la imagen de favorito según el resultado
+                                if (isFavorito) {
+                                    imgFavoritos.setImageResource(R.drawable.favoritos_relleno)
+                                } else {
+                                    imgFavoritos.setImageResource(R.drawable.favoritos_vacio)
+                                }
+                            }
+
+                            override fun onError(exception: Exception) {
+                                // Manejar errores según tus necesidades
+                            }
+                        })
+                    }
+                }
+            })
 
             imgFavoritos?.setOnClickListener {
-                if(item.isFavorito){
-                    imgFavoritos.setImageResource(R.drawable.favoritos_vacio)
-                    item.isFavorito= false
-                } else {
-                    imgFavoritos.setImageResource(R.drawable.favoritos_relleno)
-                    item.isFavorito = true
-                }
+                // Aquí puedes mantener la lógica existente para cambiar el estado del favorito
+                firebaseFavoritoManager.toggleFavorito(userId, item.id, object : FirebaseFavoritoManager.OnFavoritoToggleListener {
+                    override fun onFavoritoToggled(isFavorito: Boolean) {
+                        if (isFavorito) {
+                            imgFavoritos.setImageResource(R.drawable.favoritos_relleno)
+                        } else {
+                            imgFavoritos.setImageResource(R.drawable.favoritos_vacio)
+                        }
+                    }
+                })
             }
+
             // cargar imagen
             itemView.setOnClickListener { listener.onItemClick(item) }
         }
     }
+
 }

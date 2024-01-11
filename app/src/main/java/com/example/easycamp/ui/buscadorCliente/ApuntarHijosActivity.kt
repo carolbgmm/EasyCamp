@@ -1,26 +1,24 @@
 package com.example.easycamp.ui.buscadorCliente
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.ImageButton
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.easycamp.R
-import com.example.easycamp.domain.CampamentoDto
+import com.example.easycamp.domain.CampamentoDTO
 import com.example.easycamp.domain.HijoDTO
-import com.example.easycamp.domain.LoggedUserDTO
 import com.example.easycamp.domain.UserDTO
-import com.example.easycamp.ui.detalle.DetalleCampamentoActivity
-import com.example.easycamp.util.DBHelper
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.example.easycamp.util.crud.FirebaseHijoManager
+import com.example.easycamp.util.crud.FirebaseInscritosManager
+import com.example.easycamp.util.crud.FirebaseUserManager
+import com.google.firebase.database.DatabaseException
 
 class ApuntarHijosActivity : AppCompatActivity() {
 
-    private lateinit var service: DBHelper
+
     private lateinit var listaDeHijos: MutableList<HijoDTO>
-    private var campamento: CampamentoDto? = null
+    private var campamento: CampamentoDTO? = null
     private lateinit var recyclerView: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,8 +30,32 @@ class ApuntarHijosActivity : AppCompatActivity() {
         campamento =
             intent.getParcelableExtra(RecyclerClienteFragment.CAMPAMENTO_SELECCIONADO)
 
-        service = DBHelper(baseContext)
-        listaDeHijos = service.obtenerHijosPorUsuario(LoggedUserDTO.getInstance(null).user.id).toMutableList()
+
+        val firebaseUserManager = FirebaseUserManager()
+        val firebaseHijoManager = FirebaseHijoManager()
+
+// Obtén el usuario actual
+        firebaseUserManager.obtenerUsuarioActual(object : FirebaseUserManager.OnUserDTOReceivedListener {
+            override fun onUserDTOReceived(usuarioRegistrado: UserDTO?) {
+                if (usuarioRegistrado != null) {
+                    // Usuario actual obtenido con éxito
+
+                    // Utiliza el ID del usuario actual para obtener la lista de hijos
+                    firebaseHijoManager.obtenerHijosPorIdPadre(usuarioRegistrado.id, object : FirebaseHijoManager.OnHijosReceivedListener {
+                        override fun onHijosReceived(hijos: List<HijoDTO>) {
+                            // Ahora 'hijos' contiene la lista de hijos del padre
+                            listaDeHijos = hijos.toMutableList()
+                        }
+
+                        override fun onError(toException: DatabaseException?) {
+                            TODO("Not yet implemented")
+                        }
+                    })
+                } else {
+                    // No se pudo obtener el usuario actual
+                }
+            }
+        })
         Log.d("MiApp", "Se cargo la lista de hijos ")
 
         val layoutManager = LinearLayoutManager(this)
@@ -53,11 +75,26 @@ class ApuntarHijosActivity : AppCompatActivity() {
     }
 
     fun clickonItem(hijo: HijoDTO?) {
-        hijo?.let { h->
-            campamento?.let { c->
-                service.inscribirHijo(h.id, c.id)
-            }
-        }
+        hijo?.let { h ->
+            val firebaseUserManager = FirebaseUserManager()
+            firebaseUserManager.obtenerUsuarioActual(object : FirebaseUserManager.OnUserDTOReceivedListener {
+                override fun onUserDTOReceived(userDTO: UserDTO?) {
+                    userDTO?.let { user ->
+                        val firebaseInscritosManager = FirebaseInscritosManager()
 
+                        // Inscribir el hijo al campamento utilizando FirebaseInscritosManager
+                        firebaseInscritosManager.inscribirHijoAlCampamento(h.id, campamento?.id,user.id, object : FirebaseInscritosManager.OnInscripcionCompletadaListener {
+                            override fun onInscripcionCompletada() {
+                                // La inscripción se ha completado con éxito
+                                // Puedes realizar alguna acción adicional si es necesario
+                            }
+                        })
+                    }
+                }
+            })
+        }
     }
+
+
+
 }
