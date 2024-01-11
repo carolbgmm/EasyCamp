@@ -57,7 +57,6 @@ class ListaAsistentesFragment : Fragment() {
     }
 
     companion object {
-        //val CAMPAMENTO_SELECCIONADO = "campamento_seleccionado"
         fun newInstance(): ListaAsistentesFragment{
             return ListaAsistentesFragment()
         }
