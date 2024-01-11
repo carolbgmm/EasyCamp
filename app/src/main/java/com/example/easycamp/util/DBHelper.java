@@ -545,6 +545,38 @@ public class DBHelper extends SQLiteOpenHelper {
         return campamentosInscritos;
     }
 
+    public List<HijoDTO> obtenerInscritosDeCampamento(long campamentoID) {
+        List<HijoDTO> hijosInscritos = new ArrayList<>();
+
+        String selectQuery = "SELECT * FROM " + TABLE_HIJOS +
+                " INNER JOIN " + TABLE_INSCRITOS +
+                " ON " + TABLE_INSCRITOS + "." + INSCRITOS_HIJO_ID + " = " + TABLE_HIJOS + "." + HIJO_ID +
+                " WHERE " + TABLE_INSCRITOS + "." + INSCRITOS_CAMPAMENTO_ID + " = '" + campamentoID + "';";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+
+        if (cursor.moveToFirst()) {
+            do {
+                @SuppressLint("Range") HijoDTO hijo = new HijoDTO(
+                        cursor.getLong(cursor.getColumnIndex(HIJO_ID)),
+                        cursor.getString(cursor.getColumnIndex(HIJO_NOMBRE)),
+                        cursor.getString(cursor.getColumnIndex(HIJO_APELLIDOS)),
+                        cursor.getInt(cursor.getColumnIndex(HIJO_EDAD)),
+                        cursor.getString(cursor.getColumnIndex(HIJO_OBSERVACIONES))
+                );
+                hijosInscritos.add(hijo);
+
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return hijosInscritos;
+    }
+
     public List<CampamentoDto> obtenerInscritosDeTrabajador(String usuarioID) {
         List<CampamentoDto> campamentosInscritos = new ArrayList<>();
 
@@ -942,6 +974,8 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(CAMPAMENTO_NUM_MONITORES, campamento.getNum_monitores());
         values.put(CAMPAMENTO_PRECIO, campamento.getPrecio());
         values.put(CAMPAMENTO_CATEGORIA, campamento.getCategoria());
+        values.put(CAMPAMENTO_LATITUD, campamento.getLatitud());
+        values.put(CAMPAMENTO_LONGUITUD, campamento.getLonguitud());
 
         db.insert(TABLE_CAMPAMENTOS, null, values);
         db.close();
