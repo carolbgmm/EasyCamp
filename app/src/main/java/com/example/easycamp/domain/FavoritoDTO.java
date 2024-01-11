@@ -1,28 +1,16 @@
 package com.example.easycamp.domain;
 
-
 public class FavoritoDTO {
-
-    private String id;  // Nuevo atributo
     private String usuarioId;
-    private String campamentoId;
+    private long campamentoId;
 
     // Constructor vacío requerido para Firebase
     public FavoritoDTO() {
     }
 
-    public FavoritoDTO(String id, String usuarioId, String campamentoId) {
-        this.id = id;
+    public FavoritoDTO(String usuarioId, long campamentoId) {
         this.usuarioId = usuarioId;
         this.campamentoId = campamentoId;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getUsuarioId() {
@@ -33,11 +21,12 @@ public class FavoritoDTO {
         this.usuarioId = usuarioId;
     }
 
-    public String getCampamentoId() {
+    public long getCampamentoId() {
         return campamentoId;
     }
 
-    public void setCampamentoId(String campamentoId) {
+    public void setCampamentoId(long campamentoId) {
         this.campamentoId = campamentoId;
     }
 }
+

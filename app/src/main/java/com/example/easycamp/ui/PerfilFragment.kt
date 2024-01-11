@@ -9,6 +9,7 @@ import android.view.ViewGroup
 
 import androidx.fragment.app.Fragment
 import com.example.easycamp.R
+import com.example.easycamp.domain.LoggedUserDTO
 import com.example.easycamp.domain.UserDTO
 
 
@@ -18,9 +19,8 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import com.example.easycamp.ui.inicioSesion.Login_Activity
-import com.example.easycamp.util.crud.FirebaseUserManager
+import com.example.easycamp.util.DBHelper
 import com.google.firebase.auth.FirebaseAuth
-import java.util.concurrent.CountDownLatch
 
 
 class PerfilFragment : Fragment() {
@@ -33,13 +33,14 @@ class PerfilFragment : Fragment() {
     private lateinit var tvApellidos: EditText
     private lateinit var tvEdad: EditText
     private lateinit var btnActualizar: Button
-
-
+    private lateinit var persistencia:DBHelper
+    private lateinit var  mAuth: FirebaseAuth;
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_perfil, container, false)
-
+        mAuth=FirebaseAuth.getInstance()
         usuario = obtenerUsuario()
+        persistencia=DBHelper(this.context);
         tvNombreUsuario = view.findViewById(R.id.tvValorNombreUsuario)
         tvTipoUsuario = view.findViewById(R.id.tvValorTipoUsuario)
         tvNombre = view.findViewById(R.id.etNombre)
@@ -65,58 +66,13 @@ class PerfilFragment : Fragment() {
     }
 
     private fun obtenerUsuario(): UserDTO {
-        // Instancia de FirebaseUserManager (asegúrate de haberla inicializado)
-        val firebaseUserManager = FirebaseUserManager()
-
-        // Obtener el usuario actual utilizando FirebaseUserManager
-        var userDTO: UserDTO? = null
-        val latch = CountDownLatch(1) // Para sincronizar el hilo principal
-
-        firebaseUserManager.obtenerUsuarioActual(object : FirebaseUserManager.OnUserDTOReceivedListener {
-            override fun onUserDTOReceived(usuario: UserDTO?) {
-                userDTO = usuario
-                latch.countDown()
-            }
-        })
-
-        try {
-            // Esperar hasta que se obtenga la respuesta del hilo secundario
-            latch.await()
-        } catch (e: InterruptedException) {
-            e.printStackTrace()
-        }
-
-        // Devolver el UserDTO obtenido
-        return userDTO ?: UserDTO() // Devuelve un UserDTO vacío si no se obtuvo correctamente
+        return LoggedUserDTO.getInstance(null).user
     }
-
 
     private fun actualizarInformacionUsuario() {
-        // Instancia de FirebaseUserManager (asegúrate de haberla inicializado)
-        val firebaseUserManager = FirebaseUserManager()
-
-        // Obtener el usuario actual utilizando FirebaseUserManager
-        firebaseUserManager.obtenerUsuarioActual(object : FirebaseUserManager.OnUserDTOReceivedListener {
-            override fun onUserDTOReceived(usuario: UserDTO?) {
-                // Verificar si se obtuvo correctamente el usuario actual
-                if (usuario != null) {
-                    // Actualizar la información del usuario con los nuevos valores
-                    usuario.nombre = tvNombre.text.toString()
-                    usuario.apellidos = tvApellidos.text.toString()
-                    usuario.edad = tvEdad.text.toString().toInt() // Asegúrate de manejar excepciones si la conversión falla
-
-                    // Llamar al método de FirebaseUserManager para actualizar el usuario
-                    firebaseUserManager.actualizarUsuario(usuario)
-
-                    Log.d("MiApp", "Información del usuario actualizada: $usuario")
-                } else {
-                    // No se pudo obtener el usuario actual
-                    Log.d("MiApp", "No se pudo obtener el usuario actual para actualizar la información")
-                }
-            }
-        })
+        persistencia.actualizarUsuario(usuario,tvNombre.text.toString(),tvApellidos.text.toString(),tvEdad.text.toString())
+        Log.d("MiApp", "Información del usuario actualizada: $usuario")
     }
-
 
     companion object {
         fun newInstance(): Fragment {
@@ -129,8 +85,7 @@ class PerfilFragment : Fragment() {
 
         val intent = Intent(activity, Login_Activity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-        val firebaseUserManager = FirebaseUserManager()
-        firebaseUserManager.cerrarSesion();
+        mAuth.signOut()
 
         startActivity(intent)
         activity?.finish()

@@ -9,14 +9,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.easycamp.R
 import com.example.easycamp.domain.TareaDTO
 
-class TareasTrabajadorAdapter(
-    val listaTareas: MutableList<TareaDTO>,
-    val listener: OnItemClickListener
-) : RecyclerView.Adapter<TareasTrabajadorAdapter.TareaViewHolder>() {
+class TareasTrabajadorAdapter(val listaTareas: List<TareaDTO>, val listener: TareasTrabajadorAdapter.OnItemClickListener) :
+    RecyclerView.Adapter<TareasTrabajadorAdapter.TareaViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TareaViewHolder {
         val itemView: View = LayoutInflater.from(parent.context)
-            .inflate(R.layout.linea_recycler_view_tareas_trabajador, parent, false)
+            .inflate(R.layout.linea_recycler_view_tareas_trabajador
+                , parent, false)
         return TareaViewHolder(itemView)
     }
 
@@ -29,17 +28,11 @@ class TareasTrabajadorAdapter(
         holder.bind(tarea, listener)
     }
 
-    fun actualizarListaTareas(nuevaLista: List<TareaDTO>) {
-        listaTareas.clear()
-        listaTareas.addAll(nuevaLista)
-        notifyDataSetChanged()
-    }
-
-    interface OnItemClickListener {
+    fun interface OnItemClickListener {
         fun onItemClick(item: TareaDTO?)
     }
 
-    class TareaViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class TareaViewHolder(view: View): RecyclerView.ViewHolder(view) {
 
         var txtTitulo = view.findViewById<TextView>(R.id.txtTituloTarea)
         var txtDescripcion = view.findViewById<TextView>(R.id.txtDescripcionTarea)
@@ -47,27 +40,29 @@ class TareasTrabajadorAdapter(
         var imgTick = view.findViewById<ImageButton>(R.id.imgTick)
 
         fun bind(item: TareaDTO, listener: OnItemClickListener) {
-            txtTitulo.text = item.titulo
-            txtDescripcion.text = item.descripcion
-            txtHora.text = item.fechaLimite
+            txtTitulo.setText(item.titulo)
+            txtDescripcion.setText(item.descripcion)
+            txtHora.setText(item.fechaLimite)
 
-            if (item.isTick) {
+            if(item.tick){
                 imgTick.setImageResource(R.drawable.tick_relleno)
             } else {
                 imgTick.setImageResource(R.drawable.tick_vacio)
             }
 
-            imgTick.setOnClickListener {
-                if (item.isTick) {
+            imgTick?.setOnClickListener {
+                if(item.tick){
                     imgTick.setImageResource(R.drawable.tick_vacio)
-                    item.isTick = false
+                    item.tick = false
                 } else {
                     imgTick.setImageResource(R.drawable.tick_relleno)
-                    item.isTick = true
+                    item.tick = true
                 }
             }
-
+            // cargar imagen
             itemView.setOnClickListener { listener.onItemClick(item) }
         }
     }
+
+
 }

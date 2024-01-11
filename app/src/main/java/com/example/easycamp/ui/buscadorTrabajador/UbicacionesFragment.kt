@@ -7,15 +7,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.easycamp.R
+import com.example.easycamp.util.DBHelper
 
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 
 class UbicacionesFragment : Fragment() {
 
     private lateinit var posCampamento: LatLng
-
+    private lateinit var persistencia: DBHelper
 
     private val callback = OnMapReadyCallback { googleMap ->
         //val sydney = LatLng(-34.0, 151.0)

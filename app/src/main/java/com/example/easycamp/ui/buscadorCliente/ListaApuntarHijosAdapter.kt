@@ -9,13 +9,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.easycamp.R
-import com.example.easycamp.domain.CampamentoDTO
+import com.example.easycamp.domain.CampamentoDto
 import com.example.easycamp.domain.HijoDTO
-import com.example.easycamp.util.crud.FirebaseInscritosManager
-import com.google.firebase.auth.FirebaseAuth
+import com.example.easycamp.util.DBHelper
 
-class ListaApuntarHijosAdapter(val campamento: CampamentoDTO) :
-    ListAdapter<HijoDTO, ListaApuntarHijosAdapter.HijoViewHolder>(HijoDiffCallback()) {
+class ListaApuntarHijosAdapter(val campamento: CampamentoDto) : ListAdapter<HijoDTO, ListaApuntarHijosAdapter.HijoViewHolder>(HijoDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HijoViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -35,36 +33,32 @@ class ListaApuntarHijosAdapter(val campamento: CampamentoDTO) :
         private val tvEdad: TextView = itemView.findViewById(R.id.tvEdad)
         private val tvObservaciones: TextView = itemView.findViewById(R.id.tvObservaciones)
         private val btnAdd: ImageButton = itemView.findViewById(R.id.btnAdd)
+        private lateinit var service: DBHelper
 
-        fun bind(hijo: HijoDTO, campamento: CampamentoDTO) {
-            val firebaseInscritosManager = FirebaseInscritosManager()
+        fun bind(hijo: HijoDTO, campamento: CampamentoDto) {
+            service = DBHelper(itemView.context)
 
-
-
-            val hijoId=hijo.id
-           val  campamentoId=campamento.id
-            val  padreId=FirebaseAuth.getInstance().currentUser?.uid
             tvNombreHijo.text = hijo.nombre
             tvApellidos.text = hijo.apellidos
             tvEdad.text = "Edad: ${hijo.edad}"
             tvObservaciones.text = "Observaciones: ${hijo.observaciones}"
+            val inscritos = service.getInscripcionesCampamento(campamento.id)
+            inscritos.removeIf { it.hijoId != hijo.id }
 
+            if(inscritos.isEmpty()){
+                btnAdd.setImageResource(R.drawable.incono_apuntar_hijo)
+            } else {
+                btnAdd.setImageResource(R.drawable.icon_hijo_apuntado)
+            }
             btnAdd.setOnClickListener {
-                // Inscribir el hijo al campamento utilizando FirebaseInscritosManager
 
-
-
-                firebaseInscritosManager.inscribirHijoAlCampamento(
-                    hijoId,
-                    campamentoId,
-                    padreId,
-                    object : FirebaseInscritosManager.OnInscripcionCompletadaListener {
-                        override fun onInscripcionCompletada() {
-                            btnAdd.setImageResource(R.drawable.icon_hijo_apuntado)
-                        }
-                    }
-                )
-
+                if (inscritos.isEmpty()) {
+                    service.inscribirHijo(hijo.id, campamento.id)
+                    btnAdd.setImageResource(R.drawable.icon_hijo_apuntado)
+                } else {
+                    service.desInscribirHijos(hijo.id, campamento.id)
+                    btnAdd.setImageResource(R.drawable.incono_apuntar_hijo)
+                }
             }
         }
     }

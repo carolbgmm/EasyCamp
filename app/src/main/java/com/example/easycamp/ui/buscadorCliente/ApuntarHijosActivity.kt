@@ -1,21 +1,26 @@
 package com.example.easycamp.ui.buscadorCliente
 
-import android.os.Bundle
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import android.util.Log
+import android.widget.ImageButton
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.easycamp.R
-import com.example.easycamp.domain.CampamentoDTO
+import com.example.easycamp.domain.CampamentoDto
 import com.example.easycamp.domain.HijoDTO
-import com.example.easycamp.util.crud.FirebaseHijoManager
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseException
+import com.example.easycamp.domain.LoggedUserDTO
+import com.example.easycamp.domain.UserDTO
+import com.example.easycamp.ui.detalle.DetalleCampamentoActivity
+import com.example.easycamp.util.DBHelper
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class ApuntarHijosActivity : AppCompatActivity() {
 
-    private lateinit var mAuth: FirebaseAuth
+    private lateinit var service: DBHelper
     private lateinit var listaDeHijos: MutableList<HijoDTO>
-    private var campamento: CampamentoDTO? = null
+    private var campamento: CampamentoDto? = null
     private lateinit var recyclerView: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,40 +29,24 @@ class ApuntarHijosActivity : AppCompatActivity() {
 
         recyclerView = findViewById(R.id.recyclerViewHijos)
 
-        campamento = intent.getParcelableExtra(RecyclerClienteFragment.CAMPAMENTO_SELECCIONADO)
+        campamento =
+            intent.getParcelableExtra(RecyclerClienteFragment.CAMPAMENTO_SELECCIONADO)
 
-        mAuth = FirebaseAuth.getInstance()
+        service = DBHelper(baseContext)
+        listaDeHijos = service.obtenerHijosPorUsuario(LoggedUserDTO.getInstance(null).user.id).toMutableList()
+        Log.d("MiApp", "Se cargo la lista de hijos ")
 
-        // Obtén el usuario actual
-        mAuth.currentUser?.let { firebaseUser ->
-            val firebaseHijoManager = FirebaseHijoManager()
+        val layoutManager = LinearLayoutManager(this)
+        recyclerView.layoutManager = layoutManager
 
-            // Utiliza el ID del usuario actual para obtener la lista de hijos
-            firebaseHijoManager.obtenerHijosPorIdPadre(firebaseUser.uid, object : FirebaseHijoManager.OnHijosReceivedListener {
-                override fun onHijosReceived(hijos: List<HijoDTO>) {
-                    // Ahora 'hijos' contiene la lista de hijos del padre
-                    listaDeHijos = hijos.toMutableList()
-
-                    // Filtra la lista de hijos según la edad del campamento
-                    campamento?.let { c ->
-                        listaDeHijos.removeIf {
-                            it.edad < c.edad_minima || it.edad > c.edad_maxima
-                        }
-                    }
-
-                    val layoutManager = LinearLayoutManager(this@ApuntarHijosActivity)
-                    recyclerView.layoutManager = layoutManager
-
-                    val adapter = ListaApuntarHijosAdapter(campamento!!)
-                    recyclerView.adapter = adapter
-                    adapter.submitList(listaDeHijos)
-                }
-
-                override fun onError(toException: DatabaseException?) {
-                    // Manejar errores según tus necesidades
-                    // Log.e("MiApp", "Error al obtener la lista de hijos", toException)
-                }
-            })
+        campamento?.let { c->
+            listaDeHijos.removeIf{
+                it.edad < c.edad_minima || it.edad > c.edad_maxima
+            }
+            val adapter = ListaApuntarHijosAdapter(c)
+            recyclerView.adapter = adapter
+            adapter.submitList(listaDeHijos)
         }
+
     }
 }

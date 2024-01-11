@@ -12,19 +12,18 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.easycamp.R
-import com.example.easycamp.domain.CampamentoDTO
-import com.example.easycamp.domain.UserDTO
+import com.example.easycamp.domain.CampamentoDto
+import com.example.easycamp.domain.LoggedUserDTO
 import com.example.easycamp.ui.buscadorCliente.BuscadorClienteAdapter
 import com.example.easycamp.ui.detalle.DetalleCampamentoActivity
-import com.example.easycamp.util.crud.FirebaseCampamentoManager
-import com.example.easycamp.util.crud.FirebaseUserManager
+import com.example.easycamp.util.DBHelper
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.search.SearchBar
 import com.google.android.material.search.SearchView
 
 class RecyclerTrabajadorFragment : Fragment() {
     private lateinit var recyclerCamp: RecyclerView
-
+    private lateinit var persistencia: DBHelper
 
     private lateinit var searchBar: SearchBar
     private lateinit var searchView: SearchView
@@ -36,7 +35,7 @@ class RecyclerTrabajadorFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_recycler_trabajador, container, false)
 
-
+        persistencia = DBHelper.getInstance(context)
         recyclerCamp= view.findViewById(R.id.recycler_campamentos_trabajador)
 
         searchBar = view.findViewById(R.id.search_bar_cliente)
@@ -48,28 +47,18 @@ class RecyclerTrabajadorFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val firebaseCampamentoManager = FirebaseCampamentoManager()
-
-        firebaseCampamentoManager.obtenerCampamentos(object : FirebaseCampamentoManager.OnCampamentosObtenidosListener {
-            override fun onCampamentosObtenidos(campamentos: List<CampamentoDTO>) {
-                val adapterCampamentos = BuscadorTrabajadorAdapter(campamentos, object : BuscadorTrabajadorAdapter.OnItemClickListener {
-                    override fun onItemClick(campamento: CampamentoDTO?) {
-                        campamento?.let { clickonItem(campamento) }
-                    }
-                })
-
-                recyclerCamp.apply {
-                    setHasFixedSize(true)
-                    layoutManager = LinearLayoutManager(activity)
-                    adapter = adapterCampamentos
-                }
-            }
-
-            override fun onError(exception: Exception) {
-                // Manejar el error según tus necesidades
+        val lista = persistencia.obtenerCampamentosConFavoritos(LoggedUserDTO.getInstance(null).user.id)
+        val adapterCampamentos = BuscadorTrabajadorAdapter(lista, object : BuscadorTrabajadorAdapter.OnItemClickListener {
+            override fun onItemClick(campamento: CampamentoDto?) {
+                campamento?.let { clickonItem(campamento) }
             }
         })
+        recyclerCamp.apply {
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(activity)
+            adapter = adapterCampamentos
+
+        }
 
         searchView.setupWithSearchBar(searchBar)
 
@@ -85,13 +74,15 @@ class RecyclerTrabajadorFragment : Fragment() {
             false
         }
 
-        searchView.editText.setOnEditorActionListener { v: TextView?, actionId: Int, event: KeyEvent? ->
-            searchBar.setText(searchView.text)
-            getListaDeSearchView()
-            false
-        }
-    }
+        searchView.editText
+            .setOnEditorActionListener { v: TextView?, actionId: Int, event: KeyEvent? ->
+                searchBar.setText(searchView.getText())
+                getListaDeSearchView()
+                false
+            }
 
+
+    }
 
     companion object {
         val CAMPAMENTO_SELECCIONADO = "campamento_seleccionado"
@@ -100,58 +91,32 @@ class RecyclerTrabajadorFragment : Fragment() {
             RecyclerTrabajadorFragment()
     }
 
-    fun clickonItem(campamento: CampamentoDTO) {
+    fun clickonItem(campamento: CampamentoDto) {
         val intent = Intent(activity, DetalleCampamentoActivity::class.java)
         intent.putExtra(CAMPAMENTO_SELECCIONADO, campamento)
         startActivity(intent)
     }
 
-    fun getListaDeSearchView() {
-        searchView?.let { searchView ->
-            // Obtener el ID de usuario actual
-            val firebaseUserManager = FirebaseUserManager()
-            firebaseUserManager.obtenerUsuarioActual(object : FirebaseUserManager.OnUserDTOReceivedListener {
-                override fun onUserDTOReceived(userDTO: UserDTO?) {
-                    if (userDTO != null) {
-                        val idUsuario = userDTO.id
-
-                        // Llamar al método que obtiene los campamentos con el filtro de búsqueda
-                        obtenerCampamentosCon(idUsuario, searchView.text.toString())
-                    } else {
-                        // Manejar el caso en el que no se pudo obtener el usuario actual
-                    }
+    fun getListaDeSearchView(){
+        searchView?.let {
+            val lista = persistencia.obtenerCampamentosCon(LoggedUserDTO.getInstance(null).user.id, it.text.toString())
+            val adapterCampamentos = BuscadorClienteAdapter(lista, object : BuscadorClienteAdapter.OnItemClickListener {
+                override fun onItemClick(campamento: CampamentoDto?) {
+                    campamento?.let { clickonItem(campamento) }
                 }
             })
+            recyclerCamp.apply {
+                setHasFixedSize(true)
+                layoutManager = LinearLayoutManager(activity)
+                adapter = adapterCampamentos
+
+            }
         }
 
         searchBar.visibility = View.VISIBLE
         searchBar.isVisible = true
         searchView.setVisible(false)
         searchView.visibility = View.GONE
-    }
 
-    // Método para obtener campamentos con filtro de búsqueda
-    private fun obtenerCampamentosCon(idUsuario: String, filtro: String) {
-        val firebaseCampamentoManager = FirebaseCampamentoManager()
-        firebaseCampamentoManager.obtenerCampamentosConFiltro(idUsuario, filtro, object : FirebaseCampamentoManager.OnCampamentosConFiltroListener {
-            override fun onCampamentosConFiltroObtenidos(campamentosFiltrados: List<CampamentoDTO>) {
-                // Crear y asignar el adaptador con la lista de campamentos filtrados
-                val adapterCampamentos = BuscadorClienteAdapter(campamentosFiltrados, object : BuscadorClienteAdapter.OnItemClickListener {
-                    override fun onItemClick(campamento: CampamentoDTO?) {
-                        campamento?.let { clickonItem(campamento) }
-                    }
-                })
-
-                recyclerCamp.apply {
-                    setHasFixedSize(true)
-                    layoutManager = LinearLayoutManager(activity)
-                    adapter = adapterCampamentos
-                }
-            }
-
-            override fun onError(exception: Exception) {
-                // Manejar errores al obtener campamentos con filtro
-            }
-        })
     }
 }

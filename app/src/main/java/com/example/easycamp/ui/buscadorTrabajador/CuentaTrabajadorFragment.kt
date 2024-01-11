@@ -9,10 +9,10 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
 import com.example.easycamp.R
+import com.example.easycamp.domain.LoggedUserDTO
 import com.example.easycamp.domain.UserDTO
 import com.example.easycamp.ui.PerfilFragment
 import com.example.easycamp.ui.inicioSesion.Login_Activity
-import com.example.easycamp.util.crud.FirebaseUserManager
 import com.google.firebase.auth.FirebaseAuth
 
 
@@ -42,20 +42,9 @@ class CuentaTrabajadorFragment : Fragment() {
     }
 
     private fun obtenerUsuarioActual(): UserDTO {
-        val firebaseUserManager = FirebaseUserManager()
-        var usuarioActual: UserDTO? = null
 
-        firebaseUserManager.obtenerUsuarioActual(object : FirebaseUserManager.OnUserDTOReceivedListener {
-            override fun onUserDTOReceived(userDTO: UserDTO?) {
-                userDTO?.let {
-                    usuarioActual = it
-                }
-            }
-        })
-
-        return usuarioActual ?: throw IllegalStateException("No se pudo obtener el usuario actual")
+        return LoggedUserDTO.getInstance(null).user;
     }
-
 
     private fun mostrarInformacionPerfil() {
         val perfilFragment = PerfilFragment.newInstance()
