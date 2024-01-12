@@ -75,6 +75,23 @@
         <!-- Para CrearCampamentoFragment -->
         <string name="titulo_crear_campamento">Crear Nuevo Campamento</string>
     <string name="descripcion_crear_campamento">Completa los detalles para crear un nuevo campamento.</string>
+
+
+
+        <string name="hint_nombre">Nombre</string>
+    <string name="hint_descripcion">Descripción</string>
+    <string name="hint_fecha_inicio">Fecha de inicio</string>
+    <string name="hint_fecha_final">Fecha final</string>
+    <string name="hint_numero_max_participantes">Número máximo de participantes</string>
+    <string name="hint_ubicacion">Ubicación</string>
+    <string name="hint_edad_minima">Edad mínima</string>
+    <string name="hint_edad_maxima">Edad máxima</string>
+    <string name="hint_num_monitores">Número de monitores</string>
+    <string name="hint_precio">Precio</string>
+    <string name="hint_categoria">Categoría</string>
+    <string name="hint_imagen">URL de la imagen</string>
+    <string name="hint_latitud">Latitud</string>
+    <string name="hint_longitud">Longitud</string>
         "Material is the metaphor.\n\n"
 
         "A material metaphor is the unifying theory of a rationalized space and a system of motion."

@@ -52,7 +52,8 @@ class ListaCampamentosFragment : Fragment() {
 
         // Configurar el evento clic del botón para añadir un nuevo campamento
         btnCrearCampamento.setOnClickListener {
-            // Aquí puedes agregar la lógica para llevar al coordinador al formulario de creación de campamento
+            val agregarCampamentoFragment = AgregarCampamentoFragment()
+            agregarCampamentoFragment.show(childFragmentManager, "AgregarCampamentoFragment")
         }
 
         return view

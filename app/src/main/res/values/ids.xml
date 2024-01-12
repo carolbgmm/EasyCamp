@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="etNombreCampamento" type="id"/>
+    <item name="etDescripcionCampamento" type="id"/>
+    <item name="etFechaInicioCampamento" type="id"/>
+    <item name="etFechaFinalCampamento" type="id"/>
+    <item name="etNumeroMaxParticipantesCampamento" type="id"/>
+    <item name="etUbicacionCampamento" type="id"/>
+    <item name="etEdadMinimaCampamento" type="id"/>
+    <item name="etEdadMaximaCampamento" type="id"/>
+    <item name="etNumMonitoresCampamento" type="id"/>
+    <item name="etPrecioCampamento" type="id"/>
+    <item name="etCategoriaCampamento" type="id"/>
+    <item name="etImagenCampamento" type="id"/>
+    <item name="etLatitudCampamento" type="id"/>
+    <item name="etLongitudCampamento" type="id"/>
+    <item name="btnAceptarCampamento" type="id" />
+</resources>
