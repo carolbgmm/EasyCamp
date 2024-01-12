@@ -20,9 +20,8 @@ public class CampamentoDto implements Parcelable {
     private String imagen;
     private boolean favorito;
     private float latitud;
-
     private float longuitud;
-
+    private String idCoordinador; // Nuevo atributo
 
     // Constructor vacío necesario para Firebase
     public CampamentoDto() {
@@ -45,7 +44,8 @@ public class CampamentoDto implements Parcelable {
             String imagen,
             boolean favorito,
             float latitud,
-            float longuitud
+            float longuitud,
+            String idCoordinador
     ) {
         this.id = id;
         this.nombre = nombre;
@@ -64,6 +64,7 @@ public class CampamentoDto implements Parcelable {
         this.favorito = favorito;
         this.latitud = latitud;
         this.longuitud = longuitud;
+        this.idCoordinador = idCoordinador;
     }
 
     protected CampamentoDto(Parcel in) {
@@ -84,7 +85,7 @@ public class CampamentoDto implements Parcelable {
         favorito = in.readByte() != 0;
         latitud = in.readFloat();
         longuitud = in.readFloat();
-
+        idCoordinador = in.readString(); // Leer el nuevo atributo
     }
 
     @Override
@@ -106,6 +107,7 @@ public class CampamentoDto implements Parcelable {
         dest.writeByte((byte) (favorito ? 1 : 0));
         dest.writeFloat(latitud);
         dest.writeFloat(longuitud);
+        dest.writeString(idCoordinador); // Escribir el nuevo atributo
     }
 
     @Override
@@ -263,6 +265,14 @@ public class CampamentoDto implements Parcelable {
         return latitud;
     }
 
+    public String getIdCoordinador() {
+        return idCoordinador;
+    }
+
+    public void setIdCoordinador(String idCoordinador) {
+        this.idCoordinador = idCoordinador;
+    }
+
     @Override
     public String toString() {
         return "CampamentoDto{" +
@@ -283,7 +293,7 @@ public class CampamentoDto implements Parcelable {
                 ", favorito=" + favorito +
                 ", latitud=" + latitud +
                 ", longuitud=" + longuitud +
+                ", idCoordinador='" + idCoordinador + '\'' +
                 '}';
     }
-
 }

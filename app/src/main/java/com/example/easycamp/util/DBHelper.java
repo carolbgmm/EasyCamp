@@ -13,6 +13,7 @@ import com.example.easycamp.domain.CampamentoDto;
 import com.example.easycamp.domain.FavoritoDTO;
 import com.example.easycamp.domain.HijoDTO;
 import com.example.easycamp.domain.InscripcionDTO;
+import com.example.easycamp.domain.LoggedUserDTO;
 import com.example.easycamp.domain.TareaDTO;
 import com.example.easycamp.domain.UserDTO;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -23,6 +24,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -58,6 +60,8 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String CAMPAMENTO_CATEGORIA = "categoria";
     private static final String CAMPAMENTO_LATITUD = "latitud";
     private static final String CAMPAMENTO_LONGUITUD = "longuitud";
+
+    private static final String CAMPAMENTO_COORDINADOR = "idCoordinador";
 
     // Nombre de la tabla de usuarios
     private static final String TABLE_USUARIOS = "usuarios";
@@ -153,6 +157,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 CAMPAMENTO_PRECIO + " REAL, " +
                 CAMPAMENTO_CATEGORIA + " TEXT, " +
                 CAMPAMENTO_LATITUD+ " REAL, " +
+                CAMPAMENTO_COORDINADOR+"TEXT, "+
                 CAMPAMENTO_LONGUITUD + " REAL)";
         db.execSQL(createTableCampamentos);
 
@@ -216,7 +221,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 INSCRITOS_CAMPAMENTO_ID + " INTEGER, " +  // Cambiado a TEXT
                 "FOREIGN KEY(" + INSCRITOS_TRABAJADOR_TRABAJADOR_ID + ") REFERENCES " + TABLE_USUARIOS + "(" + USUARIO_ID + "), " +
                 "FOREIGN KEY(" + INSCRITOS_CAMPAMENTO_ID + ") REFERENCES " + TABLE_CAMPAMENTOS + "(" + CAMPAMENTO_ID + "))";
-        db.execSQL(createTableInscritos);
+        db.execSQL(createTableInscritosTrabajador );
 
         insertarDatosTareasDesdeJSON(context, db, TABLE_TAREAS, "tareas", "datos_iniciales.json");
 
@@ -449,7 +454,8 @@ public class DBHelper extends SQLiteOpenHelper {
                         cursor.getString(cursor.getColumnIndex(CAMPAMENTO_IMAGEN)),
                         true,
                         cursor.getFloat(cursor.getColumnIndex(CAMPAMENTO_LATITUD)),
-                        cursor.getFloat(cursor.getColumnIndex(CAMPAMENTO_LONGUITUD))
+                        cursor.getFloat(cursor.getColumnIndex(CAMPAMENTO_LONGUITUD)),
+                        cursor.getString(cursor.getColumnIndex(CAMPAMENTO_COORDINADOR))
 
 
                         );
@@ -497,7 +503,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         String selectQuery = "SELECT DISTINCT ("+ TABLE_CAMPAMENTOS +"." + CAMPAMENTO_ID + ")," + CAMPAMENTO_NOMBRE + "," + CAMPAMENTO_DESCRIPCION
                 + "," + CAMPAMENTO_FECHA_INICIO + "," + CAMPAMENTO_FECHA_FINAL + "," + CAMPAMENTO_NUMERO_MAX_PARTICIPANTES
-                + "," + CAMPAMENTO_NUMERO_APUNTADOS + "," + CAMPAMENTO_UBICACION + "," + CAMPAMENTO_EDAD_MINIMA
+                + "," + CAMPAMENTO_NUMERO_APUNTADOS + "," + CAMPAMENTO_UBICACION + "," + CAMPAMENTO_COORDINADOR+"," + CAMPAMENTO_EDAD_MINIMA
                 + "," + CAMPAMENTO_EDAD_MAXIMA + "," + CAMPAMENTO_NUM_MONITORES + "," + CAMPAMENTO_PRECIO
                 + "," + CAMPAMENTO_CATEGORIA + "," + CAMPAMENTO_IMAGEN +"  FROM " + TABLE_CAMPAMENTOS +
                 " INNER JOIN " + TABLE_INSCRITOS +
@@ -531,7 +537,8 @@ public class DBHelper extends SQLiteOpenHelper {
                         cursor.getString(cursor.getColumnIndex(CAMPAMENTO_IMAGEN)),
                         true,
                         cursor.getFloat(cursor.getColumnIndex(CAMPAMENTO_LATITUD)),
-                        cursor.getFloat(cursor.getColumnIndex(CAMPAMENTO_LONGUITUD))
+                        cursor.getFloat(cursor.getColumnIndex(CAMPAMENTO_LONGUITUD)),
+                        cursor.getString(cursor.getColumnIndex(CAMPAMENTO_COORDINADOR))
                 );
                 campamentosInscritos.add(campamento);
 
@@ -575,7 +582,8 @@ public class DBHelper extends SQLiteOpenHelper {
                         cursor.getString(cursor.getColumnIndex(CAMPAMENTO_IMAGEN)),
                         true,
                         cursor.getFloat(cursor.getColumnIndex(CAMPAMENTO_LATITUD)),
-                        cursor.getFloat(cursor.getColumnIndex(CAMPAMENTO_LONGUITUD))
+                        cursor.getFloat(cursor.getColumnIndex(CAMPAMENTO_LONGUITUD)),
+                        cursor.getString(cursor.getColumnIndex(CAMPAMENTO_COORDINADOR))
                 );
                 campamentosInscritos.add(campamento);
 
@@ -650,7 +658,8 @@ public class DBHelper extends SQLiteOpenHelper {
                         cursorCampamentos.getString(cursorCampamentos.getColumnIndex(CAMPAMENTO_IMAGEN)),
                         esFavorito,
                         cursorCampamentos.getFloat(cursorCampamentos.getColumnIndex(CAMPAMENTO_LATITUD)),
-                        cursorCampamentos.getFloat(cursorCampamentos.getColumnIndex(CAMPAMENTO_LONGUITUD))
+                        cursorCampamentos.getFloat(cursorCampamentos.getColumnIndex(CAMPAMENTO_LONGUITUD)),
+                        cursorCampamentos.getString(cursorCampamentos.getColumnIndex(CAMPAMENTO_COORDINADOR))
                 );
                 campamentosConFavoritos.add(campamento);
             } while (cursorCampamentos.moveToNext());
@@ -697,7 +706,8 @@ public class DBHelper extends SQLiteOpenHelper {
                         cursorCampamentos.getString(cursorCampamentos.getColumnIndex(CAMPAMENTO_IMAGEN)),
                         esFavorito,
                         cursorCampamentos.getFloat(cursorCampamentos.getColumnIndex(CAMPAMENTO_LATITUD)),
-                        cursorCampamentos.getFloat(cursorCampamentos.getColumnIndex(CAMPAMENTO_LONGUITUD))
+                        cursorCampamentos.getFloat(cursorCampamentos.getColumnIndex(CAMPAMENTO_LONGUITUD)),
+                        cursorCampamentos.getString(cursorCampamentos.getColumnIndex(CAMPAMENTO_COORDINADOR))
                 );
                 campamentos.add(campamento);
             } while (cursorCampamentos.moveToNext());
@@ -1001,4 +1011,16 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
 
+    @NotNull
+    public List<CampamentoDto> obtenerCampamentosCoordinador() {
+        String id = LoggedUserDTO.getInstance(null).getUser().getId();
+        List<CampamentoDto> lista = this.obtenerCampamentosConFavoritos(id);
+        List<CampamentoDto> result= new ArrayList<>();
+        for (CampamentoDto camp : lista ){
+            if(camp.getIdCoordinador().equals(id)){
+                result.add(camp);
+            }
+        }
+        return result;
+    }
 }

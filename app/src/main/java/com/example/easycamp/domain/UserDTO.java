@@ -31,7 +31,7 @@ public class UserDTO implements Parcelable {
         requireNotNull(nombre, "El campo nombre no puede ser nulo");
         requireNotNull(apellidos, "El campo apellidos no puede ser nulo");
         require(edad >= 0 && edad <= 120, "La edad debe estar en el rango de 0 a 120");
-        require(tipoUsuario.equals("CLIENTE") || tipoUsuario.equals("TRABAJADOR"), "El tipo de usuario debe ser CLIENTE o TRABAJADOR");
+        require(tipoUsuario.equals("CLIENTE") || tipoUsuario.equals("TRABAJADOR") || tipoUsuario.equals("COORDINADOR"), "El tipo de usuario debe ser CLIENTE o TRABAJADOR");
     }
 
     public String getId() {

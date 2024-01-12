@@ -78,6 +78,8 @@ class PerfilFragment : Fragment() {
         fun newInstance(): Fragment {
             return PerfilFragment()
         }
+
+
     }
 
     private fun cerrarSesion() {
