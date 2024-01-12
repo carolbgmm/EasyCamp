@@ -307,7 +307,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return resultado;
     }
 
-    public long inscribirHijo(long hijoId,long campamentoId) {
+    public long inscribirHijo(long hijoId, long campamentoId) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
@@ -315,9 +315,76 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(INSCRITOS_CAMPAMENTO_ID, campamentoId);
 
         long resultado = db.insert(TABLE_INSCRITOS, null, values);
+
+        // Actualizar el número de apuntados en el campamento
+        if (resultado != -1) {
+            actualizarNumeroApuntados(campamentoId, 1);
+            // Actualizar también en Firebase
+            actualizarNumeroApuntadosEnFirebase(campamentoId);
+        }
+
         db.close();
         return resultado;
     }
+
+    public void desInscribirHijos(long hijoId, long campamentoId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_INSCRITOS, INSCRITOS_HIJO_ID + "=? AND " + INSCRITOS_CAMPAMENTO_ID + "=?",
+                new String[]{String.valueOf(hijoId), String.valueOf(campamentoId)});
+
+        // Actualizar el número de apuntados en el campamento
+        actualizarNumeroApuntados(campamentoId, -1);
+        // Actualizar también en Firebase
+        actualizarNumeroApuntadosEnFirebase(campamentoId);
+
+        db.close();
+
+        // Eliminar el favorito de Firebase
+        DatabaseReference favoritosReference = mDataBase.child(TABLE_INSCRITOS);
+        favoritosReference.child(hijoId + "_" + campamentoId).removeValue();
+    }
+
+    private void actualizarNumeroApuntados(long campamentoId, int cambio) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        // Obtener el número actual de apuntados
+        String consulta = "SELECT " + CAMPAMENTO_NUMERO_APUNTADOS + " FROM " + TABLE_CAMPAMENTOS +
+                " WHERE " + CAMPAMENTO_ID + " = " + campamentoId;
+
+        Cursor cursor = db.rawQuery(consulta, null);
+
+        if (cursor.moveToFirst()) {
+            @SuppressLint("Range") int numeroApuntadosActual = cursor.getInt(cursor.getColumnIndex(CAMPAMENTO_NUMERO_APUNTADOS));
+            int nuevoNumeroApuntados = numeroApuntadosActual + cambio;
+
+            // Actualizar el número de apuntados en la tabla de campamentos
+            ContentValues values = new ContentValues();
+            values.put(CAMPAMENTO_NUMERO_APUNTADOS, nuevoNumeroApuntados);
+
+            db.update(TABLE_CAMPAMENTOS, values, CAMPAMENTO_ID + "=?", new String[]{String.valueOf(campamentoId)});
+        }
+
+        cursor.close();
+    }
+
+    private void actualizarNumeroApuntadosEnFirebase(long campamentoId) {
+        // Obtener el número actual de apuntados en SQLite y actualizar en Firebase
+        SQLiteDatabase db = this.getReadableDatabase();
+        String consulta = "SELECT " + CAMPAMENTO_NUMERO_APUNTADOS + " FROM " + TABLE_CAMPAMENTOS +
+                " WHERE " + CAMPAMENTO_ID + " = " + campamentoId;
+
+        Cursor cursor = db.rawQuery(consulta, null);
+
+        if (cursor.moveToFirst()) {
+            @SuppressLint("Range") int numeroApuntados = cursor.getInt(cursor.getColumnIndex(CAMPAMENTO_NUMERO_APUNTADOS));
+
+            // Actualizar el número de apuntados en Firebase
+            mDataBase.child(TABLE_CAMPAMENTOS).child(String.valueOf(campamentoId)).child(CAMPAMENTO_NUMERO_APUNTADOS).setValue(numeroApuntados);
+        }
+
+        cursor.close();
+    }
+
 
     public long inscribirUsuario(String userId,long campamentoId) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -343,16 +410,6 @@ public class DBHelper extends SQLiteOpenHelper {
         favoritosReference.child(userId + "_" + campamentoId).removeValue();
     }
 
-    public void desInscribirHijos(long hijoId, long campamentoId) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_INSCRITOS, INSCRITOS_HIJO_ID + "=? AND " + INSCRITOS_CAMPAMENTO_ID + "=?",
-                new String[]{String.valueOf(hijoId), String.valueOf(campamentoId)});
-        db.close();
-
-        // Eliminar el favorito de Firebase
-        DatabaseReference favoritosReference = mDataBase.child(TABLE_INSCRITOS);
-        favoritosReference.child(hijoId + "_" + campamentoId).removeValue();
-    }
 
     // Método para obtener la lista de hijos dado el ID de un usuario
     @SuppressLint("Range")
@@ -670,6 +727,51 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
 
         return campamentosInscritos;
+    }
+
+    public List<CampamentoDto> obtenerAceptadosDeTrabajador(String usuarioID) {
+        List<CampamentoDto> campamentosAceptados = new ArrayList<>();
+
+        String selectQuery = "SELECT *  FROM " + TABLE_CAMPAMENTOS +
+                " INNER JOIN " + TABLE_INSCRITOS_TRABAJADOR +
+                " ON " + TABLE_INSCRITOS_TRABAJADOR + "." +INSCRITOS_TRABAJADOR_CAMPAMENTO_ID + " = " + TABLE_CAMPAMENTOS + "." + CAMPAMENTO_ID +
+                " WHERE " + TABLE_INSCRITOS_TRABAJADOR + "." + INSCRITOS_TRABAJADOR_ACEPTADO + " = 1 AND " + TABLE_INSCRITOS_TRABAJADOR + "." + INSCRITOS_TRABAJADOR_TRABAJADOR_ID + " = '" + usuarioID + "';";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+
+        if (cursor.moveToFirst()) {
+            do {
+                @SuppressLint("Range") CampamentoDto campamento = new CampamentoDto(
+                        cursor.getLong(cursor.getColumnIndex(CAMPAMENTO_ID)),
+                        cursor.getString(cursor.getColumnIndex(CAMPAMENTO_NOMBRE)),
+                        cursor.getString(cursor.getColumnIndex(CAMPAMENTO_DESCRIPCION)),
+                        cursor.getString(cursor.getColumnIndex(CAMPAMENTO_FECHA_INICIO)),
+                        cursor.getString(cursor.getColumnIndex(CAMPAMENTO_FECHA_FINAL)),
+                        cursor.getInt(cursor.getColumnIndex(CAMPAMENTO_NUMERO_MAX_PARTICIPANTES)),
+                        cursor.getInt(cursor.getColumnIndex(CAMPAMENTO_NUMERO_APUNTADOS)),
+                        cursor.getString(cursor.getColumnIndex(CAMPAMENTO_UBICACION)),
+                        cursor.getInt(cursor.getColumnIndex(CAMPAMENTO_EDAD_MINIMA)),
+                        cursor.getInt(cursor.getColumnIndex(CAMPAMENTO_EDAD_MAXIMA)),
+                        cursor.getInt(cursor.getColumnIndex(CAMPAMENTO_NUM_MONITORES)),
+                        cursor.getDouble(cursor.getColumnIndex(CAMPAMENTO_PRECIO)),
+                        cursor.getString(cursor.getColumnIndex(CAMPAMENTO_CATEGORIA)),
+                        cursor.getString(cursor.getColumnIndex(CAMPAMENTO_IMAGEN)),
+                        true,
+                        cursor.getFloat(cursor.getColumnIndex(CAMPAMENTO_LATITUD)),
+                        cursor.getFloat(cursor.getColumnIndex(CAMPAMENTO_LONGUITUD)),
+                        cursor.getString(cursor.getColumnIndex(CAMPAMENTO_COORDINADOR))
+                );
+                campamentosAceptados.add(campamento);
+
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return campamentosAceptados;
     }
 
     public List<UserDTO> obtenerTrabajadoresInscritosDeCampamento(long campamentoID) {
