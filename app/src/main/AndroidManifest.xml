@@ -17,6 +17,9 @@
         android:theme="@style/Theme.EasyCamp"
         tools:targetApi="31">
         <activity
+            android:name=".ui.coordinador.DetalleCampamentoCoordinador"
+            android:exported="false" />
+        <activity
             android:name=".ui.coordinador.CoordinadorActivity"
             android:exported="false" />
         <activity
@@ -42,7 +45,6 @@
         <activity
             android:name=".ui.buscadorCliente.ApuntarHijosActivity"
             android:exported="false" />
-
         <activity
             android:name=".ui.inicioSesion.RegistroActivity"
             android:exported="false" />

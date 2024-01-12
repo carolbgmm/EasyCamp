@@ -1,5 +1,6 @@
 package com.example.easycamp.domain;
 
+import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -7,15 +8,17 @@ public class InscripcionDTO implements Parcelable {
     private long id;
     private long hijoId;
     private long campamentoId;
+    private int aceptado;
 
 
     public InscripcionDTO() {
 
     }
-    public InscripcionDTO(long id, long hijoId, long campamentoId) {
+    public InscripcionDTO(long id, long hijoId, long campamentoId, int aceptado) {
         this.id = id;
         this.hijoId = hijoId;
         this.campamentoId = campamentoId;
+        this.aceptado = aceptado;
 
         // Validaciones
         requireNotNull(hijoId, "El campo hijoId no puede ser nulo");
@@ -45,6 +48,13 @@ public class InscripcionDTO implements Parcelable {
     public void setCampamentoId(long campamentoId) {
         this.campamentoId = campamentoId;
     }
+    public int getAceptado() {
+        return aceptado;
+    }
+
+    public void setAceptado(int aceptado) {
+        this.aceptado = aceptado;
+    }
 
     // Parcelable methods
     public static final Parcelable.Creator<InscripcionDTO> CREATOR = new Parcelable.Creator<InscripcionDTO>() {
@@ -64,6 +74,7 @@ public class InscripcionDTO implements Parcelable {
         dest.writeLong(id);
         dest.writeLong(hijoId);
         dest.writeLong(campamentoId);
+        dest.writeInt(aceptado);
     }
 
     @Override
@@ -87,5 +98,6 @@ public class InscripcionDTO implements Parcelable {
         id = in.readLong();
         hijoId = in.readLong();
         campamentoId = in.readLong();
+        aceptado = in.readInt();
     }
 }

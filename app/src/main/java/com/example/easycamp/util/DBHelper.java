@@ -108,12 +108,13 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String TICK_ID = "id";
     private static final String TICK_USUARIO_NOMBRE = "usuario_nombre_tick";
     private static final String TICK_CAMPAMENTO_NOMBRE = "campamento_nombre_tick";
-    private static final String TABLE_INSCRITOS_TRABAJADOR = "inscritos_trabajador";
 
     // Columnas de la tabla de inscritos
+    private static final String TABLE_INSCRITOS_TRABAJADOR = "inscritos_trabajador";
     private static final String INSCRITOS_TRABAJADOR_ID = "id_inscritos_trabajador";
     private static final String INSCRITOS_TRABAJADOR_TRABAJADOR_ID = "trabajador_id";
     private static final String INSCRITOS_TRABAJADOR_CAMPAMENTO_ID = "campamento_id";
+    private static final String INSCRITOS_TRABAJADOR_ACEPTADO = "aceptado";
 
    DatabaseReference mDataBase;
     //otros atributos
@@ -218,6 +219,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 INSCRITOS_TRABAJADOR_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 INSCRITOS_TRABAJADOR_TRABAJADOR_ID + " INTEGER, " +  // Cambiado a TEXT
                 INSCRITOS_CAMPAMENTO_ID + " INTEGER, " +  // Cambiado a TEXT
+                INSCRITOS_TRABAJADOR_ACEPTADO + "INTEGER," +
                 "FOREIGN KEY(" + INSCRITOS_TRABAJADOR_TRABAJADOR_ID + ") REFERENCES " + TABLE_USUARIOS + "(" + USUARIO_ID + "), " +
                 "FOREIGN KEY(" + INSCRITOS_CAMPAMENTO_ID + ") REFERENCES " + TABLE_CAMPAMENTOS + "(" + CAMPAMENTO_ID + "))";
         db.execSQL(createTableInscritosTrabajador );
@@ -422,7 +424,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 @SuppressLint("Range") InscripcionDTO inscripcion = new InscripcionDTO(
                         cursor.getLong(cursor.getColumnIndex(INSCRITOS_ID)),
                         cursor.getLong(cursor.getColumnIndex(INSCRITOS_HIJO_ID)),
-                        cursor.getLong(cursor.getColumnIndex(INSCRITOS_CAMPAMENTO_ID))
+                        cursor.getLong(cursor.getColumnIndex(INSCRITOS_CAMPAMENTO_ID)),
+                        cursor.getInt(cursor.getColumnIndex(INSCRITOS_TRABAJADOR_ACEPTADO))
                 );
                 inscripciones.add(inscripcion);
             } while (cursor.moveToNext());
@@ -639,6 +642,40 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
 
         return campamentosInscritos;
+    }
+
+    public List<UserDTO> obtenerTrabajadoresInscritosDeCampamento(long campamentoID) {
+        List<UserDTO> trabajadoresInscritos = new ArrayList<>();
+
+        String selectQuery = "SELECT * FROM " + TABLE_USUARIOS +
+                " INNER JOIN " + TABLE_INSCRITOS_TRABAJADOR +
+                " ON " + TABLE_INSCRITOS_TRABAJADOR + "." + INSCRITOS_TRABAJADOR_TRABAJADOR_ID + " = " + TABLE_USUARIOS + "." + USUARIO_ID +
+                " WHERE " + TABLE_INSCRITOS_TRABAJADOR + "." + INSCRITOS_TRABAJADOR_CAMPAMENTO_ID + " = '" + campamentoID + "';";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+
+        if (cursor.moveToFirst()) {
+            do {
+                @SuppressLint("Range") UserDTO hijo = new UserDTO(
+                        cursor.getString(cursor.getColumnIndex(USUARIO_ID)),
+                        cursor.getString(cursor.getColumnIndex(USUARIO_NOMBRE_USUARIO)),
+                        cursor.getString(cursor.getColumnIndex(USUARIO_TIPO)),
+                        cursor.getString(cursor.getColumnIndex(USUARIO_NOMBRE)),
+                        cursor.getString(cursor.getColumnIndex(USUARIO_APELLIDOS)),
+                        cursor.getInt(cursor.getColumnIndex(USUARIO_EDAD)),
+                        cursor.getString(cursor.getColumnIndex(USUARIO_CONTRASENA))
+                );
+                trabajadoresInscritos.add(hijo);
+
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return trabajadoresInscritos;
     }
 
     @SuppressLint("Range")
