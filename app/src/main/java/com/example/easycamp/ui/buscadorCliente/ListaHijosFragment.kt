@@ -36,7 +36,6 @@ class ListaHijosFragment : Fragment() {
         service = DBHelper(requireContext())
         usuarioActual = obtenerUsuarioActual()
         listaDeHijos = service.obtenerHijosPorUsuario(usuarioActual.id).toMutableList()
-        Log.d("MiApp", "Se cargo la lista de hijos ")
 
         val layoutManager = LinearLayoutManager(context)
         recyclerView.layoutManager = layoutManager
@@ -45,22 +44,27 @@ class ListaHijosFragment : Fragment() {
         recyclerView.adapter = adapter
         adapter.submitList(listaDeHijos)
 
+        adapter.setOnDeleteClickListener { position ->
+            // Lógica para eliminar el hijo en la posición dada
+            val hijoAEliminar = listaDeHijos[position]
+            eliminarHijo(hijoAEliminar, adapter)
+        }
+
         btnAgregarHijo.setOnClickListener {
-
-            Log.d("MiApp", "Tamaño de listaDeHijos antes de agregar: ${listaDeHijos.size}")
-
-            val agregarHijoFragment = AgregarHijoFragment(adapter,listaDeHijos,usuarioActual)
+            val agregarHijoFragment = AgregarHijoFragment(adapter, listaDeHijos, usuarioActual)
             agregarHijoFragment.show(requireFragmentManager(), "AgregarHijoFragment")
-
-
-
-
-            Log.d("MiApp", "Tamaño de listaDeHijos después de agregar: ${listaDeHijos.size}")
-
-            adapter.notifyDataSetChanged()
         }
 
         return view
+    }
+
+    private fun eliminarHijo(hijo: HijoDTO, adapter: ListaHijosAdapter) {
+        // Lógica para eliminar el hijo, por ejemplo, desde tu base de datos o lista
+        // Después de eliminar el hijo, actualizas tu lista de hijos y notificas al adaptador
+        service.eliminarHijo(hijo) // Ajusta esto según tu lógica
+        listaDeHijos.remove(hijo)
+        adapter.submitList(listaDeHijos)
+        adapter.notifyDataSetChanged()
     }
 
 

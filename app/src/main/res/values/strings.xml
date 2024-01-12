@@ -232,4 +232,5 @@
     </string>
     <string name="boton_aceptados">Campamentos aceptados</string>
     <string name="navigation_trabajadores">Trabajadores</string>
+    <string name="navigation_asistentes">Lista asistentes</string>
 </resources>
