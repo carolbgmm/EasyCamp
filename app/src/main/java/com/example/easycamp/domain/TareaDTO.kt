@@ -4,12 +4,12 @@ import android.os.Parcel
 import android.os.Parcelable
 
 class TareaDTO(
-    val id: Long,
-    val usuarioID: String?,
-    val titulo: String?,
-    val descripcion: String?,
-    val fechaLimite: String?,
-    var hecha: Boolean = false
+        val id: Long,
+        val usuarioNombre: String?,
+        val titulo: String?,
+        val descripcion: String?,
+        val fechaLimite: String?,
+        var hecha: Boolean = false
 
 ) : Parcelable {
 
@@ -24,7 +24,7 @@ class TareaDTO(
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeLong(id)
-        parcel.writeString(usuarioID)
+        parcel.writeString(usuarioNombre)
         parcel.writeString(titulo)
         parcel.writeString(descripcion)
         parcel.writeString(fechaLimite)

@@ -2,6 +2,7 @@ package com.example.easycamp.ui.coordinador
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.easycamp.R
 import com.example.easycamp.domain.CampamentoDto
+import com.example.easycamp.ui.buscadorCliente.RecyclerClienteFragment
+import com.example.easycamp.ui.detalle.DetalleCampamentoActivity
 import com.example.easycamp.util.DBHelper
 
 class ListaCampamentosFragment : Fragment() {
@@ -41,9 +44,7 @@ class ListaCampamentosFragment : Fragment() {
         // Adaptador para el RecyclerView (puedes personalizar esto según tus necesidades)
         val adapter = CampamentosAdapter(campamentos, object : CampamentosAdapter.OnItemClickListener {
             override fun onItemClick(campamento: CampamentoDto) {
-                // Acción a realizar cuando se hace clic en un campamento específico
-                // Puedes abrir una pantalla de detalles o realizar alguna otra acción
-                // dependiendo del campamento seleccionado
+                clickonItem(campamento)
             }
         })
 
@@ -63,5 +64,12 @@ class ListaCampamentosFragment : Fragment() {
         fun newInstance(): ListaCampamentosFragment {
             return ListaCampamentosFragment()
         }
+    }
+
+    fun clickonItem(campamento: CampamentoDto) {
+        val intent = Intent(activity, DetalleCampamentoCoordinador::class.java)
+        Log.d("MiApp", "Se abre los detalles del campamento "+campamento.toString())
+        intent.putExtra(RecyclerClienteFragment.CAMPAMENTO_SELECCIONADO, campamento)
+        startActivity(intent)
     }
 }

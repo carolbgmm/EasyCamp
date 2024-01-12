@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="16dp">
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_weight="9">
+
+        <TextView
+            android:id="@+id/tvNombreUsuarioTrabajador"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nombre del Trabajador"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+        <TextView
+            android:id="@+id/tvNombreTrabajador"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Apellidos"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tvApellidosTrabajador"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Apellidos"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tvEdadTrabajador"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Edad"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/btnAceptarTrabajador"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="20dp"
+                android:background="#73E678"
+                android:src="@drawable/incono_apuntar_hijo" />
+
+            <ImageButton
+                android:id="@+id/btnDenegarTrabajador"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="20dp"
+                android:background="#F4574C"
+                android:src="@drawable/denegar_trabajador" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/imagenResultado"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/trabajador_no_aceptado"/>
+
+    </LinearLayout>
+
+</LinearLayout>

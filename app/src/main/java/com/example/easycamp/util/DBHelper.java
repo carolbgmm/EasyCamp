@@ -108,12 +108,13 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String TICK_ID = "id";
     private static final String TICK_USUARIO_NOMBRE = "usuario_nombre_tick";
     private static final String TICK_CAMPAMENTO_NOMBRE = "campamento_nombre_tick";
-    private static final String TABLE_INSCRITOS_TRABAJADOR = "inscritos_trabajador";
 
     // Columnas de la tabla de inscritos
+    private static final String TABLE_INSCRITOS_TRABAJADOR = "inscritos_trabajador";
     private static final String INSCRITOS_TRABAJADOR_ID = "id_inscritos_trabajador";
     private static final String INSCRITOS_TRABAJADOR_TRABAJADOR_ID = "trabajador_id";
     private static final String INSCRITOS_TRABAJADOR_CAMPAMENTO_ID = "campamento_id";
+    private static final String INSCRITOS_TRABAJADOR_ACEPTADO = "aceptado";
 
    DatabaseReference mDataBase;
     //otros atributos
@@ -200,10 +201,10 @@ public class DBHelper extends SQLiteOpenHelper {
         // Crear la tabla de tareas
         String createTableTareas = "CREATE TABLE " + TABLE_TAREAS + " (" +
                 TAREA_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                USUARIO_TAREA_NOMBRE + " TEXT, " +
                 TAREA_TITULO + " TEXT, " +
                 TAREA_DESCRIPCION + " TEXT, " +
-                TAREA_FECHA + " TEXT, " +
-                USUARIO_TAREA_NOMBRE + " TEXT)";
+                TAREA_FECHA + " TEXT)";
         db.execSQL(createTableTareas);
 
         String createTableTick = "CREATE TABLE " + TABLE_TICK + " (" +
@@ -218,6 +219,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 INSCRITOS_TRABAJADOR_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 INSCRITOS_TRABAJADOR_TRABAJADOR_ID + " INTEGER, " +  // Cambiado a TEXT
                 INSCRITOS_CAMPAMENTO_ID + " INTEGER, " +  // Cambiado a TEXT
+                INSCRITOS_TRABAJADOR_ACEPTADO + "INTEGER," +
                 "FOREIGN KEY(" + INSCRITOS_TRABAJADOR_TRABAJADOR_ID + ") REFERENCES " + TABLE_USUARIOS + "(" + USUARIO_ID + "), " +
                 "FOREIGN KEY(" + INSCRITOS_CAMPAMENTO_ID + ") REFERENCES " + TABLE_CAMPAMENTOS + "(" + CAMPAMENTO_ID + "))";
         db.execSQL(createTableInscritosTrabajador );
@@ -247,10 +249,11 @@ public class DBHelper extends SQLiteOpenHelper {
                 JSONObject item = jsonArray.getJSONObject(i);
 
                 // Agregar cada columna y valor al ContentValues
+                values.put(USUARIO_TAREA_NOMBRE, item.getString("nombre_usuario_tarea"));
                 values.put(TAREA_TITULO, item.getString("titulo_tarea"));
                 values.put(TAREA_DESCRIPCION, item.getString("descripcion_tarea"));
                 values.put(TAREA_FECHA, item.getString("fecha_tarea"));
-                values.put(USUARIO_TAREA_NOMBRE, item.getString("nombre_usuario_tarea"));
+
                 Log.d("MiApp", "Nueva Tarea  "+item.getString("nombre_usuario_tarea")+" "+item.getString("titulo_tarea"));
                 // Insertar los valores en la base de datos
                 db.insert(tableName, null, values);
@@ -322,6 +325,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         values.put(INSCRITOS_TRABAJADOR_TRABAJADOR_ID, userId);
         values.put(INSCRITOS_TRABAJADOR_CAMPAMENTO_ID, campamentoId);
+        values.put(INSCRITOS_TRABAJADOR_ACEPTADO, 0);
 
         long resultado = db.insert(TABLE_INSCRITOS_TRABAJADOR, null, values);
         db.close();
@@ -422,7 +426,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 @SuppressLint("Range") InscripcionDTO inscripcion = new InscripcionDTO(
                         cursor.getLong(cursor.getColumnIndex(INSCRITOS_ID)),
                         cursor.getLong(cursor.getColumnIndex(INSCRITOS_HIJO_ID)),
-                        cursor.getLong(cursor.getColumnIndex(INSCRITOS_CAMPAMENTO_ID))
+                        cursor.getLong(cursor.getColumnIndex(INSCRITOS_CAMPAMENTO_ID)),
+                        cursor.getInt(cursor.getColumnIndex(INSCRITOS_TRABAJADOR_ACEPTADO))
                 );
                 inscripciones.add(inscripcion);
             } while (cursor.moveToNext());
@@ -493,11 +498,11 @@ public class DBHelper extends SQLiteOpenHelper {
             do {
                 @SuppressLint("Range") TareaDTO tarea = new TareaDTO(
                         cursor.getLong(cursor.getColumnIndex(TAREA_ID)),
+                        cursor.getString(cursor.getColumnIndex(USUARIO_TAREA_NOMBRE)),
                         cursor.getString(cursor.getColumnIndex(TAREA_TITULO)),
                         cursor.getString(cursor.getColumnIndex(TAREA_DESCRIPCION)),
                         cursor.getString(cursor.getColumnIndex(TAREA_FECHA)),
-                        cursor.getString(cursor.getColumnIndex(USUARIO_TAREA_NOMBRE)),
-                        true
+                        false
                 );
                 tareas.add(tarea);
             } while (cursor.moveToNext());
@@ -596,6 +601,32 @@ public class DBHelper extends SQLiteOpenHelper {
         return hijosInscritos;
     }
 
+    public void aceptarTrabajador(String usuarioId, long campamentoId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(INSCRITOS_TRABAJADOR_ACEPTADO, 1); //These Fields should be your String values of actual column names
+
+        db.update(TABLE_INSCRITOS_TRABAJADOR, cv, INSCRITOS_TRABAJADOR_TRABAJADOR_ID + "=? AND " + INSCRITOS_TRABAJADOR_CAMPAMENTO_ID + "=?", new String[]{usuarioId, String.valueOf(campamentoId)});
+        db.close();
+
+        // Eliminar el favorito de Firebase
+        DatabaseReference favoritosReference = mDataBase.child("favoritos");
+        favoritosReference.child(usuarioId + "_" + campamentoId).removeValue();
+    }
+
+    public void rechazarTrabajador(String usuarioId, long campamentoId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(INSCRITOS_TRABAJADOR_ACEPTADO, 0); //These Fields should be your String values of actual column names
+
+        db.update(TABLE_INSCRITOS_TRABAJADOR, cv, INSCRITOS_TRABAJADOR_TRABAJADOR_ID + "=? AND " + INSCRITOS_TRABAJADOR_CAMPAMENTO_ID + "=?", new String[]{usuarioId, String.valueOf(campamentoId)});
+        db.close();
+
+        // Eliminar el favorito de Firebase
+        DatabaseReference favoritosReference = mDataBase.child("favoritos");
+        favoritosReference.child(usuarioId + "_" + campamentoId).removeValue();
+    }
+
     public List<CampamentoDto> obtenerInscritosDeTrabajador(String usuarioID) {
         List<CampamentoDto> campamentosInscritos = new ArrayList<>();
 
@@ -639,6 +670,40 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
 
         return campamentosInscritos;
+    }
+
+    public List<UserDTO> obtenerTrabajadoresInscritosDeCampamento(long campamentoID) {
+        List<UserDTO> trabajadoresInscritos = new ArrayList<>();
+
+        String selectQuery = "SELECT * FROM " + TABLE_USUARIOS +
+                " INNER JOIN " + TABLE_INSCRITOS_TRABAJADOR +
+                " ON " + TABLE_INSCRITOS_TRABAJADOR + "." + INSCRITOS_TRABAJADOR_TRABAJADOR_ID + " = " + TABLE_USUARIOS + "." + USUARIO_ID +
+                " WHERE " + TABLE_INSCRITOS_TRABAJADOR + "." + INSCRITOS_TRABAJADOR_CAMPAMENTO_ID + " = '" + campamentoID + "';";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+
+        if (cursor.moveToFirst()) {
+            do {
+                @SuppressLint("Range") UserDTO hijo = new UserDTO(
+                        cursor.getString(cursor.getColumnIndex(USUARIO_ID)),
+                        cursor.getString(cursor.getColumnIndex(USUARIO_NOMBRE_USUARIO)),
+                        cursor.getString(cursor.getColumnIndex(USUARIO_TIPO)),
+                        cursor.getString(cursor.getColumnIndex(USUARIO_NOMBRE)),
+                        cursor.getString(cursor.getColumnIndex(USUARIO_APELLIDOS)),
+                        cursor.getInt(cursor.getColumnIndex(USUARIO_EDAD)),
+                        cursor.getString(cursor.getColumnIndex(USUARIO_CONTRASENA))
+                );
+                trabajadoresInscritos.add(hijo);
+
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return trabajadoresInscritos;
     }
 
     @SuppressLint("Range")
@@ -1117,6 +1182,20 @@ public class DBHelper extends SQLiteOpenHelper {
 
         return lastId;
     }
+
+    public void disminuirNumeroApuntados(long campamentoId, int nuevoValor) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues valores = new ContentValues();
+        valores.put(CAMPAMENTO_NUMERO_APUNTADOS, nuevoValor);
+
+        db.update(TABLE_CAMPAMENTOS, valores, CAMPAMENTO_ID + " = ?", new String[]{String.valueOf(campamentoId)});
+        db.close();
+
+    }
+
+
+
+
 
     public void eliminarHijo(@NotNull HijoDTO hijo) {
         SQLiteDatabase db = this.getWritableDatabase();

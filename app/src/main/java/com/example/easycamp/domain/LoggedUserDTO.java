@@ -20,6 +20,10 @@ public class LoggedUserDTO {
         this.user = user;
     }
 
+    public static void restart(){
+        loggedUser = null;
+    }
+
     public UserDTO getUser() {
         return user;
     }
