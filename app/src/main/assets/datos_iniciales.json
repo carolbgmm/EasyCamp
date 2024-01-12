@@ -278,16 +278,5 @@
       "nombre_usuario_tarea" : "trabajador@gmail.com"
     }
 
-  ],
-
-  "inscritos": [
-    {
-      "usuario_nombre": "trabajador@gmail.com",
-      "campamento_nombre": "Aventura Extrema"
-    },
-    {
-      "usuario_nombre": "trabajador@gmail.com",
-      "campamento_nombre": "Naturaleza Serena"
-    }
   ]
 }

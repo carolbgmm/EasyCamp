@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.easycamp.R
 import com.example.easycamp.domain.CampamentoDto
 import com.example.easycamp.ui.buscadorCliente.RecyclerClienteFragment
-import com.example.easycamp.ui.detalle.DetalleCampamentoActivity
+import com.example.easycamp.ui.detalle.DetalleCampamentoCoordinador
 import com.example.easycamp.util.DBHelper
 
 class ListaCampamentosFragment : Fragment() {

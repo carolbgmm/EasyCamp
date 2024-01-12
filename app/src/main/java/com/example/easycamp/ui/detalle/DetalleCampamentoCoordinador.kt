@@ -1,17 +1,14 @@
-package com.example.easycamp.ui.coordinador
+package com.example.easycamp.ui.detalle
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageView
 import com.example.easycamp.R
 import com.example.easycamp.domain.CampamentoDto
-import com.example.easycamp.domain.LoggedUserDTO
-import com.example.easycamp.ui.buscadorCliente.ApuntarHijosActivity
 import com.example.easycamp.ui.buscadorCliente.RecyclerClienteFragment
-import com.example.easycamp.ui.detalle.DescripcionDetalleCampamentoFragment
-import com.example.easycamp.ui.detalle.ResumenDetalleCampamentoFragment
+import com.example.easycamp.ui.coordinador.ListaAsistentesCoorFragment
+import com.example.easycamp.ui.coordinador.ListaTrabajadoresInscritosFragment
 import com.example.easycamp.util.DBHelper
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -41,16 +38,11 @@ class DetalleCampamentoCoordinador : AppCompatActivity() {
                     return@OnItemSelectedListener true
                 }
                 if (itemId == R.id.navigation_descripcion) {
-                    val descripcionFragment = DescripcionDetalleCampamentoFragment.newInstance(
-                        c.numero_max_participantes,
-                        c.numero_apuntados,
-                        c.edad_minima,
-                        c.edad_maxima,
-                        c.num_monitores,
-                        c.precio
+                    val listaAsistentesFragment = ListaAsistentesCoorFragment.newInstance(
+                        c.id
                     )
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container_detalle_coordinador, descripcionFragment).commit()
+                        .replace(R.id.fragment_container_detalle_coordinador, listaAsistentesFragment).commit()
                     return@OnItemSelectedListener true
                 }
             }
@@ -70,7 +62,7 @@ class DetalleCampamentoCoordinador : AppCompatActivity() {
 
         campamento?.let {
             getComponentes()
-            mostrarDatos()
+            //mostrarDatos()
         }
 
     }

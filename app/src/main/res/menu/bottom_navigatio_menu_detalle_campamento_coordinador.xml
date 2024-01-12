@@ -5,6 +5,6 @@
         android:title="@string/navigation_resumen"/>
     <item
         android:id="@+id/navigation_descripcion"
-        android:title="@string/navigation_descripcion"/>
+        android:title="@string/navigation_asistentes"/>
 
 </menu>
