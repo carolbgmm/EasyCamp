@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -19,20 +20,39 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Apellidos"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        android:layout_below="@id/tvNombreHijo"
+        android:layout_marginTop="4dp"/>
 
     <TextView
         android:id="@+id/tvEdad"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Edad"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        android:layout_below="@id/tvApellidos"
+        android:layout_marginTop="4dp"/>
 
     <TextView
         android:id="@+id/tvObservaciones"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Observaciones"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        android:layout_below="@id/tvEdad"
+        android:layout_marginTop="4dp"/>
 
-</LinearLayout>
+    <ImageButton
+        android:id="@+id/btnEliminarHijo"
+        android:layout_width="68dp"
+        android:layout_height="62dp"
+        android:layout_below="@id/tvObservaciones"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="-76dp"
+        android:layout_marginEnd="34dp"
+        android:backgroundTint="#FFFFFF"
+        android:src="@android:drawable/ic_menu_delete"
+        android:tint="#DC0A0A"
+        tools:src="@android:drawable/ic_menu_delete" />
+
+</RelativeLayout>
