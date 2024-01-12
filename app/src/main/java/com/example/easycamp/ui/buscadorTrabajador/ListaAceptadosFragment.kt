@@ -15,8 +15,7 @@ import com.example.easycamp.domain.UserDTO
 import com.example.easycamp.ui.detalle.DetalleAsistentesActivity
 import com.example.easycamp.util.DBHelper
 
-
-class ListaAsistentesFragment : Fragment() {
+class ListaAceptadosFragment : Fragment() {
 
     private lateinit var usuarioActual: UserDTO
 
@@ -24,7 +23,7 @@ class ListaAsistentesFragment : Fragment() {
     private lateinit var persistencia: DBHelper
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_lista_asistentes, container, false)
+        val view = inflater.inflate(R.layout.fragment_lista_aceptados, container, false)
 
         usuarioActual = obtenerUsuarioActual()
         persistencia = DBHelper.getInstance(context)
@@ -39,7 +38,7 @@ class ListaAsistentesFragment : Fragment() {
         val lista = persistencia.obtenerAceptadosDeTrabajador(LoggedUserDTO.getInstance(null).user.id)
         val adapterCampamentos = BuscadorTrabajadorAdapter(lista, object : BuscadorTrabajadorAdapter.OnItemClickListener {
             override fun onItemClick(campamento: CampamentoDto?) {
-                campamento?.let { clickonItem(campamento) }
+
             }
         })
         recyclerCamp.apply {
@@ -60,12 +59,6 @@ class ListaAsistentesFragment : Fragment() {
         fun newInstance(): ListaAsistentesFragment{
             return ListaAsistentesFragment()
         }
-    }
-
-    fun clickonItem(campamento: CampamentoDto) {
-        val intent = Intent(activity, DetalleAsistentesActivity::class.java)
-        intent.putExtra(RecyclerTrabajadorFragment.CAMPAMENTO_SELECCIONADO, campamento)
-        startActivity(intent)
     }
 
 

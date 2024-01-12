@@ -3,9 +3,9 @@ package com.example.easycamp.ui.detalle
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.example.easycamp.R
 import com.example.easycamp.domain.CampamentoDto
 import com.example.easycamp.ui.buscadorCliente.ListaHijosAdapter
