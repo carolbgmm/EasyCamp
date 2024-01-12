@@ -28,6 +28,8 @@ class DetalleAsistentesActivity : AppCompatActivity() {
 
         val listaDeHijos = service.obtenerInscritosDeCampamento(campamento.id).toMutableList()
 
+
+
         val adapter = ListaHijosAdapter()
         adapter.submitList(listaDeHijos)
 
