@@ -38,7 +38,7 @@ class DetalleCampamentoCoordinador : AppCompatActivity() {
                     return@OnItemSelectedListener true
                 }
                 if (itemId == R.id.navigation_descripcion) {
-                    val listaAsistentesFragment = ListaAsistentesCoorFragment.newInstance(
+                    val listaAsistentesFragment = ListaAsistentesCoorFragment.nenwIstance(
                         c.id
                     )
                     supportFragmentManager.beginTransaction()
@@ -62,7 +62,7 @@ class DetalleCampamentoCoordinador : AppCompatActivity() {
 
         campamento?.let {
             getComponentes()
-            //mostrarDatos()
+            mostrarDatos()
         }
 
     }

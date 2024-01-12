@@ -61,7 +61,7 @@ class ListaHijosFragment : Fragment() {
     private fun eliminarHijo(hijo: HijoDTO, adapter: ListaHijosAdapter) {
         // Lógica para eliminar el hijo, por ejemplo, desde tu base de datos o lista
         // Después de eliminar el hijo, actualizas tu lista de hijos y notificas al adaptador
-        service.eliminarHijo(hijo) // Ajusta esto según tu lógica
+        //service.eliminarHijo(hijo) // Ajusta esto según tu lógica
         listaDeHijos.remove(hijo)
         adapter.submitList(listaDeHijos)
         adapter.notifyDataSetChanged()

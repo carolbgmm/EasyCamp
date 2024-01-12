@@ -41,14 +41,13 @@ class ListaAsistentesCoorFragment : Fragment() {
 
         val adapterHijos = ListaHijosAdapter()
         adapterHijos.submitList(listaDeHijos)
+        recyclerCamp.layoutManager = LinearLayoutManager(activity)
 
         recyclerCamp.apply {
             setHasFixedSize(true)
             adapter = adapterHijos
 
         }
-
-        recyclerCamp.layoutManager = LinearLayoutManager(activity)
 
         Log.d("MiApp", "Se cargo la lista de asistentes en coordinador")
 
@@ -64,6 +63,14 @@ class ListaAsistentesCoorFragment : Fragment() {
                         putLong(ARG_PARAM1, idCampamento)
                     }
                 }
+
+        fun nenwIstance(id: Long): Fragment {
+            return ListaAsistentesCoorFragment().apply {
+                arguments = Bundle().apply {
+                    putLong(ARG_PARAM1, id)
+                }
+            }
+        }
     }
 
 
