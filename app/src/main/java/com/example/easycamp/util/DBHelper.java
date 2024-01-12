@@ -1073,6 +1073,52 @@ public class DBHelper extends SQLiteOpenHelper {
         return result;
     }
 
+    public void crearCampamento(@NotNull CampamentoDto nuevoCampamento) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(CAMPAMENTO_NOMBRE, nuevoCampamento.getNombre());
+        values.put(CAMPAMENTO_DESCRIPCION, nuevoCampamento.getDescripcion());
+        values.put(CAMPAMENTO_FECHA_INICIO, nuevoCampamento.getFecha_inicio());
+        values.put(CAMPAMENTO_FECHA_FINAL, nuevoCampamento.getFecha_final());
+        values.put(CAMPAMENTO_NUMERO_MAX_PARTICIPANTES, nuevoCampamento.getNumero_max_participantes());
+        values.put(CAMPAMENTO_NUMERO_APUNTADOS, nuevoCampamento.getNumero_apuntados());
+        values.put(CAMPAMENTO_UBICACION, nuevoCampamento.getUbicacion());
+        values.put(CAMPAMENTO_IMAGEN,"https://picsum.photos/id/22/367/267");
+        values.put(CAMPAMENTO_EDAD_MINIMA, nuevoCampamento.getEdad_minima());
+        values.put(CAMPAMENTO_EDAD_MAXIMA, nuevoCampamento.getEdad_maxima());
+        values.put(CAMPAMENTO_NUM_MONITORES, nuevoCampamento.getNum_monitores());
+        values.put(CAMPAMENTO_PRECIO, nuevoCampamento.getPrecio());
+        values.put(CAMPAMENTO_CATEGORIA, nuevoCampamento.getCategoria());
+        values.put(CAMPAMENTO_LATITUD, nuevoCampamento.getLatitud());
+        values.put(CAMPAMENTO_LONGUITUD, nuevoCampamento.getLonguitud());
+        values.put(CAMPAMENTO_COORDINADOR, nuevoCampamento.getIdCoordinador());
+
+        db.insert(TABLE_CAMPAMENTOS, null, values);
+        db.close();
+
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("campamentos");
+        int campamentoId = getLastIdCamp();
+        databaseReference.child(campamentoId+"").setValue(nuevoCampamento);
+    }
+
+    private int getLastIdCamp() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        int lastId = -1;
+
+        String query = "SELECT MAX(" + CAMPAMENTO_ID + ") FROM " + TABLE_CAMPAMENTOS;
+        Cursor cursor = db.rawQuery(query, null);
+
+        if (cursor.moveToFirst()) {
+            lastId = cursor.getInt(0);
+        }
+
+        cursor.close();
+        db.close();
+
+        return lastId;
+    }
+
     public void disminuirNumeroApuntados(long campamentoId, int nuevoValor) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues valores = new ContentValues();
