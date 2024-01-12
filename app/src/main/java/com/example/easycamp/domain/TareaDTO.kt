@@ -9,7 +9,7 @@ class TareaDTO(
     val titulo: String?,
     val descripcion: String?,
     val fechaLimite: String?,
-    var tick: Boolean = false
+    var hecha: Boolean = false
 
 ) : Parcelable {
 
@@ -28,7 +28,7 @@ class TareaDTO(
         parcel.writeString(titulo)
         parcel.writeString(descripcion)
         parcel.writeString(fechaLimite)
-        parcel.writeByte(if (tick) 1 else 0)
+        parcel.writeByte(if (hecha) 1 else 0)
     }
 
     override fun describeContents(): Int {

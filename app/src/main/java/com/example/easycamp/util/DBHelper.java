@@ -60,7 +60,6 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String CAMPAMENTO_CATEGORIA = "categoria";
     private static final String CAMPAMENTO_LATITUD = "latitud";
     private static final String CAMPAMENTO_LONGUITUD = "longuitud";
-
     private static final String CAMPAMENTO_COORDINADOR = "idCoordinador";
 
     // Nombre de la tabla de usuarios
@@ -157,8 +156,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 CAMPAMENTO_PRECIO + " REAL, " +
                 CAMPAMENTO_CATEGORIA + " TEXT, " +
                 CAMPAMENTO_LATITUD+ " REAL, " +
-                CAMPAMENTO_COORDINADOR+"TEXT, "+
-                CAMPAMENTO_LONGUITUD + " REAL)";
+                CAMPAMENTO_LONGUITUD + " REAL," +
+                CAMPAMENTO_COORDINADOR+" TEXT)";
         db.execSQL(createTableCampamentos);
 
         // Crear la tabla de usuarios
@@ -513,11 +512,13 @@ public class DBHelper extends SQLiteOpenHelper {
     public List<CampamentoDto> obtenerInscritosDeUsuario(String usuarioID) {
         List<CampamentoDto> campamentosInscritos = new ArrayList<>();
 
-        String selectQuery = "SELECT DISTINCT ("+ TABLE_CAMPAMENTOS +"." + CAMPAMENTO_ID + ")," + CAMPAMENTO_NOMBRE + "," + CAMPAMENTO_DESCRIPCION
-                + "," + CAMPAMENTO_FECHA_INICIO + "," + CAMPAMENTO_FECHA_FINAL + "," + CAMPAMENTO_NUMERO_MAX_PARTICIPANTES
-                + "," + CAMPAMENTO_NUMERO_APUNTADOS + "," + CAMPAMENTO_UBICACION + "," + CAMPAMENTO_COORDINADOR+"," + CAMPAMENTO_EDAD_MINIMA
-                + "," + CAMPAMENTO_EDAD_MAXIMA + "," + CAMPAMENTO_NUM_MONITORES + "," + CAMPAMENTO_PRECIO
-                + "," + CAMPAMENTO_CATEGORIA + "," + CAMPAMENTO_IMAGEN + "," + CAMPAMENTO_LATITUD + "," + CAMPAMENTO_LONGUITUD +"  FROM " + TABLE_CAMPAMENTOS +
+        String selectQuery = "SELECT DISTINCT ("+ TABLE_CAMPAMENTOS +"." + CAMPAMENTO_ID + ")," + CAMPAMENTO_NOMBRE + ","
+                + CAMPAMENTO_DESCRIPCION + "," + CAMPAMENTO_FECHA_INICIO + "," + CAMPAMENTO_FECHA_FINAL + ","
+                + CAMPAMENTO_NUMERO_MAX_PARTICIPANTES + "," + CAMPAMENTO_NUMERO_APUNTADOS + "," + CAMPAMENTO_UBICACION +","
+                + CAMPAMENTO_EDAD_MINIMA + "," + CAMPAMENTO_EDAD_MAXIMA + ","
+                + CAMPAMENTO_NUM_MONITORES + "," + CAMPAMENTO_PRECIO + "," + CAMPAMENTO_CATEGORIA + ","
+                + CAMPAMENTO_IMAGEN + "," + CAMPAMENTO_LATITUD + "," + CAMPAMENTO_LONGUITUD + "," + CAMPAMENTO_COORDINADOR
+                +"  FROM " + TABLE_CAMPAMENTOS +
                 " INNER JOIN " + TABLE_INSCRITOS +
                 " ON " + TABLE_INSCRITOS + "." +INSCRITOS_CAMPAMENTO_ID + " = " + TABLE_CAMPAMENTOS + "." + CAMPAMENTO_ID +
                 " INNER JOIN " + TABLE_HIJOS +
@@ -996,7 +997,7 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(CAMPAMENTO_PRECIO, campamento.getPrecio());
         values.put(CAMPAMENTO_CATEGORIA, campamento.getCategoria());
         values.put(CAMPAMENTO_LATITUD, campamento.getLatitud());
-
+        values.put(CAMPAMENTO_LONGUITUD, campamento.getLonguitud());
         values.put(CAMPAMENTO_COORDINADOR, campamento.getIdCoordinador());
 
         db.insert(TABLE_CAMPAMENTOS, null, values);

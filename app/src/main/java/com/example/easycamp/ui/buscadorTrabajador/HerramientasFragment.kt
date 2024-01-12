@@ -30,7 +30,7 @@ class HerramientasFragment : androidx.fragment.app.Fragment() {
         usuarioActual = obtenerUsuarioActual()
 
         val btnListaAsist: Button = view.findViewById(R.id.button_lista_asistentes)
-        val btnVehiculos: Button = view.findViewById(R.id.button_vehiculos)
+        val btnVehiculos: Button = view.findViewById(R.id.button_aceptados)
         val btnUbis: Button = view.findViewById(R.id.button_ubicaciones)
         val btnTareas: Button = view.findViewById(R.id.button_tareas)
 

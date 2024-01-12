@@ -44,19 +44,19 @@ class TareasTrabajadorAdapter(val listaTareas: List<TareaDTO>, val listener: Tar
             txtDescripcion.setText(item.descripcion)
             txtHora.setText(item.fechaLimite)
 
-            if(item.tick){
+            if(item.hecha){
                 imgTick.setImageResource(R.drawable.tick_relleno)
             } else {
                 imgTick.setImageResource(R.drawable.tick_vacio)
             }
 
             imgTick?.setOnClickListener {
-                if(item.tick){
+                if(item.hecha){
                     imgTick.setImageResource(R.drawable.tick_vacio)
-                    item.tick = false
+                    item.hecha = false
                 } else {
                     imgTick.setImageResource(R.drawable.tick_relleno)
-                    item.tick = true
+                    item.hecha = true
                 }
             }
             // cargar imagen
