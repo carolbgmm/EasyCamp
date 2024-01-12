@@ -324,6 +324,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         values.put(INSCRITOS_TRABAJADOR_TRABAJADOR_ID, userId);
         values.put(INSCRITOS_TRABAJADOR_CAMPAMENTO_ID, campamentoId);
+        values.put(INSCRITOS_TRABAJADOR_ACEPTADO, 0);
 
         long resultado = db.insert(TABLE_INSCRITOS_TRABAJADOR, null, values);
         db.close();
@@ -597,6 +598,32 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
 
         return hijosInscritos;
+    }
+
+    public void aceptarTrabajador(String usuarioId, long campamentoId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(INSCRITOS_TRABAJADOR_ACEPTADO, 1); //These Fields should be your String values of actual column names
+
+        db.update(TABLE_INSCRITOS_TRABAJADOR, cv, INSCRITOS_TRABAJADOR_TRABAJADOR_ID + "=? AND " + INSCRITOS_TRABAJADOR_CAMPAMENTO_ID + "=?", new String[]{usuarioId, String.valueOf(campamentoId)});
+        db.close();
+
+        // Eliminar el favorito de Firebase
+        DatabaseReference favoritosReference = mDataBase.child("favoritos");
+        favoritosReference.child(usuarioId + "_" + campamentoId).removeValue();
+    }
+
+    public void rechazarTrabajador(String usuarioId, long campamentoId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(INSCRITOS_TRABAJADOR_ACEPTADO, 0); //These Fields should be your String values of actual column names
+
+        db.update(TABLE_INSCRITOS_TRABAJADOR, cv, INSCRITOS_TRABAJADOR_TRABAJADOR_ID + "=? AND " + INSCRITOS_TRABAJADOR_CAMPAMENTO_ID + "=?", new String[]{usuarioId, String.valueOf(campamentoId)});
+        db.close();
+
+        // Eliminar el favorito de Firebase
+        DatabaseReference favoritosReference = mDataBase.child("favoritos");
+        favoritosReference.child(usuarioId + "_" + campamentoId).removeValue();
     }
 
     public List<CampamentoDto> obtenerInscritosDeTrabajador(String usuarioID) {

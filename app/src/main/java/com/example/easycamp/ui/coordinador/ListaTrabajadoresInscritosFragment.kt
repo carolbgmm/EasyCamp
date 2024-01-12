@@ -30,7 +30,7 @@ class ListaTrabajadoresInscritosFragment : Fragment() {
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerViewTrabajadores)
 
-        val adapter = TrabajadoresInscritosAdapter()
+        val adapter = TrabajadoresInscritosAdapter(campamentoDto!!)
         val persistencia = DBHelper.getInstance(context)
         val listaTrabajadores =  persistencia.obtenerTrabajadoresInscritosDeCampamento(campamentoDto!!.id)
         adapter.submitList(listaTrabajadores)
