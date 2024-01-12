@@ -219,7 +219,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 INSCRITOS_TRABAJADOR_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 INSCRITOS_TRABAJADOR_TRABAJADOR_ID + " INTEGER, " +  // Cambiado a TEXT
                 INSCRITOS_CAMPAMENTO_ID + " INTEGER, " +  // Cambiado a TEXT
-                INSCRITOS_TRABAJADOR_ACEPTADO + "INTEGER," +
+                INSCRITOS_TRABAJADOR_ACEPTADO + " INTEGER," +
                 "FOREIGN KEY(" + INSCRITOS_TRABAJADOR_TRABAJADOR_ID + ") REFERENCES " + TABLE_USUARIOS + "(" + USUARIO_ID + "), " +
                 "FOREIGN KEY(" + INSCRITOS_CAMPAMENTO_ID + ") REFERENCES " + TABLE_CAMPAMENTOS + "(" + CAMPAMENTO_ID + "))";
         db.execSQL(createTableInscritosTrabajador );
