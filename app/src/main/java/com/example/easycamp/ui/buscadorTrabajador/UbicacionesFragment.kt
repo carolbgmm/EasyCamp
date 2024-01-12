@@ -23,15 +23,16 @@ class UbicacionesFragment : Fragment() {
 
     private val callback = OnMapReadyCallback { googleMap ->
 
-        val lista = persistencia.obtenerInscritosDeTrabajador(LoggedUserDTO.getInstance(null).user.id)
+        val lista = persistencia.obtenerAceptadosDeTrabajador(LoggedUserDTO.getInstance(null).user.id)
         val posInit = LatLng(40.392609, -3.680264)
 
         googleMap.getUiSettings().setZoomControlsEnabled(true);
 
-        Log.i("AYUDA", lista.size.toString())
+        //Log.i("AYUDA", lista.size.toString())
         lista.forEach {
             val pos = LatLng(it.latitud.toDouble(), it.longuitud.toDouble())
-            Log.i("AYUDA", it.toString())
+            //Log.i("AYUDA", it.toString())
+
             googleMap.addMarker(MarkerOptions().position(pos).title(it.nombre))
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(posInit, 5F))
         }

@@ -672,6 +672,51 @@ public class DBHelper extends SQLiteOpenHelper {
         return campamentosInscritos;
     }
 
+    public List<CampamentoDto> obtenerAceptadosDeTrabajador(String usuarioID) {
+        List<CampamentoDto> campamentosAceptados = new ArrayList<>();
+
+        String selectQuery = "SELECT *  FROM " + TABLE_CAMPAMENTOS +
+                " INNER JOIN " + TABLE_INSCRITOS_TRABAJADOR +
+                " ON " + TABLE_INSCRITOS_TRABAJADOR + "." +INSCRITOS_TRABAJADOR_CAMPAMENTO_ID + " = " + TABLE_CAMPAMENTOS + "." + CAMPAMENTO_ID +
+                " WHERE " + TABLE_INSCRITOS_TRABAJADOR + "." + INSCRITOS_TRABAJADOR_ACEPTADO + " = 1 AND " + TABLE_INSCRITOS_TRABAJADOR + "." + INSCRITOS_TRABAJADOR_TRABAJADOR_ID + " = '" + usuarioID + "';";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+
+        if (cursor.moveToFirst()) {
+            do {
+                @SuppressLint("Range") CampamentoDto campamento = new CampamentoDto(
+                        cursor.getLong(cursor.getColumnIndex(CAMPAMENTO_ID)),
+                        cursor.getString(cursor.getColumnIndex(CAMPAMENTO_NOMBRE)),
+                        cursor.getString(cursor.getColumnIndex(CAMPAMENTO_DESCRIPCION)),
+                        cursor.getString(cursor.getColumnIndex(CAMPAMENTO_FECHA_INICIO)),
+                        cursor.getString(cursor.getColumnIndex(CAMPAMENTO_FECHA_FINAL)),
+                        cursor.getInt(cursor.getColumnIndex(CAMPAMENTO_NUMERO_MAX_PARTICIPANTES)),
+                        cursor.getInt(cursor.getColumnIndex(CAMPAMENTO_NUMERO_APUNTADOS)),
+                        cursor.getString(cursor.getColumnIndex(CAMPAMENTO_UBICACION)),
+                        cursor.getInt(cursor.getColumnIndex(CAMPAMENTO_EDAD_MINIMA)),
+                        cursor.getInt(cursor.getColumnIndex(CAMPAMENTO_EDAD_MAXIMA)),
+                        cursor.getInt(cursor.getColumnIndex(CAMPAMENTO_NUM_MONITORES)),
+                        cursor.getDouble(cursor.getColumnIndex(CAMPAMENTO_PRECIO)),
+                        cursor.getString(cursor.getColumnIndex(CAMPAMENTO_CATEGORIA)),
+                        cursor.getString(cursor.getColumnIndex(CAMPAMENTO_IMAGEN)),
+                        true,
+                        cursor.getFloat(cursor.getColumnIndex(CAMPAMENTO_LATITUD)),
+                        cursor.getFloat(cursor.getColumnIndex(CAMPAMENTO_LONGUITUD)),
+                        cursor.getString(cursor.getColumnIndex(CAMPAMENTO_COORDINADOR))
+                );
+                campamentosAceptados.add(campamento);
+
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return campamentosAceptados;
+    }
+
     public List<UserDTO> obtenerTrabajadoresInscritosDeCampamento(long campamentoID) {
         List<UserDTO> trabajadoresInscritos = new ArrayList<>();
 
