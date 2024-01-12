@@ -78,7 +78,6 @@ class DetalleCampamentoActivity : AppCompatActivity() {
             mostrarDatos()
         }
 
-
     }
 
     private fun getComponentes() {
@@ -104,16 +103,40 @@ class DetalleCampamentoActivity : AppCompatActivity() {
             ))
             .commit()
 
+        val user = LoggedUserDTO.getInstance(null).user
+        var yaInscrito = false
+
+        if(user.tipoUsuario.equals("TRABAJADOR")){
+            val lista =  service.obtenerInscritosDeTrabajador(user.id)
+
+            lista.removeIf { c->
+                c.id != campamento!!.id
+            }
+            if(!lista.isEmpty()){
+                yaInscrito = true
+                fab.setImageResource(R.drawable.campamento_solicitado)
+            }
+        }
+
+
         fab.setOnClickListener {
-            val user = LoggedUserDTO.getInstance(null).user
+
             if(user.tipoUsuario.equals("CLIENTE")){
                 val intent = Intent(this, ApuntarHijosActivity::class.java)
                 // Redirige a la página principal TRABAJADOR
                 intent.putExtra(RecyclerClienteFragment.CAMPAMENTO_SELECCIONADO, campamento)
                 startActivity(intent)
             } else {
-                service.inscribirUsuario(user.id, campamento!!.id)
-                fab.setImageResource(R.drawable.campamento_solicitado)
+                if(yaInscrito){
+                    service.desInscribirUsuario(user.id, campamento!!.id)
+                    fab.setImageResource(R.drawable.solicitar_campamento)
+                    yaInscrito = false
+                } else {
+                    yaInscrito = true
+                    service.inscribirUsuario(user.id, campamento!!.id)
+                    fab.setImageResource(R.drawable.campamento_solicitado)
+                }
+
             }
 
         }

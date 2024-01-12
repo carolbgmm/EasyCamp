@@ -19,6 +19,11 @@
         <activity
             android:name=".ui.coordinador.CoordinadorActivity"
             android:exported="false" />
+        <activity
+            android:name=".ui.detalle.DetalleAsistentesActivity"
+            android:exported="false"
+            android:label="@string/title_activity_detalle_asistentes"
+            android:theme="@style/Theme.EasyCamp" />
         <!--
              TODO: Before you run your application, you need a Google Maps API key.
 
@@ -35,11 +40,9 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".ui.detalle.DetalleAsistentesActivity"
-            android:exported="false" />
-        <activity
             android:name=".ui.buscadorCliente.ApuntarHijosActivity"
             android:exported="false" />
+
         <activity
             android:name=".ui.inicioSesion.RegistroActivity"
             android:exported="false" />

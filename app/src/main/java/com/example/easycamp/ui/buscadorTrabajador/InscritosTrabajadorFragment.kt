@@ -15,23 +15,18 @@ import com.example.easycamp.ui.buscadorCliente.BuscadorClienteAdapter
 import com.example.easycamp.ui.buscadorCliente.InscritosFragment
 import com.example.easycamp.ui.buscadorCliente.RecyclerClienteFragment
 import com.example.easycamp.ui.detalle.DetalleCampamentoActivity
-
 import com.example.easycamp.util.DBHelper
-
 
 class InscritosTrabajadorFragment : Fragment() {
 
     private lateinit var recyclerCamp: RecyclerView
-
     private lateinit var persistencia: DBHelper
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view =inflater.inflate(R.layout.fragment_inscritos_trabajador, container, false)
-
 
         persistencia = DBHelper.getInstance(context)
 

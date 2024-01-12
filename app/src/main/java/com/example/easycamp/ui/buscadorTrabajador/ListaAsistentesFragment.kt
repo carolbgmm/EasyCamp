@@ -2,7 +2,6 @@ package com.example.easycamp.ui.buscadorTrabajador
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -37,8 +36,7 @@ class ListaAsistentesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val lista = persistencia.obtenerInscritosDeUsuario(LoggedUserDTO.getInstance(null).user.nombreUsuario)
-        //Log.i("AYUDA", lista.size.toString())
+        val lista = persistencia.obtenerInscritosDeTrabajador(LoggedUserDTO.getInstance(null).user.id)
         val adapterCampamentos = BuscadorTrabajadorAdapter(lista, object : BuscadorTrabajadorAdapter.OnItemClickListener {
             override fun onItemClick(campamento: CampamentoDto?) {
                 campamento?.let { clickonItem(campamento) }
@@ -59,7 +57,6 @@ class ListaAsistentesFragment : Fragment() {
     }
 
     companion object {
-        //val CAMPAMENTO_SELECCIONADO = "campamento_seleccionado"
         fun newInstance(): ListaAsistentesFragment{
             return ListaAsistentesFragment()
         }

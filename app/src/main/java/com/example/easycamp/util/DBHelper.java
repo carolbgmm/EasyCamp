@@ -227,6 +227,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         insertarDatosInscritosDesdeJSON(context, db, TABLE_INSCRITOS, "inscritos", "datos_iniciales.json");
 
+
     }
 
     private void insertarDatosTareasDesdeJSON(Context context, SQLiteDatabase db, String tableName, String jsonArrayName, String fileName) {
@@ -326,6 +327,17 @@ public class DBHelper extends SQLiteOpenHelper {
         long resultado = db.insert(TABLE_INSCRITOS_TRABAJADOR, null, values);
         db.close();
         return resultado;
+    }
+
+    public void desInscribirUsuario(String userId, long campamentoId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_INSCRITOS_TRABAJADOR, INSCRITOS_TRABAJADOR_TRABAJADOR_ID + "=? AND " + INSCRITOS_TRABAJADOR_CAMPAMENTO_ID + "=?",
+                new String[]{String.valueOf(userId), String.valueOf(campamentoId)});
+        db.close();
+
+        // Eliminar el favorito de Firebase
+        DatabaseReference favoritosReference = mDataBase.child(TABLE_INSCRITOS_TRABAJADOR);
+        favoritosReference.child(userId + "_" + campamentoId).removeValue();
     }
 
     public void desInscribirHijos(long hijoId, long campamentoId) {
@@ -505,7 +517,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 + "," + CAMPAMENTO_FECHA_INICIO + "," + CAMPAMENTO_FECHA_FINAL + "," + CAMPAMENTO_NUMERO_MAX_PARTICIPANTES
                 + "," + CAMPAMENTO_NUMERO_APUNTADOS + "," + CAMPAMENTO_UBICACION + "," + CAMPAMENTO_COORDINADOR+"," + CAMPAMENTO_EDAD_MINIMA
                 + "," + CAMPAMENTO_EDAD_MAXIMA + "," + CAMPAMENTO_NUM_MONITORES + "," + CAMPAMENTO_PRECIO
-                + "," + CAMPAMENTO_CATEGORIA + "," + CAMPAMENTO_IMAGEN +"  FROM " + TABLE_CAMPAMENTOS +
+                + "," + CAMPAMENTO_CATEGORIA + "," + CAMPAMENTO_IMAGEN + "," + CAMPAMENTO_LATITUD + "," + CAMPAMENTO_LONGUITUD +"  FROM " + TABLE_CAMPAMENTOS +
                 " INNER JOIN " + TABLE_INSCRITOS +
                 " ON " + TABLE_INSCRITOS + "." +INSCRITOS_CAMPAMENTO_ID + " = " + TABLE_CAMPAMENTOS + "." + CAMPAMENTO_ID +
                 " INNER JOIN " + TABLE_HIJOS +
@@ -551,13 +563,45 @@ public class DBHelper extends SQLiteOpenHelper {
         return campamentosInscritos;
     }
 
+    public List<HijoDTO> obtenerInscritosDeCampamento(long campamentoID) {
+        List<HijoDTO> hijosInscritos = new ArrayList<>();
+
+        String selectQuery = "SELECT * FROM " + TABLE_HIJOS +
+                " INNER JOIN " + TABLE_INSCRITOS +
+                " ON " + TABLE_INSCRITOS + "." + INSCRITOS_HIJO_ID + " = " + TABLE_HIJOS + "." + HIJO_ID +
+                " WHERE " + TABLE_INSCRITOS + "." + INSCRITOS_CAMPAMENTO_ID + " = '" + campamentoID + "';";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+
+        if (cursor.moveToFirst()) {
+            do {
+                @SuppressLint("Range") HijoDTO hijo = new HijoDTO(
+                        cursor.getLong(cursor.getColumnIndex(HIJO_ID)),
+                        cursor.getString(cursor.getColumnIndex(HIJO_NOMBRE)),
+                        cursor.getString(cursor.getColumnIndex(HIJO_APELLIDOS)),
+                        cursor.getInt(cursor.getColumnIndex(HIJO_EDAD)),
+                        cursor.getString(cursor.getColumnIndex(HIJO_OBSERVACIONES))
+                );
+                hijosInscritos.add(hijo);
+
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return hijosInscritos;
+    }
+
     public List<CampamentoDto> obtenerInscritosDeTrabajador(String usuarioID) {
         List<CampamentoDto> campamentosInscritos = new ArrayList<>();
 
         String selectQuery = "SELECT *  FROM " + TABLE_CAMPAMENTOS +
                 " INNER JOIN " + TABLE_INSCRITOS_TRABAJADOR +
                 " ON " + TABLE_INSCRITOS_TRABAJADOR + "." +INSCRITOS_TRABAJADOR_CAMPAMENTO_ID + " = " + TABLE_CAMPAMENTOS + "." + CAMPAMENTO_ID +
-                " WHERE " + TABLE_INSCRITOS_TRABAJADOR + "." + INSCRITOS_TRABAJADOR_ID + " = '" + usuarioID + "';";
+                " WHERE " + TABLE_INSCRITOS_TRABAJADOR + "." + INSCRITOS_TRABAJADOR_TRABAJADOR_ID + " = '" + usuarioID + "';";
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -932,7 +976,7 @@ public class DBHelper extends SQLiteOpenHelper {
         agregarCampamento(campamento);
     }
 
-    private void agregarCampamento(CampamentoDto campamento) {
+    public void agregarCampamento(CampamentoDto campamento) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
@@ -951,6 +995,8 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(CAMPAMENTO_NUM_MONITORES, campamento.getNum_monitores());
         values.put(CAMPAMENTO_PRECIO, campamento.getPrecio());
         values.put(CAMPAMENTO_CATEGORIA, campamento.getCategoria());
+        values.put(CAMPAMENTO_LATITUD, campamento.getLatitud());
+        values.put(CAMPAMENTO_LONGUITUD, campamento.getLonguitud());
 
         db.insert(TABLE_CAMPAMENTOS, null, values);
         db.close();
