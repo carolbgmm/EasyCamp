@@ -11,6 +11,7 @@ import android.widget.EditText
 import androidx.fragment.app.DialogFragment
 import com.example.easycamp.R
 import com.example.easycamp.domain.CampamentoDto
+import com.example.easycamp.domain.LoggedUserDTO
 import com.example.easycamp.util.DBHelper
 
 class AgregarCampamentoFragment : DialogFragment() {
@@ -160,11 +161,11 @@ class AgregarCampamentoFragment : DialogFragment() {
             false, // Por defecto se puede establecer como falso
             latitud,
             longitud,
-            ""
+            LoggedUserDTO.getInstance(null).user.id
         )
 
-        // Guarda el nuevo campamento en la base de datos o realiza la acción correspondiente
-        // service.crearCampamento(nuevoCampamento)
+
+         service.crearCampamento(nuevoCampamento)
 
         dismiss()
     }
