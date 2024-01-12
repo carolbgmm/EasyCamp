@@ -996,7 +996,8 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(CAMPAMENTO_PRECIO, campamento.getPrecio());
         values.put(CAMPAMENTO_CATEGORIA, campamento.getCategoria());
         values.put(CAMPAMENTO_LATITUD, campamento.getLatitud());
-        values.put(CAMPAMENTO_LONGUITUD, campamento.getLonguitud());
+
+        values.put(CAMPAMENTO_COORDINADOR, campamento.getIdCoordinador());
 
         db.insert(TABLE_CAMPAMENTOS, null, values);
         db.close();
