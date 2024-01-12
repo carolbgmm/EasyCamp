@@ -17,6 +17,7 @@ import com.example.easycamp.R;
 import com.example.easycamp.domain.UserDTO;
 import com.example.easycamp.ui.buscadorCliente.BuscadorClienteActivity;
 import com.example.easycamp.ui.buscadorTrabajador.BuscadorTrabajadorActivity;
+import com.example.easycamp.ui.coordinador.CoordinadorActivity;
 import com.example.easycamp.util.DBHelper;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -94,6 +95,10 @@ public class Login_Activity extends AppCompatActivity {
             case "TRABAJADOR":
                 // Redirige a la página principal TRABAJADOR
                 startActivity(new Intent(this, BuscadorTrabajadorActivity.class));
+                break;
+            case "COORDINADOR":
+                // Redirige a la página principal COORDINADOR
+                startActivity(new Intent(this, CoordinadorActivity.class));
                 break;
             default:
                 showToast("Ha ocurrido un error, no se encuentra su tipo de ususario");

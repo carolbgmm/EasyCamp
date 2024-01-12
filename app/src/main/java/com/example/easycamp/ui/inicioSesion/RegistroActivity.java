@@ -73,7 +73,7 @@ public class RegistroActivity extends AppCompatActivity {
                     );
 
                     nuevoUsuario=usuario;
-                    Log.d("MiApp", "Se intenta crear usuario  "+etNombreUsuario.getText().toString()+"  "+etContrasena.getText().toString());
+                    Log.d("MiApp", "Se intenta crear usuario  "+etNombreUsuario.getText().toString()+"  "+etContrasena.getText().toString()+""+nuevoUsuario.getTipoUsuario());
 
                     registerUser();
 

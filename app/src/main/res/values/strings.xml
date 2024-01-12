@@ -47,6 +47,34 @@
     <string name="descripcionTarea">Descripcion de la tarea</string>
     <string name="title_activity_scrolling">ScrollingActivity</string>
     <string name="large_text">
+
+        <!-- Para RecyclerTrabajadorFragment -->
+        <string name="titulo_recycler_trabajador">Lista de Trabajadores</string>
+    <string name="descripcion_recycler_trabajador">Aquí encontrarás la lista de trabajadores disponibles.</string>
+
+        <!-- Para InscritosTrabajadorFragment -->
+        <string name="titulo_inscritos_trabajador">Inscritos a mis Campamentos</string>
+    <string name="descripcion_inscritos_trabajador">Lista de usuarios inscritos a tus campamentos.</string>
+
+        <!-- Para HerramientasFragment -->
+        <string name="titulo_herramientas_trabajador">Herramientas para Trabajadores</string>
+    <string name="descripcion_herramientas_trabajador">Accede a herramientas y configuraciones para trabajadores.</string>
+
+        <!-- Para CuentaTrabajadorFragment -->
+        <string name="titulo_cuenta_trabajador">Mi Cuenta como Trabajador</string>
+    <string name="descripcion_cuenta_trabajador">Visualiza y edita la información de tu cuenta como trabajador.</string>
+
+        <!-- Para los nuevos elementos del BottomNavigationView en CoordinadorActivity -->
+        <string name="menu_perfil_coordinador">Perfil</string>
+    <string name="menu_crear_campamento">Crear Campamento</string>
+
+        <!-- Para PerfilCoordinadorFragment -->
+        <string name="titulo_perfil_coordinador">Mi Perfil como Coordinador</string>
+    <string name="descripcion_perfil_coordinador">Visualiza y edita la información de tu perfil como coordinador.</string>
+
+        <!-- Para CrearCampamentoFragment -->
+        <string name="titulo_crear_campamento">Crear Nuevo Campamento</string>
+    <string name="descripcion_crear_campamento">Completa los detalles para crear un nuevo campamento.</string>
         "Material is the metaphor.\n\n"
 
         "A material metaphor is the unifying theory of a rationalized space and a system of motion."
@@ -140,6 +168,8 @@
     <string name="horaTarea">Hora de la tarea</string>
     <string name="text_inscritos">Inscritos</string>
     <string name="boton_tareas">Tareas</string>
+    <string name="menu_crear_campamento">Campamento</string>
+    <string name="menu_perfil">Perfil</string>
     <string name="title_activity_detalle_asistentes">DetalleAsistentesActivity</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>

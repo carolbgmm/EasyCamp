@@ -17,6 +17,9 @@
         android:theme="@style/Theme.EasyCamp"
         tools:targetApi="31">
         <activity
+            android:name=".ui.coordinador.CoordinadorActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.detalle.DetalleAsistentesActivity"
             android:exported="false"
             android:label="@string/title_activity_detalle_asistentes"
@@ -39,6 +42,7 @@
         <activity
             android:name=".ui.buscadorCliente.ApuntarHijosActivity"
             android:exported="false" />
+
         <activity
             android:name=".ui.inicioSesion.RegistroActivity"
             android:exported="false" />
