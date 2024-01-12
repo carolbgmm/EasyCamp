@@ -201,10 +201,10 @@ public class DBHelper extends SQLiteOpenHelper {
         // Crear la tabla de tareas
         String createTableTareas = "CREATE TABLE " + TABLE_TAREAS + " (" +
                 TAREA_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                USUARIO_TAREA_NOMBRE + " TEXT, " +
                 TAREA_TITULO + " TEXT, " +
                 TAREA_DESCRIPCION + " TEXT, " +
-                TAREA_FECHA + " TEXT, " +
-                USUARIO_TAREA_NOMBRE + " TEXT)";
+                TAREA_FECHA + " TEXT)";
         db.execSQL(createTableTareas);
 
         String createTableTick = "CREATE TABLE " + TABLE_TICK + " (" +
@@ -249,10 +249,11 @@ public class DBHelper extends SQLiteOpenHelper {
                 JSONObject item = jsonArray.getJSONObject(i);
 
                 // Agregar cada columna y valor al ContentValues
+                values.put(USUARIO_TAREA_NOMBRE, item.getString("nombre_usuario_tarea"));
                 values.put(TAREA_TITULO, item.getString("titulo_tarea"));
                 values.put(TAREA_DESCRIPCION, item.getString("descripcion_tarea"));
                 values.put(TAREA_FECHA, item.getString("fecha_tarea"));
-                values.put(USUARIO_TAREA_NOMBRE, item.getString("nombre_usuario_tarea"));
+
                 Log.d("MiApp", "Nueva Tarea  "+item.getString("nombre_usuario_tarea")+" "+item.getString("titulo_tarea"));
                 // Insertar los valores en la base de datos
                 db.insert(tableName, null, values);
@@ -497,11 +498,11 @@ public class DBHelper extends SQLiteOpenHelper {
             do {
                 @SuppressLint("Range") TareaDTO tarea = new TareaDTO(
                         cursor.getLong(cursor.getColumnIndex(TAREA_ID)),
+                        cursor.getString(cursor.getColumnIndex(USUARIO_TAREA_NOMBRE)),
                         cursor.getString(cursor.getColumnIndex(TAREA_TITULO)),
                         cursor.getString(cursor.getColumnIndex(TAREA_DESCRIPCION)),
                         cursor.getString(cursor.getColumnIndex(TAREA_FECHA)),
-                        cursor.getString(cursor.getColumnIndex(USUARIO_TAREA_NOMBRE)),
-                        true
+                        false
                 );
                 tareas.add(tarea);
             } while (cursor.moveToNext());
@@ -1181,4 +1182,26 @@ public class DBHelper extends SQLiteOpenHelper {
 
         return lastId;
     }
+
+    public void disminuirNumeroApuntados(long campamentoId, int nuevoValor) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues valores = new ContentValues();
+        valores.put(CAMPAMENTO_NUMERO_APUNTADOS, nuevoValor);
+
+        db.update(TABLE_CAMPAMENTOS, valores, CAMPAMENTO_ID + " = ?", new String[]{String.valueOf(campamentoId)});
+        db.close();
+
+    }
+
+    public void disminuirNumeroTrabajadores(long campamentoId, int nuevoValor) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues valores = new ContentValues();
+        valores.put(CAMPAMENTO_NUM_MONITORES, nuevoValor);
+
+        db.update(TABLE_CAMPAMENTOS, valores, CAMPAMENTO_ID + " = ?", new String[]{String.valueOf(campamentoId)});
+        db.close();
+
+    }
+
+
 }

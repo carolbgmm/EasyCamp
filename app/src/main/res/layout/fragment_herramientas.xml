@@ -11,7 +11,7 @@
         android:layout_width="322dp"
         android:layout_height="103dp"
         android:layout_x="35dp"
-        android:layout_y="46dp"
+        android:layout_y="201dp"
         android:backgroundTint="#99D69B"
         android:text="@string/boton_lista_asistentes"
         android:textColor="#000000" />
@@ -21,7 +21,7 @@
         android:layout_width="322dp"
         android:layout_height="103dp"
         android:layout_x="35dp"
-        android:layout_y="193dp"
+        android:layout_y="55dp"
         android:backgroundTint="#99D69B"
         android:text="@string/boton_aceptados"
         android:textColor="#000000" />
