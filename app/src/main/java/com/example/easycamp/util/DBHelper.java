@@ -496,6 +496,30 @@ public class DBHelper extends SQLiteOpenHelper {
         return inscripciones;
     }
 
+    public boolean isTrabajadorAceptado(long campamentoId, String userId) {
+
+        String selectQuery = "SELECT * FROM " + TABLE_INSCRITOS_TRABAJADOR +
+                " WHERE " + TABLE_INSCRITOS_TRABAJADOR + "." + INSCRITOS_TRABAJADOR_CAMPAMENTO_ID + " = " + campamentoId
+                +   " AND " + TABLE_INSCRITOS_TRABAJADOR + "." + INSCRITOS_TRABAJADOR_TRABAJADOR_ID + " = '" + userId + "';";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        boolean aceptadob = false;
+
+        if (cursor.moveToFirst()) {
+            do {
+                    @SuppressLint("Range") int aceptado =  cursor.getInt(cursor.getColumnIndex(INSCRITOS_TRABAJADOR_ACEPTADO));
+                    aceptadob = aceptado > 0;
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return aceptadob;
+    }
+
 
     public List<CampamentoDto> obtenerFavoritosDeUsuario(long usuarioId) {
         List<CampamentoDto> campamentosFavoritos = new ArrayList<>();

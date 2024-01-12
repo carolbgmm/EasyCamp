@@ -45,6 +45,12 @@ class TrabajadoresInscritosAdapter(var campamentoDto: CampamentoDto) : ListAdapt
                 tvEdadTrabajador.text = "Edad: ${user.edad}"
                 tvNombreUsuarioTrabajador.text = user.nombreUsuario
                 val service = DBHelper(itemView.context)
+                var aceptado = service.isTrabajadorAceptado(campamentoDto.id, user.id)
+
+                if(aceptado){
+                    imagenResultado.setImageResource(R.drawable.trabajador_aprobado)
+                }
+
                 btnAceptarTrabajador.setOnClickListener {
                     service.aceptarTrabajador(user.id, campamentoDto.id)
                     imagenResultado.setImageResource(R.drawable.trabajador_aprobado)
