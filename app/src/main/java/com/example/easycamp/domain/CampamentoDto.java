@@ -20,7 +20,6 @@ public class CampamentoDto implements Parcelable {
     private String imagen;
     private boolean favorito;
     private float latitud;
-
     private float longuitud;
 
 
