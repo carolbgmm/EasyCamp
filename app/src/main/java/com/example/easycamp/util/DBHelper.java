@@ -1193,15 +1193,19 @@ public class DBHelper extends SQLiteOpenHelper {
 
     }
 
-    public void disminuirNumeroTrabajadores(long campamentoId, int nuevoValor) {
+
+
+
+
+    public void eliminarHijo(@NotNull HijoDTO hijo) {
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues valores = new ContentValues();
-        valores.put(CAMPAMENTO_NUM_MONITORES, nuevoValor);
 
-        db.update(TABLE_CAMPAMENTOS, valores, CAMPAMENTO_ID + " = ?", new String[]{String.valueOf(campamentoId)});
+        // Asumiendo que HIJO_ID es el identificador único del hijo
+        String[] whereArgs = {String.valueOf(hijo.getId())};
+        db.delete(TABLE_HIJOS, HIJO_ID + "=?", whereArgs);
+
+        // Cierre de la conexión a la base de datos
         db.close();
-
     }
-
 
 }
