@@ -1,0 +1,273 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+    <!-- Nombre -->
+    <TextView
+        android:id="@+id/tvNombreCampamento"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nombre del Campamento"
+        android:textSize="18sp"
+        android:layout_marginTop="8dp"/>
+
+    <EditText
+        android:id="@+id/etNombreCampamento"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvNombreCampamento"
+        android:layout_marginTop="4dp"
+        android:hint="Ingrese el nombre del campamento"/>
+
+    <!-- Descripción -->
+    <TextView
+        android:id="@+id/tvDescripcionCampamento"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Descripción"
+        android:textSize="18sp"
+        android:layout_below="@id/etNombreCampamento"
+        android:layout_marginTop="16dp"/>
+
+    <EditText
+        android:id="@+id/etDescripcionCampamento"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvDescripcionCampamento"
+        android:layout_marginTop="4dp"
+        android:hint="Ingrese la descripción del campamento"/>
+
+    <!-- Fecha de Inicio -->
+    <TextView
+        android:id="@+id/tvFechaInicioCampamento"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Fecha de Inicio"
+        android:textSize="18sp"
+        android:layout_below="@id/etDescripcionCampamento"
+        android:layout_marginTop="16dp"/>
+
+    <EditText
+        android:id="@+id/etFechaInicioCampamento"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvFechaInicioCampamento"
+        android:layout_marginTop="4dp"
+        android:hint="Ingrese la fecha de inicio (formato: YYYY-MM-DD)"/>
+
+    <!-- Fecha Final -->
+    <TextView
+        android:id="@+id/tvFechaFinalCampamento"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Fecha Final"
+        android:textSize="18sp"
+        android:layout_below="@id/etFechaInicioCampamento"
+        android:layout_marginTop="16dp"/>
+
+    <EditText
+        android:id="@+id/etFechaFinalCampamento"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvFechaFinalCampamento"
+        android:layout_marginTop="4dp"
+        android:hint="Ingrese la fecha final (formato: YYYY-MM-DD)"/>
+
+    <!-- Número Máximo de Participantes -->
+    <TextView
+        android:id="@+id/tvNumeroMaxParticipantesCampamento"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Número Máximo de Participantes"
+        android:textSize="18sp"
+        android:layout_below="@id/etFechaFinalCampamento"
+        android:layout_marginTop="16dp"/>
+
+    <EditText
+        android:id="@+id/etNumeroMaxParticipantesCampamento"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvNumeroMaxParticipantesCampamento"
+        android:layout_marginTop="4dp"
+        android:hint="Ingrese el número máximo de participantes"/>
+
+    <!-- Ubicación -->
+    <TextView
+        android:id="@+id/tvUbicacionCampamento"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ubicación"
+        android:textSize="18sp"
+        android:layout_below="@id/etNumeroMaxParticipantesCampamento"
+        android:layout_marginTop="16dp"/>
+
+    <EditText
+        android:id="@+id/etUbicacionCampamento"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvUbicacionCampamento"
+        android:layout_marginTop="4dp"
+        android:hint="Ingrese la ubicación del campamento"/>
+
+    <!-- Edad Mínima -->
+    <TextView
+        android:id="@+id/tvEdadMinimaCampamento"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Edad Mínima"
+        android:textSize="18sp"
+        android:layout_below="@id/etUbicacionCampamento"
+        android:layout_marginTop="16dp"/>
+
+    <EditText
+        android:id="@+id/etEdadMinimaCampamento"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvEdadMinimaCampamento"
+        android:layout_marginTop="4dp"
+        android:hint="Ingrese la edad mínima permitida"/>
+
+    <!-- Edad Máxima -->
+    <TextView
+        android:id="@+id/tvEdadMaximaCampamento"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Edad Máxima"
+        android:textSize="18sp"
+        android:layout_below="@id/etEdadMinimaCampamento"
+        android:layout_marginTop="16dp"/>
+
+    <EditText
+        android:id="@+id/etEdadMaximaCampamento"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvEdadMaximaCampamento"
+        android:layout_marginTop="4dp"
+        android:hint="Ingrese la edad máxima permitida"/>
+
+    <!-- Número de Monitores -->
+    <TextView
+        android:id="@+id/tvNumMonitoresCampamento"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Número de Monitores"
+        android:textSize="18sp"
+        android:layout_below="@id/etEdadMaximaCampamento"
+        android:layout_marginTop="16dp"/>
+
+    <EditText
+        android:id="@+id/etNumMonitoresCampamento"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvNumMonitoresCampamento"
+        android:layout_marginTop="4dp"
+        android:hint="Ingrese el número de monitores"/>
+
+    <!-- Precio -->
+    <TextView
+        android:id="@+id/tvPrecioCampamento"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Precio"
+        android:textSize="18sp"
+        android:layout_below="@id/etNumMonitoresCampamento"
+        android:layout_marginTop="16dp"/>
+
+    <EditText
+        android:id="@+id/etPrecioCampamento"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvPrecioCampamento"
+        android:layout_marginTop="4dp"
+        android:hint="Ingrese el precio del campamento"/>
+
+    <!-- Categoría -->
+    <TextView
+        android:id="@+id/tvCategoriaCampamento"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Categoría"
+        android:textSize="18sp"
+        android:layout_below="@id/etPrecioCampamento"
+        android:layout_marginTop="16dp"/>
+
+    <EditText
+        android:id="@+id/etCategoriaCampamento"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvCategoriaCampamento"
+        android:layout_marginTop="4dp"
+        android:hint="Ingrese la categoría del campamento"/>
+
+    <!-- Imagen -->
+    <TextView
+        android:id="@+id/tvImagenCampamento"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Imagen"
+        android:textSize="18sp"
+        android:layout_below="@id/etCategoriaCampamento"
+        android:layout_marginTop="16dp"/>
+
+    <EditText
+        android:id="@+id/etImagenCampamento"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvImagenCampamento"
+        android:layout_marginTop="4dp"
+        android:hint="Ingrese la URL de la imagen del campamento"/>
+
+    <!-- Latitud -->
+    <TextView
+        android:id="@+id/tvLatitudCampamento"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Latitud"
+        android:textSize="18sp"
+        android:layout_below="@id/etImagenCampamento"
+        android:layout_marginTop="16dp"/>
+
+    <EditText
+        android:id="@+id/etLatitudCampamento"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvLatitudCampamento"
+        android:layout_marginTop="4dp"
+        android:hint="Ingrese la latitud del campamento"/>
+
+    <!-- Longitud -->
+    <TextView
+        android:id="@+id/tvLongitudCampamento"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Longitud"
+        android:textSize="18sp"
+        android:layout_below="@id/etLatitudCampamento"
+        android:layout_marginTop="16dp"/>
+
+    <EditText
+        android:id="@+id/etLongitudCampamento"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvLongitudCampamento"
+        android:layout_marginTop="4dp"
+        android:hint="Ingrese la longitud del campamento"/>
+
+    <!-- Botón Aceptar -->
+    <Button
+        android:id="@+id/btnAceptarCampamento"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/etLongitudCampamento"
+        android:layout_marginTop="24dp"
+        android:text="Aceptar"/>
+
+    </RelativeLayout>
+</ScrollView>

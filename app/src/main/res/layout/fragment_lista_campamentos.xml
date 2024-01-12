@@ -1,5 +1,6 @@
 <!-- fragment_lista_campamentos.xml -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -11,8 +12,12 @@
 
     <Button
         android:id="@+id/btnCrearCampamento"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Crear Campamento"
-        android:layout_alignParentBottom="true"/>
+        android:layout_width="70dp"
+        android:layout_height="72dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="25dp"
+        android:layout_marginBottom="25dp"
+        android:textAlignment="center"
+        app:icon="@drawable/incono_apuntar_hijo" />
 </RelativeLayout>

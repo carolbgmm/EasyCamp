@@ -15,6 +15,7 @@ public class LoggedUserDTO {
         return  loggedUser;
     }
 
+
     private LoggedUserDTO(UserDTO user){
         this.user = user;
     }

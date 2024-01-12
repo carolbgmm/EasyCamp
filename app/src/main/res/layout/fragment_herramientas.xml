@@ -17,13 +17,13 @@
         android:textColor="#000000" />
 
     <Button
-        android:id="@+id/button_vehiculos"
+        android:id="@+id/button_aceptados"
         android:layout_width="322dp"
         android:layout_height="103dp"
         android:layout_x="35dp"
         android:layout_y="193dp"
         android:backgroundTint="#99D69B"
-        android:text="@string/boton_vehiculos"
+        android:text="@string/boton_aceptados"
         android:textColor="#000000" />
 
     <Button
